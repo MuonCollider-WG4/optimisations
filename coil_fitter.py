@@ -1,3 +1,5 @@
+import os
+import shutil
 import json
 import matplotlib
 import matplotlib.pyplot
@@ -7,8 +9,14 @@ from field_models import CurrentSheet
 from field_models import CurrentBlock
 
 class CoilFitter(object):
+    """
+    Routines to fit a bunch of current sheets (aka coils) to some aribtrary on-axis field
+    """
     def __init__(self, ri = 0.2):
-        self.n_iterations = 1000
+        """
+        Initialisation. 
+        """
+        self.n_iterations = 10000
         self.n_sheets_per_coil = 1
         self.cell_extent = 3 # n in each direction beyond the first
         self.n_fit_points = 100
@@ -16,21 +24,35 @@ class CoilFitter(object):
         self.fit_params = [] # value:seed
         self.limits = []
         self.force_symmetry = -1 # -1, 0 or 1 for antisymmetric, no symmetry, symmetric
-        #ri = 0.2
-        dr = 0.1
-        nr = 1
-        zi = 0.1
-        dz = 0.05
-        nz = 6
         #(b0, zcentre, length, rmin, rmax, period, nrepeats, nsheets)
         self.suffix = "_ri="+str(ri)
         self.coil_list = []
-        for rindex in range(nr):
-            for zindex in range(nz):           
-                self.coil_list.append(CurrentBlock(1.0, zi+dz*(zindex+0.5), dz, ri+dr*rindex, ri+dr*(rindex+1), 2.0, 1, 10))
         self.minuit = None
         self.field_to_match = None
         self.iteration = 0
+
+    @classmethod
+    def new_from_pixels(self, ri, dr, nr, zi, dz, nz, suffix):
+        """
+        Initialise a new CoilFitter based on a rectangular set of current pixels
+        - ri: inner radius of the grid [m]
+        - dr: radial step [m]
+        - nr: number of radial steps
+        - zi: initial z position of the grid [m]
+        - dz: z step [m]
+        - nz: number of z steps
+        """
+        fitter = CoilFitter()
+        fitter.coil_list = []
+        for rindex in range(nr):
+            for zindex in range(nz):           
+                fitter.coil_list.append(
+                    CurrentBlock(1.0, zi+dz*(zindex+0.5), dz, ri+dr*rindex, ri+dr*(rindex+1), 2.0, 1, 10)
+                )
+        if suffix[0] != "_":
+            suffix = "_"+suffix
+        fitter.suffix = suffix
+        return fitter
 
     def fit_coil(self, field_to_match, tolerance):
         self.field_to_match = field_to_match
@@ -52,7 +74,7 @@ class CoilFitter(object):
         self.minuit.SetFCN(self.score_function)
         self.minuit.Command("SIMPLEX "+str(self.n_iterations)+" "+str(tolerance))
         self.print_coil_params()
-        self.save_coil_params("coil_params"+self.suffix+".out")
+        self.save_coil_params(os.path.join(self.output_dir, "coil_params"+self.suffix+".out"))
 
     def print_coil_params(self):
         for i, coil in enumerate(self.coil_list):
@@ -97,6 +119,7 @@ class CoilFitter(object):
         coil_dict["__solenoid_symmetry__"] = self.force_symmetry
         coil_dict["__optimisation_iteration__"] = self.iteration
         coil_dict["__optimisation_score__"] = self.score_function()
+        coil_dict["__cell_length__"] = self.period
         json.dump(coil_dict, open(file_name, "w"), indent=2)
 
     def set_magnets(self):
@@ -155,15 +178,33 @@ class CoilFitter(object):
         axes.legend()
         axes.set_xlabel("z [m]")
         axes.set_ylabel("B$_{z}$ [T]")
-        figure.savefig("fitted_coils"+self.suffix+".png")
+        figure.savefig(os.path.join(self.output_dir, "fitted_coils"+self.suffix+".png"))
 
-def main():
-    field_to_match = SineField(0.0, 6.8135, 1.8911, 0.0, 1.0)
-    for ri in [0.2, 0.3, 0.4, 0.5, 0.6]:
-        fitter = CoilFitter(ri)
+def clear_dir(a_dir):
+    try:
+        shutil.rmtree(a_dir)
+    except OSError:
+        pass
+    os.makedirs(a_dir)
+
+def pixel_fit():
+    output_dir = "coil_fitter_v4"
+    clear_dir(output_dir)
+    for b1, b3, l in [(6.0, 0.0, 0.8), (6.0, 3.0, 1.6), (12.0, 6.0, 0.8)]:
+        field_to_match = SineField(0.0, b1, 0.0, b3, 0.0, 0.0, l)
+        ri, dr, nr = 0.3, 0.1, 1 
+        zi, dz, nz = l/16.0, l/16.0, 6
+        fitter = CoilFitter.new_from_pixels(ri, dr, nr, zi, dz, nz, "_b1={0:.4g}_b3={1:.4g}_l={2:.4g}".format(b1, b3, l))
+        fitter.output_dir = output_dir
         fitter.fit_coil(field_to_match, 1e-8)
         fitter.plot_fit()
     matplotlib.pyplot.show(block=False)
+
+def trim_fit():
+    pass
+
+def main():
+    pixel_fit()
 
 if __name__ == "__main__":
     main()

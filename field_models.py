@@ -105,18 +105,16 @@ class LinearInterpolation(Field):
         return "interpolation"
 
 class SineField(Field):
-    def __init__(self, bz0, bz1, bz2, bz3, period):
+    def __init__(self, bz0, bz1, bz2, bz3, bz4, bz5, period):
         self.bz0 = bz0
-        self.bz1 = bz1
-        self.bz2 = bz2
-        self.bz3 = bz3
+        self.bz_list = [bz1, bz2, bz3, bz4, bz5]
         self.period = period
 
     def get_field(self, z):
-        bz1 = self.bz1*math.sin(2*math.pi*z/self.period)
-        bz2 = self.bz2*math.sin(4*math.pi*z/self.period)
-        bz3 = self.bz3*math.sin(6*math.pi*z/self.period)
-        return bz1+bz2+bz3+self.bz0
+        bz = self.bz0
+        for i, b0 in enumerate(self.bz_list):
+            bz += b0*math.sin(2*(i+1)*math.pi*z/self.period)
+        return bz
 
     def get_period(self):   
         return self.period
@@ -125,17 +123,22 @@ class SineField(Field):
         intbz2 = self.get_bz2_int()
         print("Integral", intbz2)
         self.bz0 *= (intbz2dz/intbz2)**0.5
-        self.bz1 *= (intbz2dz/intbz2)**0.5
-        self.bz2 *= (intbz2dz/intbz2)**0.5
-        self.bz3 *= (intbz2dz/intbz2)**0.5
+        for i, bz in enumerate(self.bz_list):
+            self.bz_list[i] *= (intbz2dz/intbz2)**0.5
         intbz2_new = scipy.integrate.odeint(self.bz2_int, [0.], [self.period])[0]
         print(intbz2, intbz2_new, intbz2dz)
 
     def get_name(self):
-        return "sine_"+str(self.bz0)+"_"+format(self.bz1, ".4g")+"_"+format(self.bz2, ".4g")+"_"+format(self.bz3, ".4g")
+        name = "sine_"+str(self.bz0)
+        for b0 in self.bz_list:
+            name += "_"+format(b0, ".4g")
+        return name
 
     def human_readable(self):
-        return "b_0={0:.4g}; b_1={1:.4g}; b_2={2:.4g}; b_3={3:.4g}; L={4:.4g}".format(self.bz0, self.bz1, self.bz2, self.bz3, self.period)
+        name = "L={1:.4g}; b_0={0:.4g}".format(self.bz0, self.period)
+        for i, b0 in enumerate(self.bz_list):
+            name += "; b_{0}={1:.4g}".format(i+1, b0)
+        return name
 
 
 class UniformField(Field):
@@ -222,3 +225,6 @@ class CurrentBlock(Field):
             current_per_length += coil.get_current_per_length()
         current_density = current_per_length / (self.rmax-self.rmin)
         return current_density # A m^-2
+
+    def get_period(self):
+        return self.coil_list[0].get_period()

@@ -8,7 +8,10 @@ import scipy.integrate
 import scipy.interpolate
 import scipy.fft
 import matplotlib.pyplot
-import ROOT
+try:
+    import ROOT
+except ImportError:
+    raise ImportError("PyROOT import failed - you can still run the code, but minuit fitter won't work")
 from field_models import FieldSum
 from field_models import FlatGaussField
 from field_models import LinearInterpolation
@@ -39,18 +42,24 @@ class BetaFinder(object):
         - field is an object of type field_models.Field
         - momentum is a float (momentum in GeV/c)
         """
-        self.field_model = field
-        self.period = self.field_model.get_period()
         self.momentum = momentum
-        self.hmax = self.period*1e-4
         self.verbose = 0
         self.q = 1
+        self.reset_field(field)
 
     def field(self, z):
         """
         Return the field at position z
         """
         return self.field_model.get_field(z)
+
+    def reset_field(self, field):
+        """
+        Reset the field, potentially with a different cell period etc
+        """
+        self.field_model = field
+        self.period = self.field_model.get_period()
+        self.hmax = self.period*1e-4
 
     def matrix_derivatives(self, y, z):
         """
@@ -126,7 +135,7 @@ class BetaFinder(object):
             print("beta derivatives z:", z, "bz:", bz, "k:", kappa, "y:", y, "dy/dz:", dydz)
         return dydz
 
-    def evolve(self, beta0, dbetadz0, zout):
+    def evolve(self, beta0, dbetadz0, zin, zout):
         """
         Calculates beta, dbeta/dz, phi at some position zout
         - beta0: initial optical beta function
@@ -134,11 +143,11 @@ class BetaFinder(object):
         - zout: final z position
         Returns a tuple of beta, dbeta.dz, phi with units [m], [], [rad]
         """
-        zout = [0.0, zout]
+        zpoints = [zin, zout]
         output = scipy.integrate.odeint(self.beta_derivatives,
                                         [beta0, dbetadz0, 0.],
-                                        zout, hmax=self.hmax,
-                                        mxstep=int(zout[-1]/self.hmax*2))
+                                        zpoints, hmax=self.hmax,
+                                        mxstep=int(zpoints[-1]/self.hmax*2))
         return output[-1]
 
     def is_not_periodic(self, beta0, beta1):
@@ -170,7 +179,7 @@ class BetaFinder(object):
         beta0 = ROOT.Double()
         err = ROOT.Double()
         self.minuit.GetParameter(0, beta0, err)
-        beta1, dbetadz, phi = self.evolve(float(beta0), 0., self.period)
+        beta1, dbetadz, phi = self.evolve(float(beta0), 0., 0.0, self.period)
         score[0] = abs(beta1-beta0)+abs(dbetadz*100)**2
         #print (beta0, beta1, dbetadz, score[0])
         return beta0, beta1, dbetadz, phi
@@ -226,7 +235,7 @@ def clear_dir(a_dir):
     os.makedirs(a_dir)
 
 fignum = 1
-def do_plots(field, pz0, pz_list, plot_dir):
+def do_plots(field, pz_plot_list, pz_list, plot_dir):
     """
     Plot the beta function for a given field model
     - field: the field model. Should be of type field_model.Field
@@ -248,12 +257,13 @@ def do_plots(field, pz0, pz_list, plot_dir):
     bz_list = [beta_finder.field_model.get_field(z) for z in z_list]
     bz2_list = [bz**2 for bz in bz_list]
     figure = matplotlib.pyplot.figure(fignum, figsize=(12, 10))
-    figure.suptitle("$"+field.human_readable()+"$")
+    figure.suptitle("$"+field.human_readable()+"$\n"+\
+           "$\\int B^2(z) dz =$ {0:.4g} T$^2$ m".format(field.get_bz2_int()))
     fignum += 1
     if len(figure.get_axes()) == 0:
         axes = [figure.add_subplot(2, 2, 1), figure.add_subplot(2, 2, 2),
                 figure.add_subplot(2, 2, 3), figure.add_subplot(2, 2, 4)]
-        axes.append(axes[1].twinx())
+        axes.append(axes[2].twinx())
     else:
         axes = figure.get_axes()
     zero_list = [0. for i in z_list]
@@ -279,20 +289,38 @@ def do_plots(field, pz0, pz_list, plot_dir):
     axes[2].set_xlabel("p$_{z}$ [GeV/c]")
     axes[2].set_ylabel("$\\beta$ [m]")
     axes[2].set_ylim([0.0, 0.5])
-    """
-    axes[4].set_ylabel("$\\phi$ [rad]", color='r')
-    axes[4].tick_params(axis='y', labelcolor='r')
-    for i in range(int(min(phi_list)/math.pi)+1, int(max(phi_list)/math.pi)+1):
-        pi_list = [i*math.pi, i*math.pi]
-        pi_pz_list = [min(pz_list), max(pz_list)]
-        label = None
-        if i == 0:
-            label = "$\\phi$"
-        #axes[4].plot(pi_pz_list, pi_list, ':', color='pink', label=label)
-    #axes[4].plot(pz_list, phi_list, 'r-.')
-    """
 
-    for pz in [pz0]:
+    axes[4].set_ylabel("$\\phi$ [rad]", color='r')
+    for y in [math.pi/2.0, 0.0, -math.pi/2.0]:
+        axes[4].plot([pz_list[0], pz_list[-1]], [y, y], linestyle='dotted', color='pink')
+    axes[4].set_ylim(-math.pi, math.pi)
+    axes[4].tick_params(axis='y', labelcolor='r')
+    axes[4].tick_params(axis='y', labelcolor='r')
+    this_pz_list, this_phi_list = [], []
+    phi_old = None
+    plotting = False
+    for i, pz in enumerate(pz_list):
+        phi = phi_list[i]
+        pz = pz_list[i]
+        if phi == 0 and i != len(pz_list)-1:
+            plotting = True
+            continue
+        #if i > 0 and abs(phi-phi_list[i-1]) > math.pi:
+        #    plotting = True
+        if i == len(pz_list)-1:
+            plotting = True
+        if i > 0 and abs(phi_list[i] - phi_list[i-1]) > math.pi:
+            plotting = True
+        if plotting:
+            print("Plotting", this_pz_list)
+            axes[4].plot(this_pz_list, this_phi_list, 'r-.')
+            this_pz_list, this_phi_list = [], []
+            plotting = False
+        this_pz_list.append(pz)
+        this_phi_list.append(phi)
+
+
+    for pz in pz_plot_list:
         beta_finder.momentum = pz
         beta, alpha, phi = beta_finder.get_beta_periodic()
         if beta < 1e-9:
@@ -303,7 +331,7 @@ def do_plots(field, pz0, pz_list, plot_dir):
         axes[3].plot(z_list, beta_list, label="p$_z$ "+format(pz, "6.4g")+" GeV/c")
         axes[3].set_xlabel("z [m]")
         axes[3].set_ylabel("$\\beta$ [m]")
-        axes[3].set_ylim([0.0, 0.5])
+        axes[3].set_ylim([0.0, 1.0])
         axes[3].legend()
 
     emittance = 0.0003 # metres
@@ -316,21 +344,6 @@ def do_plots(field, pz0, pz_list, plot_dir):
     #axes[3].set_ylabel("$\\sigma_x$ [m]")
     name = "optics_L_"+str(period)+field.get_name()+"_pz_"+str(pz)+".png"
     figure.savefig(os.path.join(plot_dir, name))
-
-def make_sine_field(sol_bz2, bz1, bz2, bz3):
-    factor = 1
-    period = 1.0
-    bz0 = 0.0
-    #bz1 = 7.206
-    #bz2 = 1.0
-    #bz3 = 0.0
-    f = SineField(factor*bz0, factor*bz1, factor*bz2, factor*bz3, period)#
-    if sol_bz2 > 0:
-        f_bz2 = f.get_bz2_int()
-        factor = (sol_bz2/f_bz2)**0.5
-        f = SineField(factor*bz0, factor*bz1, factor*bz2, factor*bz3, period)#
-    return f
-
 
 def make_solenoid_field():
     #b0, zcentre, length, radius, period, nrepeats
@@ -360,24 +373,26 @@ def fft_field(truncation):
 
 def main():
     global fignum
-    plot_dir = "optics-scan_v1"
-    pz_list = [pz_i/1000. for pz_i in range(100, 301, 5)]
+    plot_dir = "optics-scan_v13"
+    pz_plot_list = [0.19, 0.20, 0.21]
+    pz_scan_list = [pz_i/1000. for pz_i in range(150, 251, 1)]
     sol_field = make_solenoid_field()
-    n_points = 25
+    n_points = 2
     clear_dir(plot_dir)
-    for i in range(0, n_points):
-        bz1 = 12 # 10-abs(i)
-        bz2 = i
-        bz3 = 0
-        #sol_field.get_bz2_int()
-        sine_field = make_sine_field(-1, bz1, bz2, bz3)
+    norm = 160
+    for i in range(21):
+        zlength = 0.8
+        bz1 = 4.0+i*0.4
+        bz2 = 0
+        bz3 = 0.0
+        bz4 = 0
+        bz5 = 0
+        sine_field = SineField(0, bz1, bz2, bz3, bz4, bz5, zlength)
+        #sine_field.normalise_bz_squared(160/i)
         # 25 for bz1, bz2 optimisation
-        #100 for bz1, bz3 optimisation
-        sine_field.normalise_bz_squared(35)
-        do_plots(sine_field, 0.2, pz_list, plot_dir)
+        #160 for bz1, bz3 optimisation
+        do_plots(sine_field, pz_plot_list, pz_scan_list, plot_dir)
         print("Bz2", sine_field.get_bz2_int(), sine_field.human_readable(), "\n")
-    #fft_field(10000)
-    #do_plots(fft_field(10000), 0.2, pz_list)
     fignum -= 1
     matplotlib.pyplot.show(block=False)
 
