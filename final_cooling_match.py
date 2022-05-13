@@ -11,7 +11,16 @@ import field_models
 import evolve
 
 class FitCoils(object):
+    """
+    Fit a lattice for final cooling
+    """
     def __init__(self, pz, long_field, peak_field):
+        """
+        Initialise
+        - pz: [GeV/c] the momentum of the cooling cell
+        - long_field: [T] the field strength of the long, low field solenoid
+        - peak_field: [T] the field strength of the shorter, high field solenoid
+        """
         self.long_field = long_field
         self.peak_field = peak_field
         self.z0 = 0
@@ -21,6 +30,13 @@ class FitCoils(object):
         self.make_fields(0, 0)
 
     def make_fields(self, match_field_1, match_field_2):
+        """
+        Set up the lattice with some nominal geometry parameters hard coded
+        - match_field_1: [T] the field strength of the match coil between the 
+                         field flip and the long solenoid
+        - match_field_2: [T] the field strength of the match coil between the
+                         long solenoid and the high field solenoid  
+        """
         period = 40.0
         nrepeats = 20
         nsheets = 1
@@ -47,6 +63,7 @@ class FitCoils(object):
         self.beta_finder = evolve.BetaFinder(self.lattice, self.pz)
 
     def set_fields_minuit(self):
+        """Extract fields from minuit and set them using self.make_fields(...)"""
         match_field_1, match_field_2 = ROOT.Double(), ROOT.Double()
         err = ROOT.Double()
         self.minuit.GetParameter(0, match_field_1, err)
@@ -66,6 +83,7 @@ class FitCoils(object):
     def fit_2(self):
         """
         Second we match from the constant field region to the high field region
+        to find match_field_2
         """
         # set the z position of the start (z0) and end (z1) of the integration
         self.z0 = self.lattice.period*1.0/8.0 # half way between peak field and end field
@@ -83,6 +101,11 @@ class FitCoils(object):
         return beta1
         
     def score_function_2(self, nvar, parameters, score, jacobian, err):
+        """
+        Score function for second fit - we evolve beta from long solenoid to the
+        high field region and require uniform beta function at the centre of the
+        high field region (should be set to z1) 
+        """
         match_field_1, match_field_2 = self.set_fields_minuit()
         beta0 = self.uniform_field_beta(self.z0)
         beta1_tgt = self.uniform_field_beta(self.z1)
@@ -95,7 +118,8 @@ class FitCoils(object):
 
     def fit_1(self):
         """
-        First we match from the constant field region to the end of the cell
+        First we match from the constant field region to the end of the cell, to
+        find match_field_1
         """
         # set the z position of the start (z0) and end (z1) of the integration
         self.z0 = self.lattice.period*7.0/8.0 # half way between 0.0 and peak field
@@ -112,6 +136,11 @@ class FitCoils(object):
         return beta1
         
     def score_function_1(self, nvar, parameters, score, jacobian, err):
+        """
+        Score function for first fit - we evolve beta from long solenoid to the
+        field flip and require derivative of beta function wrt z at the centre
+        of the high field region is 0
+        """
         match_field_1, match_field_2 = self.set_fields_minuit()
         beta0 = self.uniform_field_beta(self.z0)
         beta1, dbeta1dz, phi = self.beta_finder.evolve(float(beta0), 0., self.z0, self.z1)
@@ -123,7 +152,9 @@ class FitCoils(object):
 
 
     def plot_beta(self, beta0, dbetadz0):
-        self.beta_finder
+        """
+        Plot beta as a function of z
+        """
         z_list, beta_list, dbetadz_list, phi_list = self.beta_finder.propagate_beta(beta0, dbetadz0, 1001)
         figure = matplotlib.pyplot.figure()
         axes = figure.add_subplot(1, 2, 1)
