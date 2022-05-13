@@ -9,3 +9,6 @@ coil_fitter: uses ROOT tminuit to find coils that can be used to "mimic" fields 
 gauss_minimiser: I was experimenting with some genetic algorithm stuff. It is not used.
 
 movie.py: small script to drive mencoder (and ffmpeg)
+
+final_cooling_match: uses ROOT tminuit to do matching for the final cooling lattice
+
