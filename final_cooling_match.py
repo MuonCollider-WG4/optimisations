@@ -34,7 +34,9 @@ class FitCoils(object):
         Set up the lattice with some nominal geometry parameters hard coded
         - match_field_1: [T] the field strength of the match coil between the 
                          field flip and the long solenoid
-        - match_field_2: [T] the field strength of the match coil between the
+        - match_field_2: [T] the field strength of the first match coil between the
+                         long solenoid and the high field solenoid  
+        - match_field_3: [T] the field strength of the second match coil between the
                          long solenoid and the high field solenoid  
         """
         period = 40.0
@@ -89,7 +91,7 @@ class FitCoils(object):
     def fit_2(self):
         """
         Second we match from the constant field region to the high field region
-        to find match_field_2
+        to find match_field_2 and match_field_3
         """
         # set the z position of the start (z0) and end (z1) of the integration
         self.z0 = self.lattice.period*2.0/8.0 # peak field
@@ -179,9 +181,6 @@ class FitCoils(object):
         axes.set_ylabel("B [T]")
         figure.suptitle("M1={0:.3g} [T]; M2={1:.3g} [T]; M3={2:.3g} [T]".format(m1, m2, m3))
         return figure
-
-def match_fields(field, pz):
-    pass
 
 def clear_dir(a_dir):
     try:
