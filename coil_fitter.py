@@ -18,7 +18,7 @@ class CoilFitter(object):
         """
         self.n_iterations = 10000
         self.n_sheets_per_coil = 1
-        self.cell_extent = 3 # n in each direction beyond the first
+        self.cell_extent = 10 # n in each direction beyond the first
         self.n_fit_points = 100
         self.period = -1
         self.fit_params = [] # value:seed
@@ -74,13 +74,13 @@ class CoilFitter(object):
         self.minuit.SetFCN(self.score_function)
         self.minuit.Command("SIMPLEX "+str(self.n_iterations)+" "+str(tolerance))
         self.print_coil_params()
-        self.save_coil_params(os.path.join(self.output_dir, "coil_params"+self.suffix+".out"))
+        self.save_coil_params(os.path.join(self.output_dir, "coil_params_beta-scale"+self.suffix+".out"))
 
     def print_coil_params(self):
         for i, coil in enumerate(self.coil_list):
             print("Coil parameters for coil "+str(i))
             print("  nominal field [T]:       ", format(coil.b0, "9.4g"))
-            print("  current density [A/m^2]:", format(coil.get_current_density(), "9.4g"))
+            print("  current density [A/mm^2]:", format(coil.get_current_density()*1e-6, "9.4g"))
             print("  centre position [m]:    ", format(coil.zcentre, "9.4g"))
             print("  length [m]:             ", format(coil.length, "9.4g"))
             print("  inner radius [m]:       ", format(coil.rmin, "9.4g"))
@@ -190,11 +190,16 @@ def clear_dir(a_dir):
 def pixel_fit():
     output_dir = "coil_fitter_v4"
     clear_dir(output_dir)
-    for b1, b3, l in [(6.0, 0.0, 0.8), (6.0, 3.0, 1.6), (12.0, 6.0, 0.8)]:
-        field_to_match = SineField(0.0, b1, 0.0, b3, 0.0, 0.0, l)
-        ri, dr, nr = 0.3, 0.1, 1 
-        zi, dz, nz = l/16.0, l/16.0, 6
-        fitter = CoilFitter.new_from_pixels(ri, dr, nr, zi, dz, nz, "_b1={0:.4g}_b3={1:.4g}_l={2:.4g}".format(b1, b3, l))
+    for scale in [1]:
+        b1 = 0.25*scale
+        b2 = 0.0*scale
+        l = 0.1
+        field_to_match = SineField(0.0, b1, b2, 0.0, 0.0, 0.0, l)
+        ri, dr, nr = 0.05, 0.05, 1 
+        #zcentre = zi+dz*(zindex+0.5)
+        dz = l/10.0
+        zi, dz, nz = l/4-dz/2, l/10.0, 1
+        fitter = CoilFitter.new_from_pixels(ri, dr, nr, zi, dz, nz, "_b1={0:.4g}_b2={1:.4g}_l={2:.4g}".format(b1, b2, l))
         fitter.output_dir = output_dir
         fitter.fit_coil(field_to_match, 1e-8)
         fitter.plot_fit()

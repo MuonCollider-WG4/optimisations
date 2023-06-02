@@ -32,6 +32,9 @@ class Field(object):
     def get_name(self):
         return "field"
 
+    def human_readable(self):
+        return ""
+
 class FieldSum(Field):
     def __init__(self, field_list):
         self.field_list = field_list
@@ -131,7 +134,7 @@ class SineField(Field):
     def get_name(self):
         name = "sine_"+str(self.bz0)
         for b0 in self.bz_list:
-            name += "_"+format(b0, ".4g")
+            name += "_"+"{:4.4f}".format(b0)
         return name
 
     def human_readable(self):

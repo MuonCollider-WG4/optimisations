@@ -16,7 +16,7 @@ def sort_key(fname):
     return a_list
 
 def main():
-    for folder in glob.glob("optics-scan_v1*"):
+    for folder in glob.glob("optics-scan_v16"):
         here = os.getcwd()
         os.chdir(folder)
         file_list = glob.glob("*.png")

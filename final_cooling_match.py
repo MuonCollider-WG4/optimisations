@@ -23,13 +23,17 @@ class FitCoils(object):
         """
         self.long_field = long_field
         self.peak_field = peak_field
+        self.m1 = 0
+        self.m2 = 0
+        self.m3 = 0
         self.z0 = 0
         self.z1 = 0
         self.pz = pz
+        self.n_iterations_per_fit = 1000
         self.lattice = None
-        self.make_fields(0, 0, 0)
+        self.make_fields()
 
-    def make_fields(self, match_field_1, match_field_2, match_field_3):
+    def make_fields(self):
         """
         Set up the lattice with some nominal geometry parameters hard coded
         - match_field_1: [T] the field strength of the match coil between the 
@@ -43,15 +47,16 @@ class FitCoils(object):
         nrepeats = 20
         nsheets = 1
         field_list = []
-        length_m1, rmin_m1, rmax_m1, dz_m1 = 0.5, 0.2, 0.3, 0.5
-        length_m2, rmin_m2, rmax_m2, dz_m2 = 0.5, 0.2, 0.3, period/4.0-1.0
-        length_m3, rmin_m3, rmax_m3, dz_m3 = 0.5, 0.2, 0.3, period/4.0-1.5
+        match_field_1, match_field_2, match_field_3 = self.m1, self.m2, self.m3
+        length_m1, rmin_m1, rmax_m1, dz_m1 = 0.5, 0.2, 0.3, 1.0
+        length_m2, rmin_m2, rmax_m2, dz_m2 = 0.5, 0.2, 0.3, period/4.0-2.0
+        length_m3, rmin_m3, rmax_m3, dz_m3 = 0.5, 0.2, 0.3, period/4.0-2.5
         for (b0, zcentre, length, rmin, rmax) in [
                 (match_field_1, dz_m1, length_m1, rmin_m1, rmax_m1),
                 (match_field_2, dz_m2, length_m2, rmin_m2, rmax_m2),
                 (match_field_3, dz_m3, length_m3, rmin_m3, rmax_m3),
                 (self.long_field, period/4.0, 19.0, 0.2, 0.3),
-                (self.peak_field, period/4.0, 2.0, 0.1, 0.2),
+                (self.peak_field-self.long_field, period/4.0, 2.0, 0.1, 0.2),
                 (match_field_3, period/2-dz_m3, length_m3, rmin_m3, rmax_m3),
                 (match_field_2, period/2-dz_m2, length_m2, rmin_m2, rmax_m2),
                 (match_field_1, period/2-dz_m1, length_m1, rmin_m1, rmax_m1),
@@ -59,7 +64,7 @@ class FitCoils(object):
                 (-match_field_2, period/2+dz_m2, length_m2, rmin_m2, rmax_m2),
                 (-match_field_3, period/2+dz_m3, length_m3, rmin_m3, rmax_m3),
                 (-self.long_field, 3.0*period/4.0, 19.0, 0.2, 0.3),
-                (-self.peak_field, 3.0*period/4.0, 2.0, 0.1, 0.2),
+                (-self.peak_field+self.long_field, 3.0*period/4.0, 2.0, 0.1, 0.2),
                 (-match_field_3, period-dz_m3, length_m3, rmin_m3, rmax_m3),
                 (-match_field_2, period-dz_m2, length_m2, rmin_m2, rmax_m2),
                 (-match_field_1, period-dz_m1, length_m1, rmin_m1, rmax_m1),
@@ -76,7 +81,10 @@ class FitCoils(object):
         self.minuit.GetParameter(0, match_field_1, err)
         self.minuit.GetParameter(1, match_field_2, err)
         self.minuit.GetParameter(2, match_field_3, err)
-        self.make_fields(float(match_field_1), float(match_field_2), float(match_field_3))
+        self.m1 = float(match_field_1)
+        self.m2 = float(match_field_2)
+        self.m3 = float(match_field_3)
+        self.make_fields()
         return match_field_1, match_field_2, match_field_3
 
     def uniform_field_beta(self, z_pos):
@@ -107,7 +115,7 @@ class FitCoils(object):
         #self.minuit.FixParameter(1)
         #self.minuit.FixParameter(2)
         self.minuit.SetFCN(self.score_function_2)
-        self.minuit.Command("SIMPLEX "+str(1000)+" "+str(1e-12))
+        self.minuit.Command("SIMPLEX "+str(self.n_iterations_per_fit)+" "+str(1e-16))
         beta1 = self.score_function_2(0, 0, [0], 0, 0)
         return beta1
         
@@ -137,14 +145,14 @@ class FitCoils(object):
         self.z1 = self.lattice.period*8.0/8.0 # first peak field
         self.minuit = ROOT.TMinuit()
         self.minuit.SetPrintLevel(-1)
-        self.minuit.DefineParameter(0, "match_field_1", -6.571660086194663,  0.01, -10, 10)
-        self.minuit.DefineParameter(1, "match_field_2",  1.7680346988426603, 0.01, -10, 10)
-        self.minuit.DefineParameter(2, "match_field_3",  5.246053743943765,  0.01, -10, 10)
+        self.minuit.DefineParameter(0, "match_field_1", self.m1_seed,  0.01, -10, 10)
+        self.minuit.DefineParameter(1, "match_field_2", self.m2_seed, 0.01, -10, 10)
+        self.minuit.DefineParameter(2, "match_field_3", self.m3_seed,  0.01, -10, 10)
         #self.minuit.FixParameter(0)
         self.minuit.FixParameter(1)
         self.minuit.FixParameter(2)
         self.minuit.SetFCN(self.score_function_1)
-        self.minuit.Command("SIMPLEX "+str(1)+" "+str(1e-12))
+        self.minuit.Command("SIMPLEX "+str(self.n_iterations_per_fit)+" "+str(1e-16))
         beta1 = self.score_function_1(0, 0, [0], 0, 0)
         return beta1
         
@@ -169,18 +177,31 @@ class FitCoils(object):
         """
         z_list, beta_list, dbetadz_list, phi_list = self.beta_finder.propagate_beta(beta0, dbetadz0, 1001)
         m1, m2, m3 = self.set_fields_minuit()
-        figure = matplotlib.pyplot.figure()
-        axes = figure.add_subplot(1, 2, 1)
+        figure1 = matplotlib.pyplot.figure()
+        axes = figure1.add_subplot(1, 1, 1)
         axes.plot(z_list, beta_list)
         axes.set_xlabel("z [m]")
         axes.set_ylabel("$\\beta$ [m]")
-        axes.set_xlim([0.0, axes.get_xlim()[1]])
-        axes = figure.add_subplot(1, 2, 2)
-        axes.plot(z_list, [self.beta_finder.field(z) for z in z_list])
+        axes.set_ylim([0.0, axes.get_ylim()[1]])
+        axes = axes.twinx()
+        axes.plot(z_list, [self.beta_finder.field(z) for z in z_list], color='green', linestyle="--")
         axes.set_xlabel("z [m]")
         axes.set_ylabel("B [T]")
-        figure.suptitle("M1={0:.3g} [T]; M2={1:.3g} [T]; M3={2:.3g} [T]".format(m1, m2, m3))
-        return figure
+        title = f"M1={m1:.3g} [T]; M2={m2:.3g} [T]; M3={m3:.3g} [T]\n"
+        title += f"B$_{{const}}$={self.long_field:.3g} [T]; B$_{{peak}}$={self.peak_field:.3g} [T]"
+        title += f"$\\beta_0$={beta_list[0]:.5g} [m]; $\\beta_1$={beta_list[-1]:.5g} [m] p$_z$={self.pz:.5g}"
+        figure1.suptitle(title)
+        figure2 = matplotlib.pyplot.figure()
+        axes = figure2.add_subplot(1, 1, 1)
+        i_list = [i for i in range(len(z_list)) if z_list[i] > 9.0 and z_list[i] < 11.0]
+        z_zoom_list = [z_list[i] for i in i_list]
+        beta_zoom_list = [beta_list[i] for i in i_list]
+        axes.plot(z_zoom_list, beta_zoom_list)
+        axes.set_xlabel("z [m]")
+        axes.set_ylabel("$\\beta$ [m]")
+        axes.set_ylim([0.0, axes.get_ylim()[1]])
+
+        return figure1, figure2
 
 def clear_dir(a_dir):
     try:
@@ -189,16 +210,37 @@ def clear_dir(a_dir):
         pass
     os.makedirs(a_dir)
 
+def get_pz(pz, delta_ek):
+    mass = 0.105658
+    etot = (pz**2+mass**2)**0.5
+    pz_new = ((etot+delta_ek)**2-mass**2)**0.5
+    return pz_new
+
+
 def main():
-    plot_dir = "final_cooling_matching_v1"
+    plot_dir = "final_cooling_matching_v2"
     clear_dir(plot_dir)
-    pz = 0.2 # GeV/c
-    fitter = FitCoils(0.2, 4.0, 0.0)
+    pz = 0.07 # GeV/c
+    print("Pz spread", get_pz(pz, 0.0), get_pz(pz, -0.0038), get_pz(pz, 0.0038))
+    long_field = 4.0
+    peak_field = 30.0
+    fitter = FitCoils(pz, long_field, peak_field)
+    fitter.n_iterations_per_fit = 1000
+    fitter.m1_seed = -7.410838204077985
+    fitter.m2_seed = 1.9161292750681458
+    fitter.m3_seed = 5.371882228095956
+    print("Fit 1")
     beta, dbetadz = fitter.fit_1()
-    fitter.peak_field = 30.0
+    print("Fit 2")
     fitter.fit_2()
-    figure = fitter.plot_beta(beta, -dbetadz)
-    figure.savefig(os.path.join(plot_dir, "matched_lattice.png"))
+    for fi in range(-3, 4):
+        fitter.peak_field = 30.0 # + 10.0*fi
+        fitter.pz = pz + fi*0.05
+        print("Doing optics with peak field", fitter.peak_field)
+        fitter.make_fields()
+        figure1, figure2 = fitter.plot_beta(beta, -dbetadz)
+        figure1.savefig(os.path.join(plot_dir, f"matched_lattice_{fi}.png"))
+        figure2.savefig(os.path.join(plot_dir, f"matched_lattice_{fi}_zoom.png"))
     matplotlib.pyplot.show(block=False)
 
 if __name__ == "__main__":

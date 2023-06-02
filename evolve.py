@@ -36,7 +36,7 @@ class BetaFinder(object):
 
     Find the periodic solution using the usual alpha/beta relationship (if phase advance real)
     """
-    def __init__(self, field, momentum):
+    def __init__(self, field, momentum, use_analytic=True):
         """
         Initialise
         - field is an object of type field_models.Field
@@ -45,6 +45,7 @@ class BetaFinder(object):
         self.momentum = momentum
         self.verbose = 0
         self.q = 1
+        self.use_analytic = use_analytic
         self.reset_field(field)
 
     def field(self, z):
@@ -81,6 +82,12 @@ class BetaFinder(object):
         return delta_matrix
 
     def get_beta_periodic(self):
+        if self.use_analytic:
+            return self.get_beta_periodic_analytic()
+        else:
+            return self.get_beta_periodic_minuit(0.5)
+
+    def get_beta_periodic_analytic(self):
         """
         Returns a tuple of (beta, alpha, phase advance) where:
         - beta is in [m]
@@ -107,7 +114,7 @@ class BetaFinder(object):
         #print("N2D over sinmu with sinmu=", sinmu, "\n", n2d)
         v2d = numpy.array([[n2d[0,1], -n2d[0,0]], [-n2d[0,0], -n2d[1, 0]]])
         # v2d[0,0] = beta/p
-        beta, alpha, phase_advance = v2d[0, 0]*self.momentum, -v2d[0,1], math.atan2(cosmu, sinmu)
+        beta, alpha, phase_advance = v2d[0, 0]*self.momentum, -v2d[0,1], -math.atan2(cosmu, sinmu)
         #print("beta alpha phi", beta, alpha, phase_advance)
         return beta, alpha, phase_advance
 
@@ -193,7 +200,7 @@ class BetaFinder(object):
         solution is found, returns (0.0, 0.0, 0.0)
         """
         beta0, beta1, dbetadz, phi = self.minuit_fitter(seed_beta0, seed_beta0/10., 100.0, 500, 1e-5)
-        print(format(self.momentum, "8.4g"), format(beta0, "12.6g"), format(beta1, "12.6g"), dbetadz, abs(beta0-beta1)*2.0/(beta0+beta1))
+        #print(format(self.momentum, "8.4g"), format(beta0, "12.6g"), format(beta1, "12.6g"), dbetadz, abs(beta0-beta1)*2.0/(beta0+beta1))
         if self.is_not_periodic(beta0, beta1):
             return 0.0, 0.0, 0.0
         return beta1, dbetadz, phi
@@ -234,8 +241,45 @@ def clear_dir(a_dir):
         pass
     os.makedirs(a_dir)
 
+def round_delta_sf(a_float_1, a_float_2, n_sf):
+    """Round to some number of significant figures in the difference"""
+    delta = abs(a_float_1-a_float_2)
+    dlog = math.log10(delta)
+    delta_rounded = 10**int(dlog)
+    a_float_1 = round(a_float_1/delta_rounded, n_sf)*delta_rounded
+    a_float_2 = round(a_float_2/delta_rounded, n_sf)*delta_rounded
+    return [a_float_1, a_float_2]
+
+
+def make_kinetic_energy_axis(p_axes):
+    mass = 0.105865
+    ke_calc = lambda p: (p**2+mass**2)**0.5-mass
+    p_calc = lambda ke: ((ke+mass)**2-mass**2)**0.5
+    ke_axes = p_axes.twiny()
+    p_lim = p_axes.get_xlim()
+    ke_lim = (ke_calc(p_lim[0]), ke_calc(p_lim[1]))
+    ke_rounded_lim = round_delta_sf(ke_lim[0], ke_lim[1], 1)
+    delta = (ke_rounded_lim[1]-ke_rounded_lim[0])/5
+    ke_labels = [ke_rounded_lim[0]]
+    while ke_labels[-1] < ke_lim[1]:
+        ke_labels.append(ke_labels[-1]+delta)
+        #print(ke_labels[-1], delta, ke_lim[1])
+    tick_position = [p_calc(ke) for ke in ke_labels]
+    ke_labels = [format(ke, "2.2g") for ke in ke_labels]
+    ke_axes.set_xticks(tick_position)
+    ke_axes.set_xticklabels(ke_labels)
+    ke_axes.set_xlim(p_lim)
+    #ylim = ke_axes.get_ylim()
+    #ke_axes.plot([1e-5, 1e-5], ylim)
+    #ke_axes.set_ylim(ylim)
+    print(ke_axes.get_xlim())
+    print("Setting ke axis with ticks at momentum", tick_position, "ke", ke_labels)
+    return ke_axes
+
+
+
 fignum = 1
-def do_plots(field, pz_plot_list, pz_list, plot_dir):
+def do_plots(field, pz_plot_list, pz_list, plot_dir, fig1, fig2, fig3):
     """
     Plot the beta function for a given field model
     - field: the field model. Should be of type field_model.Field
@@ -250,14 +294,22 @@ def do_plots(field, pz_plot_list, pz_list, plot_dir):
     beta_list = []
     antibeta_list = []
     phi_list = []
-    beta_finder = BetaFinder(field, 1.)
+    int_bz2 = field.get_bz2_int()
+    inv_kappa_list = [0.15*pz/int_bz2**0.5 for pz in pz_list]
+    beta_finder = BetaFinder(field, 1., use_analytic=True)
     if bsquared != None:
         beta_finder.field_model.normalise_bz_squared(bsquared)
-    z_list = [i*period/1000 for i in range(1001)]
+    z_list = [i*period/100 for i in range(101)]
     bz_list = [beta_finder.field_model.get_field(z) for z in z_list]
     bz2_list = [bz**2 for bz in bz_list]
-    figure = matplotlib.pyplot.figure(fignum, figsize=(12, 10))
-    figure.suptitle("$"+field.human_readable()+"$\n"+\
+    if fig1 == None:
+        figure = matplotlib.pyplot.figure(fignum, figsize=(12, 10))
+    else:
+        figure = fig1
+    human = field.human_readable()
+    if human:
+        human = "$"+human+"$\n"
+    figure.suptitle(human+\
            "$\\int B^2(z) dz =$ {0:.4g} T$^2$ m".format(field.get_bz2_int()))
     fignum += 1
     if len(figure.get_axes()) == 0:
@@ -266,6 +318,7 @@ def do_plots(field, pz_plot_list, pz_list, plot_dir):
         axes.append(axes[2].twinx())
     else:
         axes = figure.get_axes()
+
     zero_list = [0. for i in z_list]
     #axes[0].plot(z_list, zero_list, '--g')
     axes[0].plot(z_list, bz_list)
@@ -278,24 +331,24 @@ def do_plots(field, pz_plot_list, pz_list, plot_dir):
     print("     pz    beta_0     phi      n_iterations")
     for pz in pz_list:
         beta_finder.momentum = pz
-        #beta, antibeta, phi = beta_finder.get_beta_periodic(beta)
         beta, alpha, phi = beta_finder.get_beta_periodic()
         print ("    ", pz, beta, phi)
         beta_list.append(beta)
         antibeta_list.append(0.0)
         phi_list.append(phi)
     axes[2].plot(pz_list, beta_list, label="$\\beta(L)$")
-    #axes[1].plot(pz_list, antibeta_list, 'g--', label="$\\beta(L/2)$")
+    axes[1].plot(pz_list, antibeta_list, 'g--', label="$\\beta(L/2)$")
     axes[2].set_xlabel("p$_{z}$ [GeV/c]")
     axes[2].set_ylabel("$\\beta$ [m]")
-    axes[2].set_ylim([0.0, 0.5])
+    axes[2].set_ylim([0.0, 2.0])
 
-    axes[4].set_ylabel("$\\phi$ [rad]", color='r')
     for y in [math.pi/2.0, 0.0, -math.pi/2.0]:
-        axes[4].plot([pz_list[0], pz_list[-1]], [y, y], linestyle='dotted', color='pink')
+        pass #axes[4].plot([pz_list[0], pz_list[-1]], [y, y], linestyle='dotted', color='pink')
     axes[4].set_ylim(-math.pi, math.pi)
     axes[4].tick_params(axis='y', labelcolor='r')
     axes[4].tick_params(axis='y', labelcolor='r')
+    axes[4].set_ylim(-math.pi, math.pi)
+    axes.append(make_kinetic_energy_axis(axes[2]))
     this_pz_list, this_phi_list = [], []
     phi_old = None
     plotting = False
@@ -313,7 +366,7 @@ def do_plots(field, pz_plot_list, pz_list, plot_dir):
             plotting = True
         if plotting:
             print("Plotting", this_pz_list)
-            axes[4].plot(this_pz_list, this_phi_list, 'r-.')
+            #axes[4].plot(this_pz_list, this_phi_list, 'r-.')
             this_pz_list, this_phi_list = [], []
             plotting = False
         this_pz_list.append(pz)
@@ -329,10 +382,11 @@ def do_plots(field, pz_plot_list, pz_list, plot_dir):
         z_list, beta_list, dbetadz_list, phi_list = \
                                         beta_finder.propagate_beta(beta, 0.)
         axes[3].plot(z_list, beta_list, label="p$_z$ "+format(pz, "6.4g")+" GeV/c")
-        axes[3].set_xlabel("z [m]")
-        axes[3].set_ylabel("$\\beta$ [m]")
-        axes[3].set_ylim([0.0, 1.0])
-        axes[3].legend()
+
+    axes[3].set_xlabel("z [m]")
+    axes[3].set_ylabel("$\\beta$ [m]")
+    axes[3].set_ylim([0.0, 1.6])
+    axes[3].legend()
 
     emittance = 0.0003 # metres
     mass = 0.105658 # GeV/c^2
@@ -342,8 +396,9 @@ def do_plots(field, pz_plot_list, pz_list, plot_dir):
     #axes[3].grid(1)
     #axes[3].set_xlabel("z [m]")
     #axes[3].set_ylabel("$\\sigma_x$ [m]")
-    name = "optics_L_"+str(period)+field.get_name()+"_pz_"+str(pz)+".png"
+    name = "optics_L_"+str(period)+"_"+field.get_name()+"_pz_"+str(pz)+".png"
     figure.savefig(os.path.join(plot_dir, name))
+    return figure, None, None
 
 def make_solenoid_field():
     #b0, zcentre, length, radius, period, nrepeats
@@ -359,41 +414,17 @@ def make_solenoid_field():
     bz_norm = max([field_sum.get_field(i*period/100.0) for i in range(101)])
     return field_sum
 
-def fft_field(truncation):
-    source_field = make_solenoid_field()
-    period = source_field.get_period()
-    field_values = [source_field.get_field(i*period/100.0) for i in range(100)]
-    my_fft = scipy.fft.fft(field_values)
-    trunc_fft = [x if i < truncation else 0.0 for i, x in enumerate(my_fft)]
-    inverse = numpy.real(scipy.fft.ifft(trunc_fft))
-    interpolation = LinearInterpolation(inverse, period)
-    interpolation.name = "fft_truncated_"+str(interpolation)
-    print(trunc_fft, inverse)
-    return interpolation
-
 def main():
     global fignum
-    plot_dir = "optics-scan_v13"
-    pz_plot_list = [0.19, 0.20, 0.21]
-    pz_scan_list = [pz_i/1000. for pz_i in range(150, 251, 1)]
-    sol_field = make_solenoid_field()
+    plot_dir = "optics-scan_v17"
+    pz_plot_list = [0.005, 0.02, 0.03]
+    pz_scan_list = [pz_i/1000. for pz_i in range(1, 51, 1)]
     n_points = 2
-    clear_dir(plot_dir)
     norm = 160
-    for i in range(21):
-        zlength = 0.8
-        bz1 = 4.0+i*0.4
-        bz2 = 0
-        bz3 = 0.0
-        bz4 = 0
-        bz5 = 0
-        sine_field = SineField(0, bz1, bz2, bz3, bz4, bz5, zlength)
-        #sine_field.normalise_bz_squared(160/i)
-        # 25 for bz1, bz2 optimisation
-        #160 for bz1, bz3 optimisation
-        do_plots(sine_field, pz_plot_list, pz_scan_list, plot_dir)
-        print("Bz2", sine_field.get_bz2_int(), sine_field.human_readable(), "\n")
-    fignum -= 1
+    clear_dir(plot_dir)
+    for scaling in [0.30]:
+        solenoid_field = SineField(0.0, 5.0*scaling, 0.0*scaling, 0.0, 0.0, 0.0, 0.1)
+        fig1, fig2, fig3 = do_plots(solenoid_field, pz_plot_list, pz_scan_list, plot_dir, None, None, None)
     matplotlib.pyplot.show(block=False)
 
 if __name__ == "__main__":
