@@ -374,13 +374,17 @@ def do_plots(field, pz_plot_list, pz_list, plot_dir, fig1, fig2, fig3):
 
 
     for pz in pz_plot_list:
+        print ("PZ PLOT LIST", pz, pz_plot_list)
         beta_finder.momentum = pz
         beta, alpha, phi = beta_finder.get_beta_periodic()
         if beta < 1e-9:
             continue
+        print("PLOTTING", pz, beta)
         beta_finder.verbose = 0
         z_list, beta_list, dbetadz_list, phi_list = \
                                         beta_finder.propagate_beta(beta, 0.)
+        print(z_list)
+        print(beta_list)
         axes[3].plot(z_list, beta_list, label="p$_z$ "+format(pz, "6.4g")+" GeV/c")
 
     axes[3].set_xlabel("z [m]")
@@ -417,13 +421,13 @@ def make_solenoid_field():
 def main():
     global fignum
     plot_dir = "optics-scan_v17"
-    pz_plot_list = [0.005, 0.02, 0.03]
-    pz_scan_list = [pz_i/1000. for pz_i in range(1, 51, 1)]
+    pz_plot_list = [0.19, 0.2, 0.21]
+    pz_scan_list = [pz_i/100. for pz_i in range(1, 51, 1)]
     n_points = 2
     norm = 160
     clear_dir(plot_dir)
-    for scaling in [0.30]:
-        solenoid_field = SineField(0.0, 5.0*scaling, 0.0*scaling, 0.0, 0.0, 0.0, 0.1)
+    for scaling in [1.0]:
+        solenoid_field = SineField(0.0, 5.0*scaling, 0.5*scaling, 0.0, 0.0, 0.0, 1.0)
         fig1, fig2, fig3 = do_plots(solenoid_field, pz_plot_list, pz_scan_list, plot_dir, None, None, None)
     matplotlib.pyplot.show(block=False)
 
