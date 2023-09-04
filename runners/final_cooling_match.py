@@ -1,6 +1,7 @@
 import os
 import shutil
 
+import ctypes
 import matplotlib
 import matplotlib.pyplot
 
@@ -76,7 +77,7 @@ class FitCoils(object):
 
     def set_fields_minuit(self):
         """Extract fields from minuit and set them using self.make_fields(...)"""
-        match_field_1, match_field_2, match_field_3 = ROOT.Double(), ROOT.Double(), ROOT.Double()
+        match_field_1, match_field_2, match_field_3 = ctypes.double(), ROOT.Double(), ROOT.Double()
         err = ROOT.Double()
         self.minuit.GetParameter(0, match_field_1, err)
         self.minuit.GetParameter(1, match_field_2, err)
@@ -101,6 +102,7 @@ class FitCoils(object):
         Second we match from the constant field region to the high field region
         to find match_field_2 and match_field_3
         """
+        global global_self
         # set the z position of the start (z0) and end (z1) of the integration
         self.z0 = self.lattice.period*2.0/8.0 # peak field
         self.z1 = self.lattice.period*3.0/8.0 # long solenoid field
@@ -114,6 +116,7 @@ class FitCoils(object):
         self.minuit.FixParameter(0)
         #self.minuit.FixParameter(1)
         #self.minuit.FixParameter(2)
+        global_self = self
         self.minuit.SetFCN(self.score_function_2)
         self.minuit.Command("SIMPLEX "+str(self.n_iterations_per_fit)+" "+str(1e-16))
         beta1 = self.score_function_2(0, 0, [0], 0, 0)

@@ -291,6 +291,8 @@ def do_plots(field, pz_plot_list, pz_list, plot_dir, fig1, fig2, fig3):
     #matplotlib.rcParams['text.usetex'] = True
     bsquared = None
     period = field.get_period()
+    name = "optics_L_"+str(period)+"_"+field.get_name()
+    out_data = {"pz_items":[], "field_name":field.get_name(), "field_bi":field.bz_list, "field_b0":field.bz0, "period":field.get_period()}
     beta_list = []
     antibeta_list = []
     phi_list = []
@@ -336,11 +338,14 @@ def do_plots(field, pz_plot_list, pz_list, plot_dir, fig1, fig2, fig3):
         beta_list.append(beta)
         antibeta_list.append(0.0)
         phi_list.append(phi)
+    out_data["pz_list"] = pz_list
+    out_data["beta_list"] = beta_list
+    out_data["antibeta_list"] = antibeta_list
     axes[2].plot(pz_list, beta_list, label="$\\beta(L)$")
     axes[1].plot(pz_list, antibeta_list, 'g--', label="$\\beta(L/2)$")
     axes[2].set_xlabel("p$_{z}$ [GeV/c]")
     axes[2].set_ylabel("$\\beta$ [m]")
-    axes[2].set_ylim([0.0, 2.0])
+    axes[2].set_ylim([0.0, 0.5])
 
     for y in [math.pi/2.0, 0.0, -math.pi/2.0]:
         pass #axes[4].plot([pz_list[0], pz_list[-1]], [y, y], linestyle='dotted', color='pink')
@@ -386,7 +391,7 @@ def do_plots(field, pz_plot_list, pz_list, plot_dir, fig1, fig2, fig3):
         print(z_list)
         print(beta_list)
         axes[3].plot(z_list, beta_list, label="p$_z$ "+format(pz, "6.4g")+" GeV/c")
-
+        out_data["pz_items"].append({"z":z_list, "beta_list":beta_list, "pz":pz})
     axes[3].set_xlabel("z [m]")
     axes[3].set_ylabel("$\\beta$ [m]")
     axes[3].set_ylim([0.0, 1.6])
@@ -400,8 +405,10 @@ def do_plots(field, pz_plot_list, pz_list, plot_dir, fig1, fig2, fig3):
     #axes[3].grid(1)
     #axes[3].set_xlabel("z [m]")
     #axes[3].set_ylabel("$\\sigma_x$ [m]")
-    name = "optics_L_"+str(period)+"_"+field.get_name()+"_pz_"+str(pz)+".png"
-    figure.savefig(os.path.join(plot_dir, name))
+    #name = "optics_L_"+str(period)+"_"+field.get_name()+"_pz_"+str(pz)+".png"
+    fout = open(os.path.join(plot_dir, name+".json"), "w")
+    fout.write(json.dumps(out_data))
+    figure.savefig(os.path.join(plot_dir, name+".png"))
     return figure, None, None
 
 def make_solenoid_field():
@@ -420,14 +427,24 @@ def make_solenoid_field():
 
 def main():
     global fignum
-    plot_dir = "optics-scan_v17"
+    plot_dir = "optics-scan_v22"
     pz_plot_list = [0.19, 0.2, 0.21]
-    pz_scan_list = [pz_i/100. for pz_i in range(1, 51, 1)]
+    pz_scan_list = [pz_i/1000. for pz_i in range(130, 251, 1)]
     n_points = 2
     norm = 160
     clear_dir(plot_dir)
-    for scaling in [1.0]:
-        solenoid_field = SineField(0.0, 5.0*scaling, 0.5*scaling, 0.0, 0.0, 0.0, 1.0)
+    b1 = 7.0
+    b2 = 1.0
+    b3 = 0.0
+    for b1, b2, b3 in [
+            (7.0, 1.0, 0.0),
+            (7.5, 1.0, 0.0),
+            (7.0, 1.25, 0.0),
+            (7.0, 1.0, 0.5)
+        ]:
+    #for bi in range(0, 21, 1):
+    #    b3 = (bi-10)*0.05
+        solenoid_field = SineField(0.0, b3, b1, 0.0, b2, 0.0, 2.0)
         fig1, fig2, fig3 = do_plots(solenoid_field, pz_plot_list, pz_scan_list, plot_dir, None, None, None)
     matplotlib.pyplot.show(block=False)
 

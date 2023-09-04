@@ -1,3 +1,4 @@
+import ctypes
 import os
 import shutil
 import json
@@ -71,10 +72,13 @@ class CoilFitter(object):
                 self.minuit.DefineParameter(param_index, key, value, max(abs(value)/10.0, 0.1), pmin, pmax)
                 param_index += 1
         self.minuit.SetPrintLevel(-1)
-        self.minuit.SetFCN(self.score_function)
+        global my_self
+        my_self = self
+        self.minuit.SetFCN(score_function)
         self.minuit.Command("SIMPLEX "+str(self.n_iterations)+" "+str(tolerance))
         self.print_coil_params()
         self.save_coil_params(os.path.join(self.output_dir, "coil_params_beta-scale"+self.suffix+".out"))
+        my_self = None
 
     def print_coil_params(self):
         for i, coil in enumerate(self.coil_list):
@@ -127,12 +131,13 @@ class CoilFitter(object):
         for i, coil in enumerate(self.coil_list):
             print("Coil"+str(i), end=" ")
             for key in self.fit_params:
-                value = ROOT.Double()
-                err = ROOT.Double()
+                value = ctypes.c_double()
+                err = ctypes.c_double()
                 self.minuit.GetParameter(param_index, value, err)
-                coil.__dict__[key] = value
+                py_value = float(value.value)
+                coil.__dict__[key] = py_value
                 param_index += 1
-                print(key, format(value, "6.4g"), end="; ")
+                print(key, format(py_value, "6.4g"), end="; ")
             coil.reset()
             print()
 
@@ -161,11 +166,11 @@ class CoilFitter(object):
     def score_function(self, nvar=None, parameters=None, score=None, jacobian=None, err=None):
         self.iteration += 1
         self.set_magnets()
-        if not score:
-            score = [0.0]
-        score[0] = self.compare_magnets()
-        print("Iteration:", self.iteration, "Score:", score[0])
-        return score[0]
+        if score is None:
+            score = ctypes.c_double(0.0)
+        score.value = self.compare_magnets()
+        print("Iteration:", self.iteration, "Score:", score.value)
+        return score.value
 
     def plot_fit(self):
         z_list = [i*self.period/100 for i in range(101)]
@@ -180,6 +185,10 @@ class CoilFitter(object):
         axes.set_ylabel("B$_{z}$ [T]")
         figure.savefig(os.path.join(self.output_dir, "fitted_coils"+self.suffix+".png"))
 
+my_self = None
+def score_function(nvar=None, parameters=None, score=None, jacobian=None, err=None):
+    return my_self.score_function(nvar, parameters, score, jacobian, err)
+
 def clear_dir(a_dir):
     try:
         shutil.rmtree(a_dir)
@@ -188,17 +197,18 @@ def clear_dir(a_dir):
     os.makedirs(a_dir)
 
 def pixel_fit():
-    output_dir = "coil_fitter_v4"
+    output_dir = "coil_fitter_v7"
     clear_dir(output_dir)
-    for scale in [1]:
-        b1 = 0.25*scale
-        b2 = 0.0*scale
-        l = 0.1
+    for scale in [1.0]: #0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0]:
+        #raise RuntimeError("BUG - not working with multiple iterations, minuit cannot see output of score_function")
+        b1 = 7.0
+        b2 = 1.0
+        l = 1.0
         field_to_match = SineField(0.0, b1, b2, 0.0, 0.0, 0.0, l)
-        ri, dr, nr = 0.05, 0.05, 1 
+        ri, dr, nr = 0.5, 0.1, 1
         #zcentre = zi+dz*(zindex+0.5)
         dz = l/10.0
-        zi, dz, nz = l/4-dz/2, l/10.0, 1
+        zi, dz, nz = l/4-dz/2, l/10.0, 6
         fitter = CoilFitter.new_from_pixels(ri, dr, nr, zi, dz, nz, "_b1={0:.4g}_b2={1:.4g}_l={2:.4g}".format(b1, b2, l))
         fitter.output_dir = output_dir
         fitter.fit_coil(field_to_match, 1e-8)
