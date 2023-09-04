@@ -1,60 +1,9 @@
 import copy
 import os
 import matplotlib
-import g4bl_longitudinal
+import g4bl_interface.g4bl_interface
 import xboa.hit
 import xboa.bunch
-
-def single_harmonic_rf():
-    n_cells = 100
-    cavities = [
-        {
-            "name":f"pillbox_{i}.1",
-            "inner_length":250.0,
-            "frequency":0.010,
-            "max_gradient":3.0,
-            "phase":10.0,
-            "z_position":-150.0+1000.0*i,
-        } for i in range(1, n_cells)
-    ]+[{
-            "name":f"pillbox_{i}.2",
-            "inner_length":250.0,
-            "frequency":0.010,
-            "max_gradient":3.0,
-            "phase":10.0,
-            "z_position":150.0+1000.0*i,
-        } for i in range(1, n_cells)
-    ]
-    return cavities
-
-def dual_harmonic_rf():
-    n_cells = 100
-    cavities = [{
-            "name":f"pillbox_{i}.1",
-            "inner_length":250.0,
-            "frequency":0.010,
-            "max_gradient":3.0,
-            "phase":10.0,
-            "z_position":-300.0+1000.0*i,
-        } for i in range(1, n_cells)
-    ]+[{
-            "name":f"pillbox_{i}.2",
-            "inner_length":250.0,
-            "frequency":0.010,
-            "max_gradient":3.0,
-            "phase":10.0,
-            "z_position":300.0+1000.0*i,
-        } for i in range(1, n_cells)
-    ]+[{
-            "name":f"pillbox_{i}.1",
-            "inner_length":125.0,
-            "frequency":0.020,
-            "max_gradient":-1.8,
-            "phase":0.0,
-            "z_position":1000.0*i-75,
-        } for i in range(1, n_cells)
-    ]
-    return cavities
 
 def multiharmonic_rf(n_cells, principle_harmonic, v1, v2, v3, v4, phi1, phi2, phi3, phi4):
     cavities = [{
@@ -64,6 +13,7 @@ def multiharmonic_rf(n_cells, principle_harmonic, v1, v2, v3, v4, phi1, phi2, ph
             "max_gradient":v1,
             "phase":phi1,
             "z_position":150+1000.0*i,
+            "type":"cavity",
         } for i in range(n_cells)
     ]+[{
             "name":f"pillbox_{i}.2",
@@ -72,6 +22,7 @@ def multiharmonic_rf(n_cells, principle_harmonic, v1, v2, v3, v4, phi1, phi2, ph
             "max_gradient":v2,
             "phase":phi2,
             "z_position":400+1000.0*i,
+            "type":"cavity",
         } for i in range(n_cells)
     ]+[{
             "name":f"pillbox_{i}.3",
@@ -80,6 +31,7 @@ def multiharmonic_rf(n_cells, principle_harmonic, v1, v2, v3, v4, phi1, phi2, ph
             "max_gradient":v3,
             "phase":phi3,
             "z_position":650+1000.0*i,
+            "type":"cavity",
         } for i in range(n_cells)
     ]+[{
             "name":f"pillbox_{i}.4",
@@ -88,6 +40,7 @@ def multiharmonic_rf(n_cells, principle_harmonic, v1, v2, v3, v4, phi1, phi2, ph
             "max_gradient":v4,
             "phase":phi4,
             "z_position":900.0+1000.0*i,
+            "type":"cavity",
         } for i in range(n_cells)
     ]
     return cavities
@@ -95,12 +48,6 @@ def multiharmonic_rf(n_cells, principle_harmonic, v1, v2, v3, v4, phi1, phi2, ph
 
 def build_final_cooling_lattice(cleanup = True):
     lattice_filename = "output/multiharmonic_3/linac.g4bl"
-    #cavities = multiharmonic_rf(130, 0.010,
-    #                            3.0,   0.0, 0.0, 0.0,
-    #                            10.0,  0.0, 0.0, 0.0)
-    #cavities = multiharmonic_rf(130, 0.010,
-    #                            3.0,  -0.4, 0.0, 0.0,
-    #                            10.0,  0.0, 0.0, 0.0)
     cavities = multiharmonic_rf(130, 0.010,
                                 3.0,  -0.4, 0.0, 0.12,
                                 10.0,  0.0, 0.0, 0.0)
@@ -123,10 +70,10 @@ def build_final_cooling_lattice(cleanup = True):
     reference = {
         "p_start":hit["pz"],
     }
-    my_linac = g4bl_longitudinal.G4BLLinac(lattice_filename)
+    my_linac = g4bl_interface.g4bl_interface.G4BLLinac(lattice_filename)
     my_linac.cleanup_dir = cleanup
     my_linac.max_step = 1.0
-    my_linac.rf_cavities = cavities
+    my_linac.elements = cavities
     my_linac.beam = beam_def
     my_linac.reference = reference
     my_linac.do_stochastics = 0 # e.g. decays
@@ -145,7 +92,7 @@ class Analysis():
         self.bunch_list = xboa.bunch.Bunch.new_list_from_read_builtin("icool_for009", self.out_filename)
 
     def do_plots(self):
-        g4bl_longitudinal.clean_dir(self.plot_dir, self.clean_dir)
+        g4bl_interface.g4bl_interface.clean_dir(self.plot_dir, self.clean_dir)
         self.plot_time_energy_station()
         self.plot_time_energy_event()
 
@@ -199,7 +146,7 @@ class Analysis():
 
 def main():
     my_linac = build_final_cooling_lattice(True)
-    my_execution = g4bl_longitudinal.G4BLExecution(my_linac)
+    my_execution = g4bl_interface.g4bl_interface.G4BLExecution(my_linac)
     my_execution.execute()
     my_analysis = Analysis(my_linac, os.path.split(my_linac.lattice_filename)[0]+"/plots")
     my_analysis.load_data()

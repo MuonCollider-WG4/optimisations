@@ -1,3 +1,4 @@
+import copy
 import numpy
 import shutil
 import os
@@ -7,18 +8,19 @@ import xboa.bunch
 
 class Setup():
     def __init__(self):
-        pass
+        self.type = None
 
     def setup(self, config):
         for key, value in config.items():
             if key not in self.__dict__:
-                raise KeyError("Did not recognise cavity configuration", item)
+                raise KeyError("Did not recognise cavity configuration", key)
             if self.__dict__[key] is not None:
                 value = type(self.__dict__[key])(value)
             self.__dict__[key] = value
 
 class Solenoid(Setup):
     def __init__(self):
+        super().__init__()
         self.x_position = 0.0
         self.y_rotation = 0.0 # rotation about the y axis i.e. in x z plane
         self.z_position = 0.0
@@ -27,29 +29,31 @@ class Solenoid(Setup):
         self.length = 0.0
         self.current = 0.0
         self.name = "my_coil"
+        self.rgb = [0, 1, 0]
         self.set_coil_name()
 
     def set_coil_name(self):
         self.coil_name = f"coil_{self.inner_radius:.5g}_{self.outer_radius}_{self.length}"
-        self.coil
 
     def build(self):
         my_solenoid = ""
         self.set_coil_name()
-        if self.coil_name not in coil_list:
+        if self.coil_name not in self.coil_list:
             self.coil_list.append(self.coil_name)
             my_solenoid = \
 f"coil {self.coil_name} innerRadius={self.inner_radius} outerRadius={self.outer_radius} length={self.length}\n"
         my_solenoid += \
-f"solenoid {self.name} coilName={self.coil_name} current=1 kill=1 color=0,1,0\n"
+f"solenoid {self.name} coilName={self.coil_name} current=1 kill=1 color={self.rgb[0]},{self.rgb[1]},{self.rgb[2]}\n"
         my_solenoid += \
-f"place {self.name} z={self.z_position} current={self.current} z={self.x_position} roty={self.y_rotation}\n\n"
+f"place {self.name} x={self.x_position} z={self.z_position} current={self.current} rotation=Y{self.y_rotation}\n\n"
+        return my_solenoid
 
     coil_list = []
 
 
 class Cavity(Setup):
     def __init__(self):
+        super().__init__()
         self.name = ""
         self.inner_length = 0.0
         self.frequency = 0.0
@@ -95,6 +99,7 @@ class Beam(Setup):
         self.beam_z = 0.0
         self.beams = []
         self.particles = []
+        self.default_hit = {"pid":self.pid, "mass":xboa.common.pdg_pid_to_mass[abs(self.pid)]}
 
     def build(self):
         self.build_beam_file()
@@ -129,7 +134,8 @@ beam ascii particle={0} nEvents={1} filename={2} format=BLTrackFile beamZ={3}
         mass = xboa.common.pdg_pid_to_mass[abs(self.pid)]
         for t in t_list:
             for e in e_list:
-                hit_dict = {"pid":self.pid, "mass":mass, "t":t, "energy":e+mass, "event_number":len(self.particles)+1}
+                hit_dict = copy.deepcopy(a_beam["default_hit"])
+                hit_dict.update({"t":t, "energy":e+mass, "event_number":len(self.particles)+1})
                 self.particles.append(xboa.hit.Hit.new_from_dict(hit_dict, "pz"))
 
 class G4BLExecution:
@@ -196,12 +202,13 @@ class G4BLLinac:
         beam_string = my_beam.build()
         self.lattice_file.write(beam_string)
 
-    def build_element(self):
+    def build_elements(self):
         for element_json in self.elements:
-            my_cavity = Cavity()
-            my_cavity.setup(cavity)
-            cavity_string = my_cavity.build()
-            self.lattice_file.write(cavity_string)
+            Element = self.element_dict[element_json["type"]]
+            my_element = Element()
+            my_element.setup(element_json)
+            element_string = my_element.build()
+            self.lattice_file.write(element_string)
 
     def build_solenoids(self):
         for solenoid in self.solenoids:
@@ -216,8 +223,14 @@ class G4BLLinac:
             self.build_topmatter()
             self.build_reference()
             self.build_beam()
-            self.build_rf()
-            self.build_solenoids()
+            self.build_elements()
+            #self.build_solenoids()
+
+    element_dict = {
+        "solenoid":Solenoid,
+        "cavity":Cavity,
+    }
+
 
 def clean_dir(my_dir, cleanup):
     if os.path.exists(my_dir):
