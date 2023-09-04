@@ -5,9 +5,9 @@ import json
 import matplotlib
 import matplotlib.pyplot
 import ROOT
-from field_models import SineField
-from field_models import CurrentSheet
-from field_models import CurrentBlock
+from models.field_models import SineField
+from models.field_models import CurrentSheet
+from models.field_models import CurrentBlock
 
 class CoilFitter(object):
     """

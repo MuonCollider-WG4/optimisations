@@ -7,9 +7,8 @@ import matplotlib.pyplot
 
 import ROOT
 
-import evolve
-import field_models
-import evolve
+import runners.evolve
+import models.field_models
 
 class FitCoils(object):
     """
@@ -70,13 +69,14 @@ class FitCoils(object):
                 (-match_field_2, period-dz_m2, length_m2, rmin_m2, rmax_m2),
                 (-match_field_1, period-dz_m1, length_m1, rmin_m1, rmax_m1),
             ]:
-            coil = field_models.CurrentBlock(b0, zcentre, length, rmin, rmax, period, nrepeats, nsheets)
+            coil = models.field_models.CurrentBlock(b0, zcentre, length, rmin, rmax, period, nrepeats, nsheets)
             field_list.append(coil)
-        self.lattice = field_models.FieldSum(field_list)
-        self.beta_finder = evolve.BetaFinder(self.lattice, self.pz)
+        self.lattice = models.field_models.FieldSum(field_list)
+        self.beta_finder = runners.evolve.BetaFinder(self.lattice, self.pz)
 
     def set_fields_minuit(self):
         """Extract fields from minuit and set them using self.make_fields(...)"""
+        print("Bugged here ... need to update to PyROOT v6 *********************")
         match_field_1, match_field_2, match_field_3 = ctypes.double(), ROOT.Double(), ROOT.Double()
         err = ROOT.Double()
         self.minuit.GetParameter(0, match_field_1, err)
@@ -86,6 +86,7 @@ class FitCoils(object):
         self.m2 = float(match_field_2)
         self.m3 = float(match_field_3)
         self.make_fields()
+        print("Bugged here done")
         return match_field_1, match_field_2, match_field_3
 
     def uniform_field_beta(self, z_pos):
@@ -154,7 +155,8 @@ class FitCoils(object):
         #self.minuit.FixParameter(0)
         self.minuit.FixParameter(1)
         self.minuit.FixParameter(2)
-        self.minuit.SetFCN(self.score_function_1)
+        FitCoils.my_fit_coils = self
+        self.minuit.SetFCN(score_function)
         self.minuit.Command("SIMPLEX "+str(self.n_iterations_per_fit)+" "+str(1e-16))
         beta1 = self.score_function_1(0, 0, [0], 0, 0)
         return beta1
@@ -205,6 +207,11 @@ class FitCoils(object):
         axes.set_ylim([0.0, axes.get_ylim()[1]])
 
         return figure1, figure2
+
+    my_fit_coils = None
+
+def score_function(nvar, parameters, score, jacobian, err):
+    return FitCoils.my_fit_coils.score_function_1(nvar, parameters, score, jacobian, err)
 
 def clear_dir(a_dir):
     try:

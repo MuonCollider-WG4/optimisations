@@ -12,12 +12,12 @@ try:
     import ROOT
 except ImportError:
     raise ImportError("PyROOT import failed - you can still run the code, but minuit fitter won't work")
-from field_models import FieldSum
-from field_models import FlatGaussField
-from field_models import LinearInterpolation
-from field_models import SineField
-from field_models import UniformField
-from field_models import CurrentSheet
+from models.field_models import FieldSum
+from models.field_models import FlatGaussField
+from models.field_models import LinearInterpolation
+from models.field_models import SineField
+from models.field_models import UniformField
+from models.field_models import CurrentSheet
 
 
 """
