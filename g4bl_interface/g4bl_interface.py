@@ -13,7 +13,7 @@ class Setup():
     def setup(self, config):
         for key, value in config.items():
             if key not in self.__dict__:
-                raise KeyError("Did not recognise cavity configuration", key)
+                raise KeyError("Did not recognise element configuration", key)
             if self.__dict__[key] is not None:
                 value = type(self.__dict__[key])(value)
             self.__dict__[key] = value
@@ -31,6 +31,10 @@ class Solenoid(Setup):
         self.name = "my_coil"
         self.rgb = [0, 1, 0]
         self.set_coil_name()
+
+    @classmethod
+    def clear(cls):
+        cls.coil_list = []
 
     def set_coil_name(self):
         self.coil_name = f"coil_{self.inner_radius:.5g}_{self.outer_radius}_{self.length}"
@@ -74,6 +78,22 @@ pillbox {0} innerLength={1} frequency={2} \\
             my_cavity += f" timeOffset={self.phase}"
         my_cavity += f"\nplace {self.name} z={self.z_position} color=1,0,0\n"
         return my_cavity
+
+class Tube(Setup):
+    def __init__(self):
+        super().__init__()
+        self.name = ""
+        self.length = 0.0
+        self.outer_radius = 0.0
+        self.material = ""
+        self.z_position = 0.0
+
+    def build(self):
+        my_tube = \
+            f"tube {self.name} outerRadius={self.outer_radius} length={self.length} material={self.material}\n"
+        my_tube += f"\nplace {self.name} z={self.z_position} color=1,0,0\n"
+        return my_tube
+
 
 class Reference(Setup):
     def __init__(self):
@@ -131,11 +151,11 @@ beam ascii particle={0} nEvents={1} filename={2} format=BLTrackFile beamZ={3}
     def longitudinal_grid(self, a_beam):
         t_list = self.my_linspace(a_beam["t_min"], a_beam["t_max"], a_beam["n_t_steps"])
         e_list = self.my_linspace(a_beam["e_min"], a_beam["e_max"], a_beam["n_e_steps"])
-        mass = xboa.common.pdg_pid_to_mass[abs(self.pid)]
+        mass = xboa.common.pdg_pid_to_mass[abs(a_beam["pid"])]
         for t in t_list:
             for e in e_list:
                 hit_dict = copy.deepcopy(a_beam["default_hit"])
-                hit_dict.update({"t":t, "energy":e+mass, "event_number":len(self.particles)+1})
+                hit_dict.update({"t":t, "energy":e+mass, "mass":mass, "pid":a_beam["pid"], "event_number":len(self.particles)+1})
                 self.particles.append(xboa.hit.Hit.new_from_dict(hit_dict, "pz"))
 
 class G4BLExecution:
@@ -188,6 +208,7 @@ class G4BLLinac:
         topmatter += f"zntuple cooling_monitor zloop={self.min_z}:{self.max_z}:{self.z_spacing} format=for009 file=output_data coordinates=c\n"
         topmatter += f"param epsMax={self.eps_max}\n" # g4bl bug
         topmatter += f"param maxStep={self.max_step}\n" # g4bl bug
+        topmatter += f'#g4ui "/run/beamOn 100" when=4 # visualisation tracking'
         self.lattice_file.write(topmatter)
 
     def build_reference(self):
@@ -229,6 +250,7 @@ class G4BLLinac:
     element_dict = {
         "solenoid":Solenoid,
         "cavity":Cavity,
+        "tube":Tube,
     }
 
 
