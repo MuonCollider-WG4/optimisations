@@ -30,6 +30,7 @@ class TargetRegion:
                 "inner_radius":float(words[1])*m2mm,
                 "outer_radius":(float(words[1])+float(words[3]))*m2mm,
                 "z_position":float(words[2])*m2mm,
+                "x_position":0.0,
                 "length":float(words[4])*m2mm,
                 "current":float(words[7]),
                 "type":"solenoid",
@@ -44,6 +45,7 @@ class TargetRegion:
             "name":"target",
             "outer_radius":self.target_radius,
             "z_position":self.target_z_start+self.target_length/2,
+            "x_position":0.0,
             "length":self.target_length,
             "material":"C",
             "type":"tube",
@@ -59,7 +61,9 @@ def get_beam(my_linac, n_particles):
     beam_def = {
         "filename":"beam.txt",
         "out_dir":os.path.split(my_linac.lattice_filename)[0],
-
+        "x_position":0.0,
+        "z_position":0.0,
+        "pid":pid,
         "beams":[{
             "type":"longitudinal_grid",
             "t_min":0.0, # ns
@@ -90,12 +94,10 @@ def build_target(base_dir, n_particles, cleanup_dir):
     #print(json.dumps(target_region.element_list, indent=2))
     my_linac = g4bl_interface.g4bl_interface.G4BLLinac(os.path.join(base_dir, "target_region.g4bl"))
     my_linac.cleanup_dir = cleanup_dir
-    my_linac.max_step = 10.0
     my_linac.elements = target_region.element_list
     my_linac.do_stochastics = 1 # e.g. decays
     my_linac.max_z = max([sol["z_position"] for sol in my_linac.elements])
     get_beam(my_linac, n_particles)
-    my_linac.build_linac()
     return my_linac, target_region
 
 class Analysis:
@@ -156,9 +158,11 @@ class Analysis:
             self.one_d_bunch_analysis_plot(x_label, var)
 
 def main():
-    do_execute = False
-    base_dir = f"output/target_model_v1/"
-    my_linac, target_region = build_target(base_dir, 1000, do_execute)
+    do_execute = True
+    clear_dirs = False # recalculates field maps
+    base_dir = f"output/target_model_v2/"
+    my_linac, target_region = build_target(base_dir, 10, clear_dirs)
+    my_linac.build_linac()
     if do_execute: # alternatively we just redo the analysis
         my_execution = g4bl_interface.g4bl_interface.G4BLExecution(my_linac)
         my_execution.execute()

@@ -62,7 +62,9 @@ class Cavity(Setup):
         self.inner_length = 0.0
         self.frequency = 0.0
         self.max_gradient = 0.0
+        self.x_position = 0.0
         self.z_position = 0.0
+        self.rgb = None
         self.phase = None
         self.time_offset = None
 
@@ -76,7 +78,10 @@ pillbox {0} innerLength={1} frequency={2} \\
             my_cavity += f" phaseAcc={self.phase}"
         if self.time_offset is not None:
             my_cavity += f" timeOffset={self.phase}"
-        my_cavity += f"\nplace {self.name} z={self.z_position} color=1,0,0\n"
+        my_cavity += f"\nplace {self.name} z={self.z_position} x={self.x_position}"
+        if self.rgb is not None:
+            my_cavity += f" color={self.rgb[0]},{self.rgb[1]},{self.rgb[2]}"
+        my_cavity += "\n"
         return my_cavity
 
 class Tube(Setup):
@@ -86,12 +91,13 @@ class Tube(Setup):
         self.length = 0.0
         self.outer_radius = 0.0
         self.material = ""
+        self.x_position = 0.0
         self.z_position = 0.0
 
     def build(self):
         my_tube = \
             f"tube {self.name} outerRadius={self.outer_radius} length={self.length} material={self.material}\n"
-        my_tube += f"\nplace {self.name} z={self.z_position} color=1,0,0\n"
+        my_tube += f"\nplace {self.name} x={self.x_position} z={self.z_position} color=1,0,0\n"
         return my_tube
 
 
@@ -116,7 +122,8 @@ class Beam(Setup):
         self.filename = ""
         self.out_dir = ""
         self.pid = -13
-        self.beam_z = 0.0
+        self.x_position = 0.0
+        self.z_position = 0.0
         self.beams = []
         self.particles = []
         self.default_hit = {"pid":self.pid, "mass":xboa.common.pdg_pid_to_mass[abs(self.pid)]}
@@ -124,8 +131,8 @@ class Beam(Setup):
     def build(self):
         self.build_beam_file()
         my_beam = """
-beam ascii particle={0} nEvents={1} filename={2} format=BLTrackFile beamZ={3}
-""".format(self.pid, len(self.particles), self.filename, self.beam_z)
+beam ascii particle={0} nEvents={1} filename={2} format=BLTrackFile beamZ={3} beamX={4}
+""".format(self.pid, len(self.particles), self.filename, self.z_position, self.x_position)
         return my_beam
 
     def build_beam_file(self):
@@ -133,12 +140,15 @@ beam ascii particle={0} nEvents={1} filename={2} format=BLTrackFile beamZ={3}
         for a_beam in self.beams:
             self.build_a_beam(a_beam)
         bunch = xboa.bunch.Bunch.new_from_hits(self.particles)
-        bunch.hit_write_builtin("g4beamline_bl_track_file", os.path.join(self.out_dir, self.filename))
+        file_name = os.path.join(self.out_dir, self.filename)
+        bunch.hit_write_builtin("g4beamline_bl_track_file", file_name)
+        print("Wrote file to", file_name)
 
     def build_a_beam(self, a_beam):
         beam_type = a_beam["type"]
         beam_builder = {
             "longitudinal_grid":self.longitudinal_grid,
+            "longitudinal_ellipse":self.longitudinal_ellipse,
         }[beam_type]
         beam_builder(a_beam)
 
@@ -157,6 +167,25 @@ beam ascii particle={0} nEvents={1} filename={2} format=BLTrackFile beamZ={3}
                 hit_dict = copy.deepcopy(a_beam["default_hit"])
                 hit_dict.update({"t":t, "energy":e+mass, "mass":mass, "pid":a_beam["pid"], "event_number":len(self.particles)+1})
                 self.particles.append(xboa.hit.Hit.new_from_dict(hit_dict, "pz"))
+
+    def longitudinal_ellipse(self, a_beam):
+        delta_t = a_beam["delta_t"]
+        delta_e = a_beam["delta_e"]
+        e_centre = a_beam["e_centre"]
+        t_centre = a_beam["t_centre"]
+        n_per_dimension = a_beam["n_per_dimension"]
+        pid = a_beam["pid"]
+        ellipse = [[delta_t**2, 0.0], [0.0, delta_e**2]]
+        mean = [t_centre, e_centre]
+        shell = xboa.common.make_shell(n_per_dimension, ellipse, mean)
+        mass = xboa.common.pdg_pid_to_mass[abs(a_beam["pid"])]
+        for item in shell:
+            hit_dict = {}#copy.deepcopy(a_beam["default_hit"])
+            t = item[0, 0]
+            e = item[0, 1]
+            hit_dict.update({"t":t, "energy":e+mass, "mass":mass, "pid":pid, "event_number":len(self.particles)+1})
+            self.particles.append(xboa.hit.Hit.new_from_dict(hit_dict, "pz"))
+
 
 class G4BLExecution:
     def __init__(self, linac):
@@ -199,16 +228,18 @@ class G4BLLinac:
         self.eps_max = 0.01
         self.output_file = "output_data" # g4bl puts this in the run directory and adds ".txt" as suffix
         self.cleanup_dir = True
+        self.linac_name = ""
 
     def out_dir(self):
         return os.path.split(self.lattice_filename)[0]
 
     def build_topmatter(self):
-        topmatter = f"physics default doStochastics={self.do_stochastics}\n"
+        topmatter = ""
+        topmatter += f"physics default doStochastics={self.do_stochastics}\n"
         topmatter += f"zntuple cooling_monitor zloop={self.min_z}:{self.max_z}:{self.z_spacing} format=for009 file=output_data coordinates=c\n"
         topmatter += f"param epsMax={self.eps_max}\n" # g4bl bug
         topmatter += f"param maxStep={self.max_step}\n" # g4bl bug
-        topmatter += f'#g4ui "/run/beamOn 100" when=4 # visualisation tracking'
+        topmatter += f'#g4ui "/run/beamOn 100" when=4 # visualisation tracking\n'
         self.lattice_file.write(topmatter)
 
     def build_reference(self):
@@ -245,7 +276,13 @@ class G4BLLinac:
             self.build_reference()
             self.build_beam()
             self.build_elements()
-            #self.build_solenoids()
+
+    def offset_linac(self, x_offset, z_offset):
+        for item in self.elements:
+            if "x_position" in item:
+                item["x_position"] += x_offset
+            if "z_position" in item:
+                item["z_position"] += z_offset
 
     element_dict = {
         "solenoid":Solenoid,

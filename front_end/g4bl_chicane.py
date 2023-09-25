@@ -222,7 +222,6 @@ def build_chicane(root_dir, b_field, bend_angle, r_curv, cleanup = True):
     get_beam(my_linac)
     my_linac.do_stochastics = 0 # e.g. decays
     my_linac.max_z = max([sol["z_position"] for sol in my_linac.elements])-chicane.post_length_2
-    my_linac.build_linac()
     return my_linac, chicane
 
 class Analysis():
@@ -432,6 +431,7 @@ def main():
     for r_curv, bend_angle, b_field, in [(22.9*scale, 15.0*1/scale, 1.5)]:
         run_dir = os.path.join(base_dir, f"bz={b_field:.3g}_angle={bend_angle:.3g}_rcurv={r_curv:.3g}")
         my_linac, my_chicane = build_chicane(run_dir, b_field, bend_angle, r_curv*1e3, do_execute)
+        my_linac.build_linac()
         if do_execute: # alternatively we just redo the analysis
             my_execution = g4bl_interface.g4bl_interface.G4BLExecution(my_linac)
             my_execution.execute()
