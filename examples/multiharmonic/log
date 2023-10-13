@@ -1,0 +1,2779 @@
+G4BL_DIR=/home/cr67/Software/install/
+G4ABLADATA=/home/cr67/Geant4Data/G4ABLA3.1
+G4LEDATA=/home/cr67/Geant4Data/G4EMLOW8.2
+G4ENSDFSTATEDATA=/home/cr67/Geant4Data/G4ENSDFSTATE2.3
+G4INCLDATA=/home/cr67/Geant4Data/G4INCL1.0
+G4PARTICLEXSDATA=/home/cr67/Geant4Data/G4PARTICLEXS4.0
+G4PIIDATA=/home/cr67/Geant4Data/G4PII1.3
+G4LEVELGAMMADATA=/home/cr67/Geant4Data/PhotonEvaporation5.7
+G4RADIOACTIVEDATA=/home/cr67/Geant4Data/RadioactiveDecay5.6
+G4REALSURFACEDATA=/home/cr67/Geant4Data/RealSurface2.2
+G4SAIDXSDATA=/home/cr67/Geant4Data/G4SAIDDATA2.0
+G4TENDLDATA=/home/cr67/Geant4Data/G4TENDL1.4
+Starting Geant4Data handling
+BLMPI
+G4beamline Process ID 1561366
+
+*************************************************************
+ g4beamline version: 3.08                        (Jun 14 2023)
+                      Copyright : Tom Roberts, Muons, Inc.
+                        License : Gnu Public License
+                            WWW : http://g4beamline.muonsinc.comStarting BLManager
+
+**************************************************************
+ Geant4 version Name: geant4-11-01-patch-01 [MT]   (10-February-2023)
+                       Copyright : Geant4 Collaboration
+                      References : NIM A 506 (2003), 250-303
+                                 : IEEE-TNS 53 (2006), 270-278
+                                 : NIM A 835 (2016), 186-225
+                             WWW : http://geant4.org/
+**************************************************************
+
+geometry                   nPoints=100 printGeometry=0 visual=0
+                           tolerance=0.002
+default physics list is FTFP_BERT
+G4PhysListFactory::GetReferencePhysList <FTFP_BERT>  EMoption= 0
+<<< Geant4 Physics List simulation engine: FTFP_BERT
+
+
+physics      FTFP_BERT     disable= inactivate= deactivate= doStochastics=0
+                           fluct=1 minRangeCut=1 list=0 gammaToMuPair=0
+                           spinTracking=0 synchrotronRadiation=0
+                           synchrotronRadiationMuon=0 maxTime=1e+06
+zntuple                    z= zloop=0.0:34900.0:100.0 noSingles=0
+                           format=for009 file=output_data filename=output_data
+                           require= referenceParticle=0 coordinates=c
+param        epsMax        0.01
+param        maxStep       1.0
+reference                  particle=mu+ beamX=0 beamY=0 beamZ=0 beamT=0
+                           rotation= referenceMomentum=70.2 beamXp=0 beamYp=0
+                           meanMomentum=70.2 meanXp=0 meanYp=0 tuneZ=-3.7e+21
+                           tuneMomentum=-3.7e+21 tolerance=0.001 noEfield=0
+                           noBfield=0 noEloss=0 P=70.2
+beam    ASCII   nEvents=89 firstEvent=-1 lastEvent=2147483647 beamZ=0.0 maxR=1000000.0 renumber=0 weight=1.000000 
+		filename=beam.txt format=BLTrackFile 
+		
+pillbox      pillbox_0.1   maxGradient=1 color=1.0,0.0,0.0 frequency=0.02
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_0.1 copies=1 x=0.0 y=0.0 z=150.0 
+                color=0.5,1,0
+pillbox      pillbox_1.1   maxGradient=1 color=1.0,0.0,0.0 frequency=0.02
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_1.1 copies=1 x=0.0 y=0.0 z=1150.0 
+                color=0.5,1,0
+pillbox      pillbox_2.1   maxGradient=1 color=1.0,0.0,0.0 frequency=0.02
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_2.1 copies=1 x=0.0 y=0.0 z=2150.0 
+                color=0.5,1,0
+pillbox      pillbox_3.1   maxGradient=1 color=1.0,0.0,0.0 frequency=0.02
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_3.1 copies=1 x=0.0 y=0.0 z=3150.0 
+                color=0.5,1,0
+pillbox      pillbox_4.1   maxGradient=1 color=1.0,0.0,0.0 frequency=0.02
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_4.1 copies=1 x=0.0 y=0.0 z=4150.0 
+                color=0.5,1,0
+pillbox      pillbox_5.1   maxGradient=1 color=1.0,0.0,0.0 frequency=0.02
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_5.1 copies=1 x=0.0 y=0.0 z=5150.0 
+                color=0.5,1,0
+pillbox      pillbox_6.1   maxGradient=1 color=1.0,0.0,0.0 frequency=0.02
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_6.1 copies=1 x=0.0 y=0.0 z=6150.0 
+                color=0.5,1,0
+pillbox      pillbox_7.1   maxGradient=1 color=1.0,0.0,0.0 frequency=0.02
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_7.1 copies=1 x=0.0 y=0.0 z=7150.0 
+                color=0.5,1,0
+pillbox      pillbox_8.1   maxGradient=1 color=1.0,0.0,0.0 frequency=0.02
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_8.1 copies=1 x=0.0 y=0.0 z=8150.0 
+                color=0.5,1,0
+pillbox      pillbox_9.1   maxGradient=1 color=1.0,0.0,0.0 frequency=0.02
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_9.1 copies=1 x=0.0 y=0.0 z=9150.0 
+                color=0.5,1,0
+pillbox      pillbox_10.1  maxGradient=1 color=1.0,0.0,0.0 frequency=0.02
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_10.1 copies=1 x=0.0 y=0.0 z=10150.0 
+                color=0.5,1,0
+pillbox      pillbox_11.1  maxGradient=1 color=1.0,0.0,0.0 frequency=0.02
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_11.1 copies=1 x=0.0 y=0.0 z=11150.0 
+                color=0.5,1,0
+pillbox      pillbox_12.1  maxGradient=1 color=1.0,0.0,0.0 frequency=0.02
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_12.1 copies=1 x=0.0 y=0.0 z=12150.0 
+                color=0.5,1,0
+pillbox      pillbox_13.1  maxGradient=1 color=1.0,0.0,0.0 frequency=0.02
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_13.1 copies=1 x=0.0 y=0.0 z=13150.0 
+                color=0.5,1,0
+pillbox      pillbox_14.1  maxGradient=1 color=1.0,0.0,0.0 frequency=0.02
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_14.1 copies=1 x=0.0 y=0.0 z=14150.0 
+                color=0.5,1,0
+pillbox      pillbox_15.1  maxGradient=1 color=1.0,0.0,0.0 frequency=0.02
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_15.1 copies=1 x=0.0 y=0.0 z=15150.0 
+                color=0.5,1,0
+pillbox      pillbox_16.1  maxGradient=1 color=1.0,0.0,0.0 frequency=0.02
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_16.1 copies=1 x=0.0 y=0.0 z=16150.0 
+                color=0.5,1,0
+pillbox      pillbox_17.1  maxGradient=1 color=1.0,0.0,0.0 frequency=0.02
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_17.1 copies=1 x=0.0 y=0.0 z=17150.0 
+                color=0.5,1,0
+pillbox      pillbox_18.1  maxGradient=1 color=1.0,0.0,0.0 frequency=0.02
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_18.1 copies=1 x=0.0 y=0.0 z=18150.0 
+                color=0.5,1,0
+pillbox      pillbox_19.1  maxGradient=1 color=1.0,0.0,0.0 frequency=0.02
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_19.1 copies=1 x=0.0 y=0.0 z=19150.0 
+                color=0.5,1,0
+pillbox      pillbox_20.1  maxGradient=1 color=1.0,0.0,0.0 frequency=0.02
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_20.1 copies=1 x=0.0 y=0.0 z=20150.0 
+                color=0.5,1,0
+pillbox      pillbox_21.1  maxGradient=1 color=1.0,0.0,0.0 frequency=0.02
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_21.1 copies=1 x=0.0 y=0.0 z=21150.0 
+                color=0.5,1,0
+pillbox      pillbox_22.1  maxGradient=1 color=1.0,0.0,0.0 frequency=0.02
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_22.1 copies=1 x=0.0 y=0.0 z=22150.0 
+                color=0.5,1,0
+pillbox      pillbox_23.1  maxGradient=1 color=1.0,0.0,0.0 frequency=0.02
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_23.1 copies=1 x=0.0 y=0.0 z=23150.0 
+                color=0.5,1,0
+pillbox      pillbox_24.1  maxGradient=1 color=1.0,0.0,0.0 frequency=0.02
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_24.1 copies=1 x=0.0 y=0.0 z=24150.0 
+                color=0.5,1,0
+pillbox      pillbox_25.1  maxGradient=1 color=1.0,0.0,0.0 frequency=0.02
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_25.1 copies=1 x=0.0 y=0.0 z=25150.0 
+                color=0.5,1,0
+pillbox      pillbox_26.1  maxGradient=1 color=1.0,0.0,0.0 frequency=0.02
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_26.1 copies=1 x=0.0 y=0.0 z=26150.0 
+                color=0.5,1,0
+pillbox      pillbox_27.1  maxGradient=1 color=1.0,0.0,0.0 frequency=0.02
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_27.1 copies=1 x=0.0 y=0.0 z=27150.0 
+                color=0.5,1,0
+pillbox      pillbox_28.1  maxGradient=1 color=1.0,0.0,0.0 frequency=0.02
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_28.1 copies=1 x=0.0 y=0.0 z=28150.0 
+                color=0.5,1,0
+pillbox      pillbox_29.1  maxGradient=1 color=1.0,0.0,0.0 frequency=0.02
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_29.1 copies=1 x=0.0 y=0.0 z=29150.0 
+                color=0.5,1,0
+pillbox      pillbox_30.1  maxGradient=1 color=1.0,0.0,0.0 frequency=0.02
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_30.1 copies=1 x=0.0 y=0.0 z=30150.0 
+                color=0.5,1,0
+pillbox      pillbox_31.1  maxGradient=1 color=1.0,0.0,0.0 frequency=0.02
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_31.1 copies=1 x=0.0 y=0.0 z=31150.0 
+                color=0.5,1,0
+pillbox      pillbox_32.1  maxGradient=1 color=1.0,0.0,0.0 frequency=0.02
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_32.1 copies=1 x=0.0 y=0.0 z=32150.0 
+                color=0.5,1,0
+pillbox      pillbox_33.1  maxGradient=1 color=1.0,0.0,0.0 frequency=0.02
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_33.1 copies=1 x=0.0 y=0.0 z=33150.0 
+                color=0.5,1,0
+pillbox      pillbox_34.1  maxGradient=1 color=1.0,0.0,0.0 frequency=0.02
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_34.1 copies=1 x=0.0 y=0.0 z=34150.0 
+                color=0.5,1,0
+pillbox      pillbox_0.2   maxGradient=-0.1 color=1.0,0.0,0.0 frequency=0.04
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_0.2 copies=1 x=0.0 y=0.0 z=400.0 
+                color=1,1,0
+pillbox      pillbox_1.2   maxGradient=-0.1 color=1.0,0.0,0.0 frequency=0.04
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_1.2 copies=1 x=0.0 y=0.0 z=1400.0 
+                color=1,1,0
+pillbox      pillbox_2.2   maxGradient=-0.1 color=1.0,0.0,0.0 frequency=0.04
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_2.2 copies=1 x=0.0 y=0.0 z=2400.0 
+                color=1,1,0
+pillbox      pillbox_3.2   maxGradient=-0.1 color=1.0,0.0,0.0 frequency=0.04
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_3.2 copies=1 x=0.0 y=0.0 z=3400.0 
+                color=1,1,0
+pillbox      pillbox_4.2   maxGradient=-0.1 color=1.0,0.0,0.0 frequency=0.04
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_4.2 copies=1 x=0.0 y=0.0 z=4400.0 
+                color=1,1,0
+pillbox      pillbox_5.2   maxGradient=-0.1 color=1.0,0.0,0.0 frequency=0.04
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_5.2 copies=1 x=0.0 y=0.0 z=5400.0 
+                color=1,1,0
+pillbox      pillbox_6.2   maxGradient=-0.1 color=1.0,0.0,0.0 frequency=0.04
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_6.2 copies=1 x=0.0 y=0.0 z=6400.0 
+                color=1,1,0
+pillbox      pillbox_7.2   maxGradient=-0.1 color=1.0,0.0,0.0 frequency=0.04
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_7.2 copies=1 x=0.0 y=0.0 z=7400.0 
+                color=1,1,0
+pillbox      pillbox_8.2   maxGradient=-0.1 color=1.0,0.0,0.0 frequency=0.04
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_8.2 copies=1 x=0.0 y=0.0 z=8400.0 
+                color=1,1,0
+pillbox      pillbox_9.2   maxGradient=-0.1 color=1.0,0.0,0.0 frequency=0.04
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_9.2 copies=1 x=0.0 y=0.0 z=9400.0 
+                color=1,1,0
+pillbox      pillbox_10.2  maxGradient=-0.1 color=1.0,0.0,0.0 frequency=0.04
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_10.2 copies=1 x=0.0 y=0.0 z=10400.0 
+                color=1,1,0
+pillbox      pillbox_11.2  maxGradient=-0.1 color=1.0,0.0,0.0 frequency=0.04
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_11.2 copies=1 x=0.0 y=0.0 z=11400.0 
+                color=1,1,0
+pillbox      pillbox_12.2  maxGradient=-0.1 color=1.0,0.0,0.0 frequency=0.04
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_12.2 copies=1 x=0.0 y=0.0 z=12400.0 
+                color=1,1,0
+pillbox      pillbox_13.2  maxGradient=-0.1 color=1.0,0.0,0.0 frequency=0.04
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_13.2 copies=1 x=0.0 y=0.0 z=13400.0 
+                color=1,1,0
+pillbox      pillbox_14.2  maxGradient=-0.1 color=1.0,0.0,0.0 frequency=0.04
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_14.2 copies=1 x=0.0 y=0.0 z=14400.0 
+                color=1,1,0
+pillbox      pillbox_15.2  maxGradient=-0.1 color=1.0,0.0,0.0 frequency=0.04
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_15.2 copies=1 x=0.0 y=0.0 z=15400.0 
+                color=1,1,0
+pillbox      pillbox_16.2  maxGradient=-0.1 color=1.0,0.0,0.0 frequency=0.04
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_16.2 copies=1 x=0.0 y=0.0 z=16400.0 
+                color=1,1,0
+pillbox      pillbox_17.2  maxGradient=-0.1 color=1.0,0.0,0.0 frequency=0.04
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_17.2 copies=1 x=0.0 y=0.0 z=17400.0 
+                color=1,1,0
+pillbox      pillbox_18.2  maxGradient=-0.1 color=1.0,0.0,0.0 frequency=0.04
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_18.2 copies=1 x=0.0 y=0.0 z=18400.0 
+                color=1,1,0
+pillbox      pillbox_19.2  maxGradient=-0.1 color=1.0,0.0,0.0 frequency=0.04
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_19.2 copies=1 x=0.0 y=0.0 z=19400.0 
+                color=1,1,0
+pillbox      pillbox_20.2  maxGradient=-0.1 color=1.0,0.0,0.0 frequency=0.04
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_20.2 copies=1 x=0.0 y=0.0 z=20400.0 
+                color=1,1,0
+pillbox      pillbox_21.2  maxGradient=-0.1 color=1.0,0.0,0.0 frequency=0.04
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_21.2 copies=1 x=0.0 y=0.0 z=21400.0 
+                color=1,1,0
+pillbox      pillbox_22.2  maxGradient=-0.1 color=1.0,0.0,0.0 frequency=0.04
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_22.2 copies=1 x=0.0 y=0.0 z=22400.0 
+                color=1,1,0
+pillbox      pillbox_23.2  maxGradient=-0.1 color=1.0,0.0,0.0 frequency=0.04
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_23.2 copies=1 x=0.0 y=0.0 z=23400.0 
+                color=1,1,0
+pillbox      pillbox_24.2  maxGradient=-0.1 color=1.0,0.0,0.0 frequency=0.04
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_24.2 copies=1 x=0.0 y=0.0 z=24400.0 
+                color=1,1,0
+pillbox      pillbox_25.2  maxGradient=-0.1 color=1.0,0.0,0.0 frequency=0.04
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_25.2 copies=1 x=0.0 y=0.0 z=25400.0 
+                color=1,1,0
+pillbox      pillbox_26.2  maxGradient=-0.1 color=1.0,0.0,0.0 frequency=0.04
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_26.2 copies=1 x=0.0 y=0.0 z=26400.0 
+                color=1,1,0
+pillbox      pillbox_27.2  maxGradient=-0.1 color=1.0,0.0,0.0 frequency=0.04
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_27.2 copies=1 x=0.0 y=0.0 z=27400.0 
+                color=1,1,0
+pillbox      pillbox_28.2  maxGradient=-0.1 color=1.0,0.0,0.0 frequency=0.04
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_28.2 copies=1 x=0.0 y=0.0 z=28400.0 
+                color=1,1,0
+pillbox      pillbox_29.2  maxGradient=-0.1 color=1.0,0.0,0.0 frequency=0.04
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_29.2 copies=1 x=0.0 y=0.0 z=29400.0 
+                color=1,1,0
+pillbox      pillbox_30.2  maxGradient=-0.1 color=1.0,0.0,0.0 frequency=0.04
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_30.2 copies=1 x=0.0 y=0.0 z=30400.0 
+                color=1,1,0
+pillbox      pillbox_31.2  maxGradient=-0.1 color=1.0,0.0,0.0 frequency=0.04
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_31.2 copies=1 x=0.0 y=0.0 z=31400.0 
+                color=1,1,0
+pillbox      pillbox_32.2  maxGradient=-0.1 color=1.0,0.0,0.0 frequency=0.04
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_32.2 copies=1 x=0.0 y=0.0 z=32400.0 
+                color=1,1,0
+pillbox      pillbox_33.2  maxGradient=-0.1 color=1.0,0.0,0.0 frequency=0.04
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_33.2 copies=1 x=0.0 y=0.0 z=33400.0 
+                color=1,1,0
+pillbox      pillbox_34.2  maxGradient=-0.1 color=1.0,0.0,0.0 frequency=0.04
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_34.2 copies=1 x=0.0 y=0.0 z=34400.0 
+                color=1,1,0
+pillbox      pillbox_0.3   maxGradient=0 color=1.0,0.0,0.0 frequency=0.06
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_0.3 copies=1 x=0.0 y=0.0 z=650.0 
+                color=1,0.5,0
+pillbox      pillbox_1.3   maxGradient=0 color=1.0,0.0,0.0 frequency=0.06
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_1.3 copies=1 x=0.0 y=0.0 z=1650.0 
+                color=1,0.5,0
+pillbox      pillbox_2.3   maxGradient=0 color=1.0,0.0,0.0 frequency=0.06
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_2.3 copies=1 x=0.0 y=0.0 z=2650.0 
+                color=1,0.5,0
+pillbox      pillbox_3.3   maxGradient=0 color=1.0,0.0,0.0 frequency=0.06
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_3.3 copies=1 x=0.0 y=0.0 z=3650.0 
+                color=1,0.5,0
+pillbox      pillbox_4.3   maxGradient=0 color=1.0,0.0,0.0 frequency=0.06
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_4.3 copies=1 x=0.0 y=0.0 z=4650.0 
+                color=1,0.5,0
+pillbox      pillbox_5.3   maxGradient=0 color=1.0,0.0,0.0 frequency=0.06
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_5.3 copies=1 x=0.0 y=0.0 z=5650.0 
+                color=1,0.5,0
+pillbox      pillbox_6.3   maxGradient=0 color=1.0,0.0,0.0 frequency=0.06
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_6.3 copies=1 x=0.0 y=0.0 z=6650.0 
+                color=1,0.5,0
+pillbox      pillbox_7.3   maxGradient=0 color=1.0,0.0,0.0 frequency=0.06
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_7.3 copies=1 x=0.0 y=0.0 z=7650.0 
+                color=1,0.5,0
+pillbox      pillbox_8.3   maxGradient=0 color=1.0,0.0,0.0 frequency=0.06
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_8.3 copies=1 x=0.0 y=0.0 z=8650.0 
+                color=1,0.5,0
+pillbox      pillbox_9.3   maxGradient=0 color=1.0,0.0,0.0 frequency=0.06
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_9.3 copies=1 x=0.0 y=0.0 z=9650.0 
+                color=1,0.5,0
+pillbox      pillbox_10.3  maxGradient=0 color=1.0,0.0,0.0 frequency=0.06
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_10.3 copies=1 x=0.0 y=0.0 z=10650.0 
+                color=1,0.5,0
+pillbox      pillbox_11.3  maxGradient=0 color=1.0,0.0,0.0 frequency=0.06
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_11.3 copies=1 x=0.0 y=0.0 z=11650.0 
+                color=1,0.5,0
+pillbox      pillbox_12.3  maxGradient=0 color=1.0,0.0,0.0 frequency=0.06
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_12.3 copies=1 x=0.0 y=0.0 z=12650.0 
+                color=1,0.5,0
+pillbox      pillbox_13.3  maxGradient=0 color=1.0,0.0,0.0 frequency=0.06
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_13.3 copies=1 x=0.0 y=0.0 z=13650.0 
+                color=1,0.5,0
+pillbox      pillbox_14.3  maxGradient=0 color=1.0,0.0,0.0 frequency=0.06
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_14.3 copies=1 x=0.0 y=0.0 z=14650.0 
+                color=1,0.5,0
+pillbox      pillbox_15.3  maxGradient=0 color=1.0,0.0,0.0 frequency=0.06
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_15.3 copies=1 x=0.0 y=0.0 z=15650.0 
+                color=1,0.5,0
+pillbox      pillbox_16.3  maxGradient=0 color=1.0,0.0,0.0 frequency=0.06
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_16.3 copies=1 x=0.0 y=0.0 z=16650.0 
+                color=1,0.5,0
+pillbox      pillbox_17.3  maxGradient=0 color=1.0,0.0,0.0 frequency=0.06
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_17.3 copies=1 x=0.0 y=0.0 z=17650.0 
+                color=1,0.5,0
+pillbox      pillbox_18.3  maxGradient=0 color=1.0,0.0,0.0 frequency=0.06
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_18.3 copies=1 x=0.0 y=0.0 z=18650.0 
+                color=1,0.5,0
+pillbox      pillbox_19.3  maxGradient=0 color=1.0,0.0,0.0 frequency=0.06
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_19.3 copies=1 x=0.0 y=0.0 z=19650.0 
+                color=1,0.5,0
+pillbox      pillbox_20.3  maxGradient=0 color=1.0,0.0,0.0 frequency=0.06
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_20.3 copies=1 x=0.0 y=0.0 z=20650.0 
+                color=1,0.5,0
+pillbox      pillbox_21.3  maxGradient=0 color=1.0,0.0,0.0 frequency=0.06
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_21.3 copies=1 x=0.0 y=0.0 z=21650.0 
+                color=1,0.5,0
+pillbox      pillbox_22.3  maxGradient=0 color=1.0,0.0,0.0 frequency=0.06
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_22.3 copies=1 x=0.0 y=0.0 z=22650.0 
+                color=1,0.5,0
+pillbox      pillbox_23.3  maxGradient=0 color=1.0,0.0,0.0 frequency=0.06
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_23.3 copies=1 x=0.0 y=0.0 z=23650.0 
+                color=1,0.5,0
+pillbox      pillbox_24.3  maxGradient=0 color=1.0,0.0,0.0 frequency=0.06
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_24.3 copies=1 x=0.0 y=0.0 z=24650.0 
+                color=1,0.5,0
+pillbox      pillbox_25.3  maxGradient=0 color=1.0,0.0,0.0 frequency=0.06
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_25.3 copies=1 x=0.0 y=0.0 z=25650.0 
+                color=1,0.5,0
+pillbox      pillbox_26.3  maxGradient=0 color=1.0,0.0,0.0 frequency=0.06
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_26.3 copies=1 x=0.0 y=0.0 z=26650.0 
+                color=1,0.5,0
+pillbox      pillbox_27.3  maxGradient=0 color=1.0,0.0,0.0 frequency=0.06
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_27.3 copies=1 x=0.0 y=0.0 z=27650.0 
+                color=1,0.5,0
+pillbox      pillbox_28.3  maxGradient=0 color=1.0,0.0,0.0 frequency=0.06
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_28.3 copies=1 x=0.0 y=0.0 z=28650.0 
+                color=1,0.5,0
+pillbox      pillbox_29.3  maxGradient=0 color=1.0,0.0,0.0 frequency=0.06
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_29.3 copies=1 x=0.0 y=0.0 z=29650.0 
+                color=1,0.5,0
+pillbox      pillbox_30.3  maxGradient=0 color=1.0,0.0,0.0 frequency=0.06
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_30.3 copies=1 x=0.0 y=0.0 z=30650.0 
+                color=1,0.5,0
+pillbox      pillbox_31.3  maxGradient=0 color=1.0,0.0,0.0 frequency=0.06
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_31.3 copies=1 x=0.0 y=0.0 z=31650.0 
+                color=1,0.5,0
+pillbox      pillbox_32.3  maxGradient=0 color=1.0,0.0,0.0 frequency=0.06
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_32.3 copies=1 x=0.0 y=0.0 z=32650.0 
+                color=1,0.5,0
+pillbox      pillbox_33.3  maxGradient=0 color=1.0,0.0,0.0 frequency=0.06
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_33.3 copies=1 x=0.0 y=0.0 z=33650.0 
+                color=1,0.5,0
+pillbox      pillbox_34.3  maxGradient=0 color=1.0,0.0,0.0 frequency=0.06
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_34.3 copies=1 x=0.0 y=0.0 z=34650.0 
+                color=1,0.5,0
+pillbox      pillbox_0.4   maxGradient=0 color=1.0,0.0,0.0 frequency=0.08
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_0.4 copies=1 x=0.0 y=0.0 z=900.0 
+                color=0.5,0.5,0
+pillbox      pillbox_1.4   maxGradient=0 color=1.0,0.0,0.0 frequency=0.08
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_1.4 copies=1 x=0.0 y=0.0 z=1900.0 
+                color=0.5,0.5,0
+pillbox      pillbox_2.4   maxGradient=0 color=1.0,0.0,0.0 frequency=0.08
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_2.4 copies=1 x=0.0 y=0.0 z=2900.0 
+                color=0.5,0.5,0
+pillbox      pillbox_3.4   maxGradient=0 color=1.0,0.0,0.0 frequency=0.08
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_3.4 copies=1 x=0.0 y=0.0 z=3900.0 
+                color=0.5,0.5,0
+pillbox      pillbox_4.4   maxGradient=0 color=1.0,0.0,0.0 frequency=0.08
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_4.4 copies=1 x=0.0 y=0.0 z=4900.0 
+                color=0.5,0.5,0
+pillbox      pillbox_5.4   maxGradient=0 color=1.0,0.0,0.0 frequency=0.08
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_5.4 copies=1 x=0.0 y=0.0 z=5900.0 
+                color=0.5,0.5,0
+pillbox      pillbox_6.4   maxGradient=0 color=1.0,0.0,0.0 frequency=0.08
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_6.4 copies=1 x=0.0 y=0.0 z=6900.0 
+                color=0.5,0.5,0
+pillbox      pillbox_7.4   maxGradient=0 color=1.0,0.0,0.0 frequency=0.08
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_7.4 copies=1 x=0.0 y=0.0 z=7900.0 
+                color=0.5,0.5,0
+pillbox      pillbox_8.4   maxGradient=0 color=1.0,0.0,0.0 frequency=0.08
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_8.4 copies=1 x=0.0 y=0.0 z=8900.0 
+                color=0.5,0.5,0
+pillbox      pillbox_9.4   maxGradient=0 color=1.0,0.0,0.0 frequency=0.08
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_9.4 copies=1 x=0.0 y=0.0 z=9900.0 
+                color=0.5,0.5,0
+pillbox      pillbox_10.4  maxGradient=0 color=1.0,0.0,0.0 frequency=0.08
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_10.4 copies=1 x=0.0 y=0.0 z=10900.0 
+                color=0.5,0.5,0
+pillbox      pillbox_11.4  maxGradient=0 color=1.0,0.0,0.0 frequency=0.08
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_11.4 copies=1 x=0.0 y=0.0 z=11900.0 
+                color=0.5,0.5,0
+pillbox      pillbox_12.4  maxGradient=0 color=1.0,0.0,0.0 frequency=0.08
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_12.4 copies=1 x=0.0 y=0.0 z=12900.0 
+                color=0.5,0.5,0
+pillbox      pillbox_13.4  maxGradient=0 color=1.0,0.0,0.0 frequency=0.08
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_13.4 copies=1 x=0.0 y=0.0 z=13900.0 
+                color=0.5,0.5,0
+pillbox      pillbox_14.4  maxGradient=0 color=1.0,0.0,0.0 frequency=0.08
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_14.4 copies=1 x=0.0 y=0.0 z=14900.0 
+                color=0.5,0.5,0
+pillbox      pillbox_15.4  maxGradient=0 color=1.0,0.0,0.0 frequency=0.08
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_15.4 copies=1 x=0.0 y=0.0 z=15900.0 
+                color=0.5,0.5,0
+pillbox      pillbox_16.4  maxGradient=0 color=1.0,0.0,0.0 frequency=0.08
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_16.4 copies=1 x=0.0 y=0.0 z=16900.0 
+                color=0.5,0.5,0
+pillbox      pillbox_17.4  maxGradient=0 color=1.0,0.0,0.0 frequency=0.08
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_17.4 copies=1 x=0.0 y=0.0 z=17900.0 
+                color=0.5,0.5,0
+pillbox      pillbox_18.4  maxGradient=0 color=1.0,0.0,0.0 frequency=0.08
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_18.4 copies=1 x=0.0 y=0.0 z=18900.0 
+                color=0.5,0.5,0
+pillbox      pillbox_19.4  maxGradient=0 color=1.0,0.0,0.0 frequency=0.08
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_19.4 copies=1 x=0.0 y=0.0 z=19900.0 
+                color=0.5,0.5,0
+pillbox      pillbox_20.4  maxGradient=0 color=1.0,0.0,0.0 frequency=0.08
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_20.4 copies=1 x=0.0 y=0.0 z=20900.0 
+                color=0.5,0.5,0
+pillbox      pillbox_21.4  maxGradient=0 color=1.0,0.0,0.0 frequency=0.08
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_21.4 copies=1 x=0.0 y=0.0 z=21900.0 
+                color=0.5,0.5,0
+pillbox      pillbox_22.4  maxGradient=0 color=1.0,0.0,0.0 frequency=0.08
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_22.4 copies=1 x=0.0 y=0.0 z=22900.0 
+                color=0.5,0.5,0
+pillbox      pillbox_23.4  maxGradient=0 color=1.0,0.0,0.0 frequency=0.08
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_23.4 copies=1 x=0.0 y=0.0 z=23900.0 
+                color=0.5,0.5,0
+pillbox      pillbox_24.4  maxGradient=0 color=1.0,0.0,0.0 frequency=0.08
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_24.4 copies=1 x=0.0 y=0.0 z=24900.0 
+                color=0.5,0.5,0
+pillbox      pillbox_25.4  maxGradient=0 color=1.0,0.0,0.0 frequency=0.08
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_25.4 copies=1 x=0.0 y=0.0 z=25900.0 
+                color=0.5,0.5,0
+pillbox      pillbox_26.4  maxGradient=0 color=1.0,0.0,0.0 frequency=0.08
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_26.4 copies=1 x=0.0 y=0.0 z=26900.0 
+                color=0.5,0.5,0
+pillbox      pillbox_27.4  maxGradient=0 color=1.0,0.0,0.0 frequency=0.08
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_27.4 copies=1 x=0.0 y=0.0 z=27900.0 
+                color=0.5,0.5,0
+pillbox      pillbox_28.4  maxGradient=0 color=1.0,0.0,0.0 frequency=0.08
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_28.4 copies=1 x=0.0 y=0.0 z=28900.0 
+                color=0.5,0.5,0
+pillbox      pillbox_29.4  maxGradient=0 color=1.0,0.0,0.0 frequency=0.08
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_29.4 copies=1 x=0.0 y=0.0 z=29900.0 
+                color=0.5,0.5,0
+pillbox      pillbox_30.4  maxGradient=0 color=1.0,0.0,0.0 frequency=0.08
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_30.4 copies=1 x=0.0 y=0.0 z=30900.0 
+                color=0.5,0.5,0
+pillbox      pillbox_31.4  maxGradient=0 color=1.0,0.0,0.0 frequency=0.08
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_31.4 copies=1 x=0.0 y=0.0 z=31900.0 
+                color=0.5,0.5,0
+pillbox      pillbox_32.4  maxGradient=0 color=1.0,0.0,0.0 frequency=0.08
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_32.4 copies=1 x=0.0 y=0.0 z=32900.0 
+                color=0.5,0.5,0
+pillbox      pillbox_33.4  maxGradient=0 color=1.0,0.0,0.0 frequency=0.08
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_33.4 copies=1 x=0.0 y=0.0 z=33900.0 
+                color=0.5,0.5,0
+pillbox      pillbox_34.4  maxGradient=0 color=1.0,0.0,0.0 frequency=0.08
+                           innerLength=200 innerRadius=500 pipeThick=3
+                           wallThick=0 irisRadius=100 collarRadialThick=5
+                           collarThick=0 win1Thick=0 win1OuterRadius=50
+                           win2Thick=0 winMat=Be phaseAcc=0 skinDepth=0.002
+                           timingTolerance=0.001 maxStep=0.1
+                           cavityMaterial=Vacuum timeOffset=-4.7e+21
+                           timeIncrement=0 fieldMapFile= kill=1
+place   pillbox_34.4 copies=1 x=0.0 y=0.0 z=34900.0 
+                color=0.5,0.5,0
+
+World size (before incrementing by 201.357 mm): 1006.0 H  1006.0 W  70000.0 L
+
+PARAMETERS:
+            Zcl=35000
+     deltaChord=3.0
+deltaIntersection=0.1
+   deltaOneStep=0.01
+         epsMax=0.01
+         epsMin=2.5e-7
+ eventTimeLimit=30
+    fieldVoxels=200,200,200
+      histoFile=g4beamline
+    histoUpdate=0
+        maxStep=1.0
+        minStep=0.01
+ steppingFormat=N GLOBAL CL KE STEP VOL PROCESS
+steppingVerbose=0
+         viewer=none
+ wallClockLimit=-1
+  worldMaterial=Vacuum
+     zTolerance=2.0
+Checking overlaps for volume pillbox_0.1Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_0.1DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_0.1TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_0.1:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_0.1 parent= relZ=150.0 globZ=150.0
+	zmin=50.0 zmax=250.0
+Checking overlaps for volume pillbox_1.1Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_1.1DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_1.1TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_1.1:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_1.1 parent= relZ=1150.0 globZ=1150.0
+	zmin=1050.0 zmax=1250.0
+Checking overlaps for volume pillbox_2.1Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_2.1DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_2.1TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_2.1:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_2.1 parent= relZ=2150.0 globZ=2150.0
+	zmin=2050.0 zmax=2250.0
+Checking overlaps for volume pillbox_3.1Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_3.1DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_3.1TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_3.1:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_3.1 parent= relZ=3150.0 globZ=3150.0
+	zmin=3050.0 zmax=3250.0
+Checking overlaps for volume pillbox_4.1Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_4.1DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_4.1TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_4.1:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_4.1 parent= relZ=4150.0 globZ=4150.0
+	zmin=4050.0 zmax=4250.0
+Checking overlaps for volume pillbox_5.1Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_5.1DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_5.1TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_5.1:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_5.1 parent= relZ=5150.0 globZ=5150.0
+	zmin=5050.0 zmax=5250.0
+Checking overlaps for volume pillbox_6.1Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_6.1DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_6.1TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_6.1:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_6.1 parent= relZ=6150.0 globZ=6150.0
+	zmin=6050.0 zmax=6250.0
+Checking overlaps for volume pillbox_7.1Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_7.1DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_7.1TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_7.1:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_7.1 parent= relZ=7150.0 globZ=7150.0
+	zmin=7050.0 zmax=7250.0
+Checking overlaps for volume pillbox_8.1Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_8.1DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_8.1TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_8.1:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_8.1 parent= relZ=8150.0 globZ=8150.0
+	zmin=8050.0 zmax=8250.0
+Checking overlaps for volume pillbox_9.1Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_9.1DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_9.1TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_9.1:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_9.1 parent= relZ=9150.0 globZ=9150.0
+	zmin=9050.0 zmax=9250.0
+Checking overlaps for volume pillbox_10.1Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_10.1DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_10.1TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_10.1:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_10.1 parent= relZ=10150.0 globZ=10150.0
+	zmin=10050.0 zmax=10250.0
+Checking overlaps for volume pillbox_11.1Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_11.1DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_11.1TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_11.1:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_11.1 parent= relZ=11150.0 globZ=11150.0
+	zmin=11050.0 zmax=11250.0
+Checking overlaps for volume pillbox_12.1Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_12.1DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_12.1TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_12.1:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_12.1 parent= relZ=12150.0 globZ=12150.0
+	zmin=12050.0 zmax=12250.0
+Checking overlaps for volume pillbox_13.1Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_13.1DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_13.1TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_13.1:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_13.1 parent= relZ=13150.0 globZ=13150.0
+	zmin=13050.0 zmax=13250.0
+Checking overlaps for volume pillbox_14.1Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_14.1DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_14.1TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_14.1:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_14.1 parent= relZ=14150.0 globZ=14150.0
+	zmin=14050.0 zmax=14250.0
+Checking overlaps for volume pillbox_15.1Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_15.1DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_15.1TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_15.1:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_15.1 parent= relZ=15150.0 globZ=15150.0
+	zmin=15050.0 zmax=15250.0
+Checking overlaps for volume pillbox_16.1Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_16.1DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_16.1TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_16.1:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_16.1 parent= relZ=16150.0 globZ=16150.0
+	zmin=16050.0 zmax=16250.0
+Checking overlaps for volume pillbox_17.1Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_17.1DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_17.1TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_17.1:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_17.1 parent= relZ=17150.0 globZ=17150.0
+	zmin=17050.0 zmax=17250.0
+Checking overlaps for volume pillbox_18.1Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_18.1DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_18.1TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_18.1:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_18.1 parent= relZ=18150.0 globZ=18150.0
+	zmin=18050.0 zmax=18250.0
+Checking overlaps for volume pillbox_19.1Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_19.1DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_19.1TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_19.1:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_19.1 parent= relZ=19150.0 globZ=19150.0
+	zmin=19050.0 zmax=19250.0
+Checking overlaps for volume pillbox_20.1Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_20.1DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_20.1TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_20.1:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_20.1 parent= relZ=20150.0 globZ=20150.0
+	zmin=20050.0 zmax=20250.0
+Checking overlaps for volume pillbox_21.1Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_21.1DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_21.1TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_21.1:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_21.1 parent= relZ=21150.0 globZ=21150.0
+	zmin=21050.0 zmax=21250.0
+Checking overlaps for volume pillbox_22.1Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_22.1DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_22.1TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_22.1:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_22.1 parent= relZ=22150.0 globZ=22150.0
+	zmin=22050.0 zmax=22250.0
+Checking overlaps for volume pillbox_23.1Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_23.1DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_23.1TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_23.1:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_23.1 parent= relZ=23150.0 globZ=23150.0
+	zmin=23050.0 zmax=23250.0
+Checking overlaps for volume pillbox_24.1Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_24.1DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_24.1TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_24.1:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_24.1 parent= relZ=24150.0 globZ=24150.0
+	zmin=24050.0 zmax=24250.0
+Checking overlaps for volume pillbox_25.1Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_25.1DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_25.1TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_25.1:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_25.1 parent= relZ=25150.0 globZ=25150.0
+	zmin=25050.0 zmax=25250.0
+Checking overlaps for volume pillbox_26.1Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_26.1DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_26.1TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_26.1:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_26.1 parent= relZ=26150.0 globZ=26150.0
+	zmin=26050.0 zmax=26250.0
+Checking overlaps for volume pillbox_27.1Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_27.1DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_27.1TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_27.1:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_27.1 parent= relZ=27150.0 globZ=27150.0
+	zmin=27050.0 zmax=27250.0
+Checking overlaps for volume pillbox_28.1Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_28.1DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_28.1TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_28.1:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_28.1 parent= relZ=28150.0 globZ=28150.0
+	zmin=28050.0 zmax=28250.0
+Checking overlaps for volume pillbox_29.1Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_29.1DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_29.1TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_29.1:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_29.1 parent= relZ=29150.0 globZ=29150.0
+	zmin=29050.0 zmax=29250.0
+Checking overlaps for volume pillbox_30.1Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_30.1DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_30.1TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_30.1:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_30.1 parent= relZ=30150.0 globZ=30150.0
+	zmin=30050.0 zmax=30250.0
+Checking overlaps for volume pillbox_31.1Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_31.1DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_31.1TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_31.1:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_31.1 parent= relZ=31150.0 globZ=31150.0
+	zmin=31050.0 zmax=31250.0
+Checking overlaps for volume pillbox_32.1Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_32.1DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_32.1TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_32.1:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_32.1 parent= relZ=32150.0 globZ=32150.0
+	zmin=32050.0 zmax=32250.0
+Checking overlaps for volume pillbox_33.1Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_33.1DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_33.1TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_33.1:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_33.1 parent= relZ=33150.0 globZ=33150.0
+	zmin=33050.0 zmax=33250.0
+Checking overlaps for volume pillbox_34.1Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_34.1DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_34.1TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_34.1:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_34.1 parent= relZ=34150.0 globZ=34150.0
+	zmin=34050.0 zmax=34250.0
+Checking overlaps for volume pillbox_0.2Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_0.2DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_0.2TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_0.2:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_0.2 parent= relZ=400.0 globZ=400.0
+	zmin=300.0 zmax=500.0
+Checking overlaps for volume pillbox_1.2Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_1.2DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_1.2TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_1.2:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_1.2 parent= relZ=1400.0 globZ=1400.0
+	zmin=1300.0 zmax=1500.0
+Checking overlaps for volume pillbox_2.2Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_2.2DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_2.2TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_2.2:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_2.2 parent= relZ=2400.0 globZ=2400.0
+	zmin=2300.0 zmax=2500.0
+Checking overlaps for volume pillbox_3.2Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_3.2DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_3.2TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_3.2:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_3.2 parent= relZ=3400.0 globZ=3400.0
+	zmin=3300.0 zmax=3500.0
+Checking overlaps for volume pillbox_4.2Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_4.2DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_4.2TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_4.2:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_4.2 parent= relZ=4400.0 globZ=4400.0
+	zmin=4300.0 zmax=4500.0
+Checking overlaps for volume pillbox_5.2Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_5.2DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_5.2TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_5.2:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_5.2 parent= relZ=5400.0 globZ=5400.0
+	zmin=5300.0 zmax=5500.0
+Checking overlaps for volume pillbox_6.2Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_6.2DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_6.2TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_6.2:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_6.2 parent= relZ=6400.0 globZ=6400.0
+	zmin=6300.0 zmax=6500.0
+Checking overlaps for volume pillbox_7.2Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_7.2DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_7.2TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_7.2:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_7.2 parent= relZ=7400.0 globZ=7400.0
+	zmin=7300.0 zmax=7500.0
+Checking overlaps for volume pillbox_8.2Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_8.2DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_8.2TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_8.2:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_8.2 parent= relZ=8400.0 globZ=8400.0
+	zmin=8300.0 zmax=8500.0
+Checking overlaps for volume pillbox_9.2Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_9.2DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_9.2TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_9.2:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_9.2 parent= relZ=9400.0 globZ=9400.0
+	zmin=9300.0 zmax=9500.0
+Checking overlaps for volume pillbox_10.2Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_10.2DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_10.2TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_10.2:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_10.2 parent= relZ=10400.0 globZ=10400.0
+	zmin=10300.0 zmax=10500.0
+Checking overlaps for volume pillbox_11.2Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_11.2DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_11.2TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_11.2:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_11.2 parent= relZ=11400.0 globZ=11400.0
+	zmin=11300.0 zmax=11500.0
+Checking overlaps for volume pillbox_12.2Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_12.2DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_12.2TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_12.2:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_12.2 parent= relZ=12400.0 globZ=12400.0
+	zmin=12300.0 zmax=12500.0
+Checking overlaps for volume pillbox_13.2Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_13.2DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_13.2TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_13.2:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_13.2 parent= relZ=13400.0 globZ=13400.0
+	zmin=13300.0 zmax=13500.0
+Checking overlaps for volume pillbox_14.2Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_14.2DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_14.2TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_14.2:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_14.2 parent= relZ=14400.0 globZ=14400.0
+	zmin=14300.0 zmax=14500.0
+Checking overlaps for volume pillbox_15.2Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_15.2DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_15.2TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_15.2:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_15.2 parent= relZ=15400.0 globZ=15400.0
+	zmin=15300.0 zmax=15500.0
+Checking overlaps for volume pillbox_16.2Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_16.2DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_16.2TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_16.2:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_16.2 parent= relZ=16400.0 globZ=16400.0
+	zmin=16300.0 zmax=16500.0
+Checking overlaps for volume pillbox_17.2Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_17.2DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_17.2TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_17.2:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_17.2 parent= relZ=17400.0 globZ=17400.0
+	zmin=17300.0 zmax=17500.0
+Checking overlaps for volume pillbox_18.2Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_18.2DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_18.2TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_18.2:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_18.2 parent= relZ=18400.0 globZ=18400.0
+	zmin=18300.0 zmax=18500.0
+Checking overlaps for volume pillbox_19.2Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_19.2DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_19.2TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_19.2:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_19.2 parent= relZ=19400.0 globZ=19400.0
+	zmin=19300.0 zmax=19500.0
+Checking overlaps for volume pillbox_20.2Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_20.2DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_20.2TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_20.2:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_20.2 parent= relZ=20400.0 globZ=20400.0
+	zmin=20300.0 zmax=20500.0
+Checking overlaps for volume pillbox_21.2Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_21.2DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_21.2TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_21.2:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_21.2 parent= relZ=21400.0 globZ=21400.0
+	zmin=21300.0 zmax=21500.0
+Checking overlaps for volume pillbox_22.2Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_22.2DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_22.2TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_22.2:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_22.2 parent= relZ=22400.0 globZ=22400.0
+	zmin=22300.0 zmax=22500.0
+Checking overlaps for volume pillbox_23.2Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_23.2DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_23.2TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_23.2:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_23.2 parent= relZ=23400.0 globZ=23400.0
+	zmin=23300.0 zmax=23500.0
+Checking overlaps for volume pillbox_24.2Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_24.2DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_24.2TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_24.2:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_24.2 parent= relZ=24400.0 globZ=24400.0
+	zmin=24300.0 zmax=24500.0
+Checking overlaps for volume pillbox_25.2Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_25.2DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_25.2TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_25.2:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_25.2 parent= relZ=25400.0 globZ=25400.0
+	zmin=25300.0 zmax=25500.0
+Checking overlaps for volume pillbox_26.2Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_26.2DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_26.2TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_26.2:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_26.2 parent= relZ=26400.0 globZ=26400.0
+	zmin=26300.0 zmax=26500.0
+Checking overlaps for volume pillbox_27.2Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_27.2DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_27.2TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_27.2:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_27.2 parent= relZ=27400.0 globZ=27400.0
+	zmin=27300.0 zmax=27500.0
+Checking overlaps for volume pillbox_28.2Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_28.2DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_28.2TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_28.2:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_28.2 parent= relZ=28400.0 globZ=28400.0
+	zmin=28300.0 zmax=28500.0
+Checking overlaps for volume pillbox_29.2Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_29.2DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_29.2TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_29.2:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_29.2 parent= relZ=29400.0 globZ=29400.0
+	zmin=29300.0 zmax=29500.0
+Checking overlaps for volume pillbox_30.2Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_30.2DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_30.2TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_30.2:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_30.2 parent= relZ=30400.0 globZ=30400.0
+	zmin=30300.0 zmax=30500.0
+Checking overlaps for volume pillbox_31.2Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_31.2DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_31.2TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_31.2:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_31.2 parent= relZ=31400.0 globZ=31400.0
+	zmin=31300.0 zmax=31500.0
+Checking overlaps for volume pillbox_32.2Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_32.2DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_32.2TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_32.2:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_32.2 parent= relZ=32400.0 globZ=32400.0
+	zmin=32300.0 zmax=32500.0
+Checking overlaps for volume pillbox_33.2Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_33.2DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_33.2TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_33.2:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_33.2 parent= relZ=33400.0 globZ=33400.0
+	zmin=33300.0 zmax=33500.0
+Checking overlaps for volume pillbox_34.2Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_34.2DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_34.2TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_34.2:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_34.2 parent= relZ=34400.0 globZ=34400.0
+	zmin=34300.0 zmax=34500.0
+Checking overlaps for volume pillbox_0.3Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_0.3DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_0.3TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_0.3:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_0.3 parent= relZ=650.0 globZ=650.0
+	zmin=550.0 zmax=750.0
+Checking overlaps for volume pillbox_1.3Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_1.3DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_1.3TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_1.3:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_1.3 parent= relZ=1650.0 globZ=1650.0
+	zmin=1550.0 zmax=1750.0
+Checking overlaps for volume pillbox_2.3Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_2.3DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_2.3TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_2.3:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_2.3 parent= relZ=2650.0 globZ=2650.0
+	zmin=2550.0 zmax=2750.0
+Checking overlaps for volume pillbox_3.3Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_3.3DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_3.3TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_3.3:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_3.3 parent= relZ=3650.0 globZ=3650.0
+	zmin=3550.0 zmax=3750.0
+Checking overlaps for volume pillbox_4.3Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_4.3DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_4.3TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_4.3:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_4.3 parent= relZ=4650.0 globZ=4650.0
+	zmin=4550.0 zmax=4750.0
+Checking overlaps for volume pillbox_5.3Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_5.3DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_5.3TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_5.3:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_5.3 parent= relZ=5650.0 globZ=5650.0
+	zmin=5550.0 zmax=5750.0
+Checking overlaps for volume pillbox_6.3Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_6.3DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_6.3TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_6.3:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_6.3 parent= relZ=6650.0 globZ=6650.0
+	zmin=6550.0 zmax=6750.0
+Checking overlaps for volume pillbox_7.3Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_7.3DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_7.3TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_7.3:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_7.3 parent= relZ=7650.0 globZ=7650.0
+	zmin=7550.0 zmax=7750.0
+Checking overlaps for volume pillbox_8.3Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_8.3DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_8.3TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_8.3:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_8.3 parent= relZ=8650.0 globZ=8650.0
+	zmin=8550.0 zmax=8750.0
+Checking overlaps for volume pillbox_9.3Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_9.3DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_9.3TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_9.3:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_9.3 parent= relZ=9650.0 globZ=9650.0
+	zmin=9550.0 zmax=9750.0
+Checking overlaps for volume pillbox_10.3Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_10.3DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_10.3TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_10.3:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_10.3 parent= relZ=10650.0 globZ=10650.0
+	zmin=10550.0 zmax=10750.0
+Checking overlaps for volume pillbox_11.3Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_11.3DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_11.3TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_11.3:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_11.3 parent= relZ=11650.0 globZ=11650.0
+	zmin=11550.0 zmax=11750.0
+Checking overlaps for volume pillbox_12.3Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_12.3DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_12.3TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_12.3:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_12.3 parent= relZ=12650.0 globZ=12650.0
+	zmin=12550.0 zmax=12750.0
+Checking overlaps for volume pillbox_13.3Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_13.3DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_13.3TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_13.3:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_13.3 parent= relZ=13650.0 globZ=13650.0
+	zmin=13550.0 zmax=13750.0
+Checking overlaps for volume pillbox_14.3Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_14.3DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_14.3TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_14.3:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_14.3 parent= relZ=14650.0 globZ=14650.0
+	zmin=14550.0 zmax=14750.0
+Checking overlaps for volume pillbox_15.3Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_15.3DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_15.3TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_15.3:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_15.3 parent= relZ=15650.0 globZ=15650.0
+	zmin=15550.0 zmax=15750.0
+Checking overlaps for volume pillbox_16.3Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_16.3DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_16.3TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_16.3:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_16.3 parent= relZ=16650.0 globZ=16650.0
+	zmin=16550.0 zmax=16750.0
+Checking overlaps for volume pillbox_17.3Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_17.3DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_17.3TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_17.3:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_17.3 parent= relZ=17650.0 globZ=17650.0
+	zmin=17550.0 zmax=17750.0
+Checking overlaps for volume pillbox_18.3Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_18.3DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_18.3TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_18.3:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_18.3 parent= relZ=18650.0 globZ=18650.0
+	zmin=18550.0 zmax=18750.0
+Checking overlaps for volume pillbox_19.3Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_19.3DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_19.3TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_19.3:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_19.3 parent= relZ=19650.0 globZ=19650.0
+	zmin=19550.0 zmax=19750.0
+Checking overlaps for volume pillbox_20.3Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_20.3DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_20.3TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_20.3:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_20.3 parent= relZ=20650.0 globZ=20650.0
+	zmin=20550.0 zmax=20750.0
+Checking overlaps for volume pillbox_21.3Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_21.3DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_21.3TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_21.3:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_21.3 parent= relZ=21650.0 globZ=21650.0
+	zmin=21550.0 zmax=21750.0
+Checking overlaps for volume pillbox_22.3Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_22.3DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_22.3TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_22.3:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_22.3 parent= relZ=22650.0 globZ=22650.0
+	zmin=22550.0 zmax=22750.0
+Checking overlaps for volume pillbox_23.3Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_23.3DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_23.3TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_23.3:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_23.3 parent= relZ=23650.0 globZ=23650.0
+	zmin=23550.0 zmax=23750.0
+Checking overlaps for volume pillbox_24.3Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_24.3DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_24.3TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_24.3:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_24.3 parent= relZ=24650.0 globZ=24650.0
+	zmin=24550.0 zmax=24750.0
+Checking overlaps for volume pillbox_25.3Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_25.3DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_25.3TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_25.3:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_25.3 parent= relZ=25650.0 globZ=25650.0
+	zmin=25550.0 zmax=25750.0
+Checking overlaps for volume pillbox_26.3Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_26.3DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_26.3TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_26.3:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_26.3 parent= relZ=26650.0 globZ=26650.0
+	zmin=26550.0 zmax=26750.0
+Checking overlaps for volume pillbox_27.3Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_27.3DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_27.3TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_27.3:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_27.3 parent= relZ=27650.0 globZ=27650.0
+	zmin=27550.0 zmax=27750.0
+Checking overlaps for volume pillbox_28.3Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_28.3DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_28.3TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_28.3:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_28.3 parent= relZ=28650.0 globZ=28650.0
+	zmin=28550.0 zmax=28750.0
+Checking overlaps for volume pillbox_29.3Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_29.3DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_29.3TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_29.3:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_29.3 parent= relZ=29650.0 globZ=29650.0
+	zmin=29550.0 zmax=29750.0
+Checking overlaps for volume pillbox_30.3Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_30.3DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_30.3TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_30.3:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_30.3 parent= relZ=30650.0 globZ=30650.0
+	zmin=30550.0 zmax=30750.0
+Checking overlaps for volume pillbox_31.3Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_31.3DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_31.3TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_31.3:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_31.3 parent= relZ=31650.0 globZ=31650.0
+	zmin=31550.0 zmax=31750.0
+Checking overlaps for volume pillbox_32.3Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_32.3DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_32.3TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_32.3:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_32.3 parent= relZ=32650.0 globZ=32650.0
+	zmin=32550.0 zmax=32750.0
+Checking overlaps for volume pillbox_33.3Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_33.3DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_33.3TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_33.3:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_33.3 parent= relZ=33650.0 globZ=33650.0
+	zmin=33550.0 zmax=33750.0
+Checking overlaps for volume pillbox_34.3Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_34.3DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_34.3TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_34.3:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_34.3 parent= relZ=34650.0 globZ=34650.0
+	zmin=34550.0 zmax=34750.0
+Checking overlaps for volume pillbox_0.4Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_0.4DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_0.4TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_0.4:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_0.4 parent= relZ=900.0 globZ=900.0
+	zmin=800.0 zmax=1000.0
+Checking overlaps for volume pillbox_1.4Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_1.4DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_1.4TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_1.4:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_1.4 parent= relZ=1900.0 globZ=1900.0
+	zmin=1800.0 zmax=2000.0
+Checking overlaps for volume pillbox_2.4Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_2.4DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_2.4TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_2.4:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_2.4 parent= relZ=2900.0 globZ=2900.0
+	zmin=2800.0 zmax=3000.0
+Checking overlaps for volume pillbox_3.4Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_3.4DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_3.4TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_3.4:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_3.4 parent= relZ=3900.0 globZ=3900.0
+	zmin=3800.0 zmax=4000.0
+Checking overlaps for volume pillbox_4.4Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_4.4DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_4.4TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_4.4:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_4.4 parent= relZ=4900.0 globZ=4900.0
+	zmin=4800.0 zmax=5000.0
+Checking overlaps for volume pillbox_5.4Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_5.4DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_5.4TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_5.4:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_5.4 parent= relZ=5900.0 globZ=5900.0
+	zmin=5800.0 zmax=6000.0
+Checking overlaps for volume pillbox_6.4Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_6.4DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_6.4TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_6.4:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_6.4 parent= relZ=6900.0 globZ=6900.0
+	zmin=6800.0 zmax=7000.0
+Checking overlaps for volume pillbox_7.4Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_7.4DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_7.4TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_7.4:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_7.4 parent= relZ=7900.0 globZ=7900.0
+	zmin=7800.0 zmax=8000.0
+Checking overlaps for volume pillbox_8.4Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_8.4DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_8.4TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_8.4:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_8.4 parent= relZ=8900.0 globZ=8900.0
+	zmin=8800.0 zmax=9000.0
+Checking overlaps for volume pillbox_9.4Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_9.4DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_9.4TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_9.4:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_9.4 parent= relZ=9900.0 globZ=9900.0
+	zmin=9800.0 zmax=10000.0
+Checking overlaps for volume pillbox_10.4Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_10.4DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_10.4TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_10.4:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_10.4 parent= relZ=10900.0 globZ=10900.0
+	zmin=10800.0 zmax=11000.0
+Checking overlaps for volume pillbox_11.4Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_11.4DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_11.4TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_11.4:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_11.4 parent= relZ=11900.0 globZ=11900.0
+	zmin=11800.0 zmax=12000.0
+Checking overlaps for volume pillbox_12.4Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_12.4DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_12.4TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_12.4:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_12.4 parent= relZ=12900.0 globZ=12900.0
+	zmin=12800.0 zmax=13000.0
+Checking overlaps for volume pillbox_13.4Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_13.4DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_13.4TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_13.4:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_13.4 parent= relZ=13900.0 globZ=13900.0
+	zmin=13800.0 zmax=14000.0
+Checking overlaps for volume pillbox_14.4Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_14.4DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_14.4TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_14.4:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_14.4 parent= relZ=14900.0 globZ=14900.0
+	zmin=14800.0 zmax=15000.0
+Checking overlaps for volume pillbox_15.4Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_15.4DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_15.4TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_15.4:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_15.4 parent= relZ=15900.0 globZ=15900.0
+	zmin=15800.0 zmax=16000.0
+Checking overlaps for volume pillbox_16.4Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_16.4DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_16.4TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_16.4:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_16.4 parent= relZ=16900.0 globZ=16900.0
+	zmin=16800.0 zmax=17000.0
+Checking overlaps for volume pillbox_17.4Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_17.4DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_17.4TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_17.4:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_17.4 parent= relZ=17900.0 globZ=17900.0
+	zmin=17800.0 zmax=18000.0
+Checking overlaps for volume pillbox_18.4Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_18.4DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_18.4TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_18.4:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_18.4 parent= relZ=18900.0 globZ=18900.0
+	zmin=18800.0 zmax=19000.0
+Checking overlaps for volume pillbox_19.4Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_19.4DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_19.4TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_19.4:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_19.4 parent= relZ=19900.0 globZ=19900.0
+	zmin=19800.0 zmax=20000.0
+Checking overlaps for volume pillbox_20.4Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_20.4DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_20.4TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_20.4:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_20.4 parent= relZ=20900.0 globZ=20900.0
+	zmin=20800.0 zmax=21000.0
+Checking overlaps for volume pillbox_21.4Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_21.4DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_21.4TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_21.4:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_21.4 parent= relZ=21900.0 globZ=21900.0
+	zmin=21800.0 zmax=22000.0
+Checking overlaps for volume pillbox_22.4Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_22.4DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_22.4TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_22.4:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_22.4 parent= relZ=22900.0 globZ=22900.0
+	zmin=22800.0 zmax=23000.0
+Checking overlaps for volume pillbox_23.4Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_23.4DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_23.4TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_23.4:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_23.4 parent= relZ=23900.0 globZ=23900.0
+	zmin=23800.0 zmax=24000.0
+Checking overlaps for volume pillbox_24.4Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_24.4DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_24.4TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_24.4:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_24.4 parent= relZ=24900.0 globZ=24900.0
+	zmin=24800.0 zmax=25000.0
+Checking overlaps for volume pillbox_25.4Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_25.4DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_25.4TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_25.4:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_25.4 parent= relZ=25900.0 globZ=25900.0
+	zmin=25800.0 zmax=26000.0
+Checking overlaps for volume pillbox_26.4Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_26.4DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_26.4TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_26.4:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_26.4 parent= relZ=26900.0 globZ=26900.0
+	zmin=26800.0 zmax=27000.0
+Checking overlaps for volume pillbox_27.4Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_27.4DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_27.4TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_27.4:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_27.4 parent= relZ=27900.0 globZ=27900.0
+	zmin=27800.0 zmax=28000.0
+Checking overlaps for volume pillbox_28.4Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_28.4DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_28.4TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_28.4:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_28.4 parent= relZ=28900.0 globZ=28900.0
+	zmin=28800.0 zmax=29000.0
+Checking overlaps for volume pillbox_29.4Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_29.4DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_29.4TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_29.4:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_29.4 parent= relZ=29900.0 globZ=29900.0
+	zmin=29800.0 zmax=30000.0
+Checking overlaps for volume pillbox_30.4Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_30.4DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_30.4TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_30.4:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_30.4 parent= relZ=30900.0 globZ=30900.0
+	zmin=30800.0 zmax=31000.0
+Checking overlaps for volume pillbox_31.4Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_31.4DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_31.4TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_31.4:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_31.4 parent= relZ=31900.0 globZ=31900.0
+	zmin=31800.0 zmax=32000.0
+Checking overlaps for volume pillbox_32.4Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_32.4DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_32.4TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_32.4:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_32.4 parent= relZ=32900.0 globZ=32900.0
+	zmin=32800.0 zmax=33000.0
+Checking overlaps for volume pillbox_33.4Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_33.4DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_33.4TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_33.4:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_33.4 parent= relZ=33900.0 globZ=33900.0
+	zmin=33800.0 zmax=34000.0
+Checking overlaps for volume pillbox_34.4Pipe:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_34.4DsHalf:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_34.4TimingVol:0 (G4Tubs) ... OK! 
+Checking overlaps for volume pillbox_34.4:0 (G4Tubs) ... OK! 
+BLCMDpillbox::construct pillbox_34.4 parent= relZ=34900.0 globZ=34900.0
+	zmin=34800.0 zmax=35000.0
+### Adding tracking cuts for neutron  TimeCut(ns)= 10000  KinEnergyCut(MeV)= 0
+
+Geometry test nPoints=100 tolerance=0.002 mm:
+Testing geometry for children of group 'World':
+Total geometry errors = 0  0 seconds
+
+================= Prepare Tune Particle(s) ===========
+================= Begin Tune Particle(s) =============
+fieldVoxels: nx=6 ny=6 nz=175, 6300 voxels, 140 fields
+fieldVoxels: max field count is 2 fields, # voxels >5: 0, >10: 0, >20: 0
+pillbox pillbox_0.1: Time OK  timeOffset=13.4042 ns, incremented to 13.4042 ns
+pillbox pillbox_0.2: Time OK  timeOffset=8.6611 ns, incremented to 8.6611 ns
+pillbox pillbox_1.1: Time OK  timeOffset=19.4318 ns, incremented to 19.4318 ns
+pillbox pillbox_1.2: Time OK  timeOffset=14.6887 ns, incremented to 14.6887 ns
+pillbox pillbox_2.1: Time OK  timeOffset=25.4594 ns, incremented to 25.4594 ns
+pillbox pillbox_2.2: Time OK  timeOffset=20.7163 ns, incremented to 20.7163 ns
+pillbox pillbox_3.1: Time OK  timeOffset=31.4870 ns, incremented to 31.4870 ns
+pillbox pillbox_3.2: Time OK  timeOffset=26.7440 ns, incremented to 26.7440 ns
+pillbox pillbox_4.1: Time OK  timeOffset=37.5147 ns, incremented to 37.5147 ns
+pillbox pillbox_4.2: Time OK  timeOffset=32.7716 ns, incremented to 32.7716 ns
+pillbox pillbox_5.1: Time OK  timeOffset=43.5423 ns, incremented to 43.5423 ns
+pillbox pillbox_5.2: Time OK  timeOffset=38.7992 ns, incremented to 38.7992 ns
+pillbox pillbox_6.1: Time OK  timeOffset=49.5699 ns, incremented to 49.5699 ns
+pillbox pillbox_6.2: Time OK  timeOffset=44.8269 ns, incremented to 44.8269 ns
+pillbox pillbox_7.1: Time OK  timeOffset=55.5976 ns, incremented to 55.5976 ns
+pillbox pillbox_7.2: Time OK  timeOffset=50.8545 ns, incremented to 50.8545 ns
+pillbox pillbox_8.1: Time OK  timeOffset=61.6252 ns, incremented to 61.6252 ns
+pillbox pillbox_8.2: Time OK  timeOffset=56.8821 ns, incremented to 56.8821 ns
+pillbox pillbox_9.1: Time OK  timeOffset=67.6528 ns, incremented to 67.6528 ns
+pillbox pillbox_9.2: Time OK  timeOffset=62.9098 ns, incremented to 62.9098 ns
+pillbox pillbox_10.1: Time OK  timeOffset=73.6805 ns, incremented to 73.6805 ns
+pillbox pillbox_10.2: Time OK  timeOffset=68.9374 ns, incremented to 68.9374 ns
+pillbox pillbox_11.1: Time OK  timeOffset=79.7081 ns, incremented to 79.7081 ns
+pillbox pillbox_11.2: Time OK  timeOffset=74.9650 ns, incremented to 74.9650 ns
+pillbox pillbox_12.1: Time OK  timeOffset=85.7357 ns, incremented to 85.7357 ns
+pillbox pillbox_12.2: Time OK  timeOffset=80.9926 ns, incremented to 80.9926 ns
+pillbox pillbox_13.1: Time OK  timeOffset=91.7633 ns, incremented to 91.7633 ns
+pillbox pillbox_13.2: Time OK  timeOffset=87.0202 ns, incremented to 87.0202 ns
+pillbox pillbox_14.1: Time OK  timeOffset=97.7910 ns, incremented to 97.7910 ns
+pillbox pillbox_14.2: Time OK  timeOffset=93.0479 ns, incremented to 93.0479 ns
+pillbox pillbox_15.1: Time OK  timeOffset=103.8186 ns, incremented to 103.8186 ns
+pillbox pillbox_15.2: Time OK  timeOffset=99.0755 ns, incremented to 99.0755 ns
+pillbox pillbox_16.1: Time OK  timeOffset=109.8462 ns, incremented to 109.8462 ns
+pillbox pillbox_16.2: Time OK  timeOffset=105.1032 ns, incremented to 105.1032 ns
+pillbox pillbox_17.1: Time OK  timeOffset=115.8739 ns, incremented to 115.8739 ns
+pillbox pillbox_17.2: Time OK  timeOffset=111.1308 ns, incremented to 111.1308 ns
+pillbox pillbox_18.1: Time OK  timeOffset=121.9015 ns, incremented to 121.9015 ns
+pillbox pillbox_18.2: Time OK  timeOffset=117.1584 ns, incremented to 117.1584 ns
+pillbox pillbox_19.1: Time OK  timeOffset=127.9291 ns, incremented to 127.9291 ns
+pillbox pillbox_19.2: Time OK  timeOffset=123.1860 ns, incremented to 123.1860 ns
+pillbox pillbox_20.1: Time OK  timeOffset=133.9567 ns, incremented to 133.9567 ns
+pillbox pillbox_20.2: Time OK  timeOffset=129.2136 ns, incremented to 129.2136 ns
+pillbox pillbox_21.1: Time OK  timeOffset=139.9843 ns, incremented to 139.9843 ns
+pillbox pillbox_21.2: Time OK  timeOffset=135.2412 ns, incremented to 135.2412 ns
+pillbox pillbox_22.1: Time OK  timeOffset=146.0120 ns, incremented to 146.0120 ns
+pillbox pillbox_22.2: Time OK  timeOffset=141.2689 ns, incremented to 141.2689 ns
+pillbox pillbox_23.1: Time OK  timeOffset=152.0396 ns, incremented to 152.0396 ns
+pillbox pillbox_23.2: Time OK  timeOffset=147.2965 ns, incremented to 147.2965 ns
+pillbox pillbox_24.1: Time OK  timeOffset=158.0672 ns, incremented to 158.0672 ns
+pillbox pillbox_24.2: Time OK  timeOffset=153.3241 ns, incremented to 153.3241 ns
+pillbox pillbox_25.1: Time OK  timeOffset=164.0948 ns, incremented to 164.0948 ns
+pillbox pillbox_25.2: Time OK  timeOffset=159.3518 ns, incremented to 159.3518 ns
+pillbox pillbox_26.1: Time OK  timeOffset=170.1225 ns, incremented to 170.1225 ns
+pillbox pillbox_26.2: Time OK  timeOffset=165.3794 ns, incremented to 165.3794 ns
+pillbox pillbox_27.1: Time OK  timeOffset=176.1501 ns, incremented to 176.1501 ns
+pillbox pillbox_27.2: Time OK  timeOffset=171.4070 ns, incremented to 171.4070 ns
+pillbox pillbox_28.1: Time OK  timeOffset=182.1777 ns, incremented to 182.1777 ns
+pillbox pillbox_28.2: Time OK  timeOffset=177.4346 ns, incremented to 177.4346 ns
+pillbox pillbox_29.1: Time OK  timeOffset=188.2053 ns, incremented to 188.2053 ns
+pillbox pillbox_29.2: Time OK  timeOffset=183.4622 ns, incremented to 183.4622 ns
+pillbox pillbox_30.1: Time OK  timeOffset=194.2329 ns, incremented to 194.2329 ns
+pillbox pillbox_30.2: Time OK  timeOffset=189.4898 ns, incremented to 189.4898 ns
+pillbox pillbox_31.1: Time OK  timeOffset=200.2605 ns, incremented to 200.2605 ns
+pillbox pillbox_31.2: Time OK  timeOffset=195.5175 ns, incremented to 195.5175 ns
+pillbox pillbox_32.1: Time OK  timeOffset=206.2882 ns, incremented to 206.2882 ns
+pillbox pillbox_32.2: Time OK  timeOffset=201.5451 ns, incremented to 201.5451 ns
+pillbox pillbox_33.1: Time OK  timeOffset=212.3158 ns, incremented to 212.3158 ns
+pillbox pillbox_33.2: Time OK  timeOffset=207.5727 ns, incremented to 207.5727 ns
+pillbox pillbox_34.1: Time OK  timeOffset=218.3434 ns, incremented to 218.3434 ns
+pillbox pillbox_34.2: Time OK  timeOffset=213.6003 ns, incremented to 213.6003 ns
+Run complete  1 Events  0 seconds
+================== Begin Reference Particle(s) ===============
+Run complete  1 Events  1 seconds
+================== Prepare Tracking Beam ==================
+**************************************************************************
+*** G4Exception: All stochastic processes disabled
+***    severity: Warning
+***   issued by: physics
+**************************************************************************
+================== Begin Tracking Beam ===============
+Event 1 Completed  1 events  realTime=1 sec  1.0 ev/sec
+Event 2 Completed  2 events  realTime=1 sec  2.0 ev/sec
+Event 3 Completed  3 events  realTime=1 sec  3.0 ev/sec
+Event 4 Completed  4 events  realTime=1 sec  4.0 ev/sec
+Event 5 Completed  5 events  realTime=1 sec  5.0 ev/sec
+Event 6 Completed  6 events  realTime=2 sec  3.0 ev/sec
+Event 7 Completed  7 events  realTime=2 sec  3.5 ev/sec
+Event 8 Completed  8 events  realTime=2 sec  4.0 ev/sec
+Event 9 Completed  9 events  realTime=2 sec  4.5 ev/sec
+Event 10 Completed  10 events  realTime=3 sec  3.3 ev/sec
+Event 20 Completed  20 events  realTime=6 sec  3.3 ev/sec
+Event 30 Completed  30 events  realTime=9 sec  3.3 ev/sec
+Event 40 Completed  40 events  realTime=12 sec  3.3 ev/sec
+Event 50 Completed  50 events  realTime=15 sec  3.3 ev/sec
+Event 60 Completed  60 events  realTime=18 sec  3.3 ev/sec
+Event 70 Completed  70 events  realTime=21 sec  3.3 ev/sec
+Event 80 Completed  80 events  realTime=24 sec  3.3 ev/sec
+Run complete  89 Events  27 seconds
+FOR009.DAT Region 1 z=0.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 2 z=100.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 3 z=200.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 4 z=300.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 5 z=400.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 6 z=500.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 7 z=600.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 8 z=700.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 9 z=800.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 10 z=900.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 11 z=1000.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 12 z=1100.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 13 z=1200.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 14 z=1300.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 15 z=1400.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 16 z=1500.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 17 z=1600.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 18 z=1700.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 19 z=1800.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 20 z=1900.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 21 z=2000.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 22 z=2100.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 23 z=2200.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 24 z=2300.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 25 z=2400.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 26 z=2500.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 27 z=2600.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 28 z=2700.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 29 z=2800.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 30 z=2900.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 31 z=3000.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 32 z=3100.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 33 z=3200.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 34 z=3300.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 35 z=3400.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 36 z=3500.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 37 z=3600.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 38 z=3700.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 39 z=3800.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 40 z=3900.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 41 z=4000.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 42 z=4100.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 43 z=4200.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 44 z=4300.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 45 z=4400.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 46 z=4500.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 47 z=4600.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 48 z=4700.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 49 z=4800.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 50 z=4900.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 51 z=5000.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 52 z=5100.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 53 z=5200.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 54 z=5300.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 55 z=5400.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 56 z=5500.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 57 z=5600.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 58 z=5700.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 59 z=5800.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 60 z=5900.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 61 z=6000.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 62 z=6100.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 63 z=6200.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 64 z=6300.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 65 z=6400.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 66 z=6500.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 67 z=6600.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 68 z=6700.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 69 z=6800.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 70 z=6900.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 71 z=7000.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 72 z=7100.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 73 z=7200.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 74 z=7300.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 75 z=7400.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 76 z=7500.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 77 z=7600.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 78 z=7700.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 79 z=7800.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 80 z=7900.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 81 z=8000.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 82 z=8100.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 83 z=8200.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 84 z=8300.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 85 z=8400.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 86 z=8500.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 87 z=8600.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 88 z=8700.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 89 z=8800.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 90 z=8900.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 91 z=9000.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 92 z=9100.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 93 z=9200.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 94 z=9300.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 95 z=9400.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 96 z=9500.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 97 z=9600.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 98 z=9700.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 99 z=9800.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 100 z=9900.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 101 z=10000.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 102 z=10100.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 103 z=10200.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 104 z=10300.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 105 z=10400.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 106 z=10500.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 107 z=10600.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 108 z=10700.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 109 z=10800.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 110 z=10900.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 111 z=11000.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 112 z=11100.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 113 z=11200.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 114 z=11300.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 115 z=11400.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 116 z=11500.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 117 z=11600.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 118 z=11700.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 119 z=11800.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 120 z=11900.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 121 z=12000.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 122 z=12100.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 123 z=12200.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 124 z=12300.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 125 z=12400.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 126 z=12500.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 127 z=12600.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 128 z=12700.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 129 z=12800.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 130 z=12900.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 131 z=13000.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 132 z=13100.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 133 z=13200.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 134 z=13300.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 135 z=13400.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 136 z=13500.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 137 z=13600.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 138 z=13700.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 139 z=13800.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 140 z=13900.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 141 z=14000.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 142 z=14100.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 143 z=14200.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 144 z=14300.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 145 z=14400.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 146 z=14500.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 147 z=14600.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 148 z=14700.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 149 z=14800.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 150 z=14900.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 151 z=15000.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 152 z=15100.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 153 z=15200.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 154 z=15300.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 155 z=15400.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 156 z=15500.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 157 z=15600.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 158 z=15700.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 159 z=15800.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 160 z=15900.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 161 z=16000.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 162 z=16100.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 163 z=16200.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 164 z=16300.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 165 z=16400.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 166 z=16500.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 167 z=16600.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 168 z=16700.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 169 z=16800.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 170 z=16900.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 171 z=17000.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 172 z=17100.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 173 z=17200.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 174 z=17300.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 175 z=17400.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 176 z=17500.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 177 z=17600.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 178 z=17700.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 179 z=17800.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 180 z=17900.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 181 z=18000.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 182 z=18100.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 183 z=18200.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 184 z=18300.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 185 z=18400.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 186 z=18500.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 187 z=18600.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 188 z=18700.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 189 z=18800.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 190 z=18900.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 191 z=19000.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 192 z=19100.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 193 z=19200.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 194 z=19300.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 195 z=19400.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 196 z=19500.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 197 z=19600.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 198 z=19700.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 199 z=19800.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 200 z=19900.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 201 z=20000.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 202 z=20100.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 203 z=20200.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 204 z=20300.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 205 z=20400.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 206 z=20500.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 207 z=20600.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 208 z=20700.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 209 z=20800.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 210 z=20900.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 211 z=21000.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 212 z=21100.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 213 z=21200.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 214 z=21300.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 215 z=21400.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 216 z=21500.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 217 z=21600.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 218 z=21700.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 219 z=21800.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 220 z=21900.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 221 z=22000.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 222 z=22100.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 223 z=22200.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 224 z=22300.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 225 z=22400.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 226 z=22500.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 227 z=22600.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 228 z=22700.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 229 z=22800.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 230 z=22900.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 231 z=23000.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 232 z=23100.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 233 z=23200.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 234 z=23300.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 235 z=23400.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 236 z=23500.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 237 z=23600.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 238 z=23700.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 239 z=23800.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 240 z=23900.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 241 z=24000.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 242 z=24100.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 243 z=24200.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 244 z=24300.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 245 z=24400.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 246 z=24500.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 247 z=24600.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 248 z=24700.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 249 z=24800.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 250 z=24900.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 251 z=25000.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 252 z=25100.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 253 z=25200.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 254 z=25300.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 255 z=25400.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 256 z=25500.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 257 z=25600.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 258 z=25700.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 259 z=25800.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 260 z=25900.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 261 z=26000.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 262 z=26100.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 263 z=26200.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 264 z=26300.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 265 z=26400.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 266 z=26500.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 267 z=26600.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 268 z=26700.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 269 z=26800.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 270 z=26900.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 271 z=27000.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 272 z=27100.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 273 z=27200.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 274 z=27300.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 275 z=27400.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 276 z=27500.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 277 z=27600.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 278 z=27700.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 279 z=27800.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 280 z=27900.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 281 z=28000.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 282 z=28100.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 283 z=28200.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 284 z=28300.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 285 z=28400.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 286 z=28500.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 287 z=28600.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 288 z=28700.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 289 z=28800.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 290 z=28900.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 291 z=29000.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 292 z=29100.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 293 z=29200.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 294 z=29300.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 295 z=29400.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 296 z=29500.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 297 z=29600.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 298 z=29700.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 299 z=29800.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 300 z=29900.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 301 z=30000.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 302 z=30100.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 303 z=30200.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 304 z=30300.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 305 z=30400.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 306 z=30500.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 307 z=30600.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 308 z=30700.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 309 z=30800.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 310 z=30900.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 311 z=31000.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 312 z=31100.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 313 z=31200.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 314 z=31300.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 315 z=31400.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 316 z=31500.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 317 z=31600.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 318 z=31700.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 319 z=31800.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 320 z=31900.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 321 z=32000.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 322 z=32100.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 323 z=32200.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 324 z=32300.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 325 z=32400.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 326 z=32500.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 327 z=32600.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 328 z=32700.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 329 z=32800.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 330 z=32900.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 331 z=33000.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 332 z=33100.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 333 z=33200.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 334 z=33300.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 335 z=33400.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 336 z=33500.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 337 z=33600.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 338 z=33700.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 339 z=33800.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 340 z=33900.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 341 z=34000.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 342 z=34100.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 343 z=34200.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 344 z=34300.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 345 z=34400.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 346 z=34500.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 347 z=34600.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 348 z=34700.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 349 z=34800.0  90 tracks,  0 unsupported particles ignored
+FOR009.DAT Region 350 z=34900.0  90 tracks,  0 unsupported particles ignored
+
+Exceptions: 0 Fatal, 0 Events Aborted, 0 Stuck Tracks (stopped), 1 Warnings
+      1 times: All stochastic processes disabled
+g4beamline: simulation complete

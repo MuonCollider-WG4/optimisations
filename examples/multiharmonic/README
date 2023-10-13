@@ -1,0 +1,5 @@
+linac.g4bl contains a whole bunch of RF cavities. Fundamental harmonic is 0.02 GHz 
+with additional harmonic content at 0.04 GHz. 0.06 and 0.08 GHz RF cavities are 
+implemented but gradient is set to 0.
+
+
