@@ -162,7 +162,7 @@ def get_beam(my_linac):
             "n_t_steps":1,
             "e_min":100,
             "e_max":1000,
-            "n_e_steps":91,
+            "n_e_steps":10,
             "pid":-13,
             "default_hit":{"x":x_start, "mass":xboa.common.pdg_pid_to_mass[13], "pid":-13},
         }, {
@@ -428,7 +428,7 @@ def main():
     base_dir = f"output/chicane_scan_v19/"
     my_analysis = Analysis(base_dir)
     scale = 1.8
-    for r_curv, bend_angle, b_field, in [(22.9*scale, 15.0*1/scale, 1.5)]:
+    for r_curv, bend_angle, b_field, in [(40, 10.0, 1.0)]:
         run_dir = os.path.join(base_dir, f"bz={b_field:.3g}_angle={bend_angle:.3g}_rcurv={r_curv:.3g}")
         my_linac, my_chicane = build_chicane(run_dir, b_field, bend_angle, r_curv*1e3, do_execute)
         my_linac.build_linac()

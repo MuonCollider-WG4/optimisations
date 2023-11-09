@@ -149,6 +149,7 @@ beam ascii particle={0} nEvents={1} filename={2} format=BLTrackFile beamZ={3} be
         beam_builder = {
             "longitudinal_grid":self.longitudinal_grid,
             "longitudinal_ellipse":self.longitudinal_ellipse,
+            "longitudinal_g4bl_trackfile":self.longitudinal_g4bl,
         }[beam_type]
         beam_builder(a_beam)
 
@@ -167,6 +168,25 @@ beam ascii particle={0} nEvents={1} filename={2} format=BLTrackFile beamZ={3} be
                 hit_dict = copy.deepcopy(a_beam["default_hit"])
                 hit_dict.update({"t":t, "energy":e+mass, "mass":mass, "pid":a_beam["pid"], "event_number":len(self.particles)+1})
                 self.particles.append(xboa.hit.Hit.new_from_dict(hit_dict, "pz"))
+
+
+    def longitudinal_g4bl(self, a_beam):
+        bunch = xboa.bunch.Bunch.new_from_read_builtin("g4beamline_bl_track_file", a_beam["file_name"])
+        for i, hit in enumerate(bunch):
+            hit["x"] = 0.0
+            hit["y"] = 0.0
+            hit["z"] = 0.0
+            hit["px"] = 0.0
+            hit["py"] = 0.0
+            if i < 5:
+                print(i, "pz", hit["pz"])
+            hit.mass_shell_condition("pz")
+            if i < 5:
+                print(i, "pz", hit["pz"])
+            self.particles.append(hit)
+        if a_beam["n_particles"]:
+            ev_numbers = numpy.linspace(0, len(self.particles)-1, a_beam["n_particles"])
+            self.particles = [self.particles[int(ev)] for ev in ev_numbers]
 
     def longitudinal_ellipse(self, a_beam):
         delta_t = a_beam["delta_t"]
