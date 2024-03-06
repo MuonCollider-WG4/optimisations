@@ -95,17 +95,19 @@ class BetaFinder(object):
         beta should be periodic, so beta at the start of one period is the same 
         as beta at the end of one period. If there is no solution, returns (0,0,0)
         """
-        zout = [0.0, self.period]
-        matrix = scipy.integrate.odeint(self.matrix_derivatives,
+        zout = [0.0, self.period/4, self.period]
+        matrix_list = scipy.integrate.odeint(self.matrix_derivatives,
                                         [1, 0.0, 0.0, 1.0, 0.0], # m_00 m_01 m_10 m_11 larmor
                                         zout, hmax=self.hmax,
-                                        mxstep=int(zout[-1]/self.hmax*2))[-1]
+                                        mxstep=int(zout[-1]/self.hmax*2))
+        assert(len(matrix_list) == len(zout))
+        matrix = matrix_list[-1]
         larmor_angle = matrix[4]
         m2d = numpy.array([[matrix[0], matrix[1]], [matrix[2], matrix[3]]])
         cosmu = (m2d[0,0]+m2d[1,1])/2
         #print("Transfer matrix with cosmu", cosmu, "det", numpy.linalg.det(m2d), "\n", m2d)
         if abs(cosmu) > 1:
-            return (0.0, 0.0, 0.0)
+            return (0.0, 0.0, 0.0, 0.0)
         n2d = m2d - numpy.array([[cosmu, 0.0],[0.0,cosmu]])
         #print("N2D\n", n2d)
         # absolute value of sin(mu) from square root; we use beta is pos definite to force the sign of sinmu
@@ -115,8 +117,14 @@ class BetaFinder(object):
         v2d = numpy.array([[n2d[0,1], -n2d[0,0]], [-n2d[0,0], -n2d[1, 0]]])
         # v2d[0,0] = beta/p
         beta, alpha, phase_advance = v2d[0, 0]*self.momentum, -v2d[0,1], -math.atan2(cosmu, sinmu)
+
+        #print(numpy.dot( numpy.dot(m2d, v2d), numpy.transpose(m2d)) - v2d)
+        matrix = matrix_list[1]
+        m2d = numpy.array([[matrix[0], matrix[1]], [matrix[2], matrix[3]]])
+        vhalf = numpy.dot( numpy.dot(m2d, v2d), numpy.transpose(m2d))
+        beta_half = vhalf[0, 0]*self.momentum
         #print("beta alpha phi", beta, alpha, phase_advance)
-        return beta, alpha, phase_advance
+        return beta, alpha, phase_advance, beta_half
 
     def beta_derivatives(self, y, z):
         """
@@ -203,7 +211,7 @@ class BetaFinder(object):
         #print(format(self.momentum, "8.4g"), format(beta0, "12.6g"), format(beta1, "12.6g"), dbetadz, abs(beta0-beta1)*2.0/(beta0+beta1))
         if self.is_not_periodic(beta0, beta1):
             return 0.0, 0.0, 0.0
-        return beta1, dbetadz, phi
+        return beta1, dbetadz, phi, 0.0
 
     def propagate_beta(self, beta0, dbetadz0, n_points=101):
         """
@@ -330,19 +338,19 @@ def do_plots(field, pz_plot_list, pz_list, plot_dir, fig1, fig2, fig3):
     axes[1].set_xlabel("z [m]")
     axes[1].set_ylabel("B$_{z}^2$ [T$^2$]")
 
-    print("     pz    beta_0     phi      n_iterations")
+    print("     pz    beta_0     antibeta_0 phi      n_iterations")
     for pz in pz_list:
         beta_finder.momentum = pz
-        beta, alpha, phi = beta_finder.get_beta_periodic()
-        print ("    ", pz, beta, phi)
+        beta, alpha, phi, beta_half = beta_finder.get_beta_periodic()
+        print (f"    {pz:12.4g} {beta:12.4g} {beta_half:12.4g} {phi:12.4g}")
         beta_list.append(beta)
-        antibeta_list.append(0.0)
+        antibeta_list.append(beta_half)
         phi_list.append(phi)
     out_data["pz_list"] = pz_list
     out_data["beta_list"] = beta_list
     out_data["antibeta_list"] = antibeta_list
     axes[2].plot(pz_list, beta_list, label="$\\beta(L)$")
-    axes[1].plot(pz_list, antibeta_list, 'g--', label="$\\beta(L/2)$")
+    axes[2].plot(pz_list, antibeta_list, 'g--', label="$\\beta(L/2)$")
     axes[2].set_xlabel("p$_{z}$ [GeV/c]")
     axes[2].set_ylabel("$\\beta$ [m]")
     axes[2].set_ylim([0.0, 0.5])
@@ -370,7 +378,6 @@ def do_plots(field, pz_plot_list, pz_list, plot_dir, fig1, fig2, fig3):
         if i > 0 and abs(phi_list[i] - phi_list[i-1]) > math.pi:
             plotting = True
         if plotting:
-            print("Plotting", this_pz_list)
             #axes[4].plot(this_pz_list, this_phi_list, 'r-.')
             this_pz_list, this_phi_list = [], []
             plotting = False
@@ -378,25 +385,27 @@ def do_plots(field, pz_plot_list, pz_list, plot_dir, fig1, fig2, fig3):
         this_phi_list.append(phi)
 
 
+    print(f"Max Bz: {max(bz_list)}")
     for pz in pz_plot_list:
-        print ("PZ PLOT LIST", pz, pz_plot_list)
         beta_finder.momentum = pz
-        beta, alpha, phi = beta_finder.get_beta_periodic()
+        beta, alpha, phi, beta_mid = beta_finder.get_beta_periodic()
         if beta < 1e-9:
+            print(f"Failed to plot {pz}; no closed solution found")
             continue
-        print("PLOTTING", pz, beta)
         beta_finder.verbose = 0
         z_list, beta_list, dbetadz_list, phi_list = \
                                         beta_finder.propagate_beta(beta, 0.)
-        print(z_list)
-        print(beta_list)
         axes[3].plot(z_list, beta_list, label="p$_z$ "+format(pz, "6.4g")+" GeV/c")
         out_data["pz_items"].append({"z":z_list, "beta_list":beta_list, "pz":pz})
+        print(f"beta(z=0, pz={pz}): {beta_list[0]}")
     axes[3].set_xlabel("z [m]")
     axes[3].set_ylabel("$\\beta$ [m]")
-    axes[3].set_ylim([0.0, 1.6])
-    axes[3].legend()
-
+    axes[3].set_ylim([0.0, 0.5])
+    try:
+        axes[3].legend()
+    except:
+        pass
+    print("Finished plotting lattice")
     emittance = 0.0003 # metres
     mass = 0.105658 # GeV/c^2
     #for emittance in [0.0003]:
@@ -427,25 +436,15 @@ def make_solenoid_field():
 
 def main():
     global fignum
-    plot_dir = "optics-scan_v22"
+    plot_dir = "output/demonstrator_optics_v1"
     pz_plot_list = [0.19, 0.2, 0.21]
-    pz_scan_list = [pz_i/1000. for pz_i in range(130, 251, 1)]
+    pz_scan_list = [pz_i/1000. for pz_i in range(10, 501, 5)]
     n_points = 2
-    norm = 160
-    clear_dir(plot_dir)
-    b1 = 7.0
-    b2 = 1.0
-    b3 = 0.0
-    for b1, b2, b3 in [
-            (7.0, 1.0, 0.0),
-            (7.5, 1.0, 0.0),
-            (7.0, 1.25, 0.0),
-            (7.0, 1.0, 0.5)
-        ]:
-    #for bi in range(0, 21, 1):
-    #    b3 = (bi-10)*0.05
-        solenoid_field = SineField(0.0, b3, b1, 0.0, b2, 0.0, 2.0)
-        fig1, fig2, fig3 = do_plots(solenoid_field, pz_plot_list, pz_scan_list, plot_dir, None, None, None)
+    norm = 100
+    #clear_dir(plot_dir)
+    solenoid_field = SineField(0.0, b1, b2, b3, b4, 0.0, 1.2)
+    solenoid_field.normalise_bz_squared(norm)
+    fig1, fig2, fig3 = do_plots(solenoid_field, pz_plot_list, pz_scan_list, plot_dir, None, None, None)
     matplotlib.pyplot.show(block=False)
 
 if __name__ == "__main__":

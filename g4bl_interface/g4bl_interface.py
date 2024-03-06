@@ -263,10 +263,14 @@ class G4BLLinac:
         self.lattice_file.write(topmatter)
 
     def build_reference(self):
-        my_reference = Reference()
-        my_reference.setup(self.reference)
-        ref_string = my_reference.build()
-        self.lattice_file.write(ref_string)
+        # note I had to hack G4BL for009 output to cope with multi ref particles
+        if type(self.reference) != type([]):
+            self.reference = [self.reference]
+        for a_ref_dict in self.reference:
+            my_reference = Reference()
+            my_reference.setup(a_ref_dict)
+            ref_string = my_reference.build()
+            self.lattice_file.write(ref_string+"\n")
 
     def build_beam(self):
         my_beam = Beam()

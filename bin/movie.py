@@ -16,11 +16,12 @@ def sort_key(fname):
     return a_list
 
 def main():
-    for folder in glob.glob("optics-scan_v16"):
+    for folder in glob.glob("output/rf_capture_v2/"):
         here = os.getcwd()
         os.chdir(folder)
         file_list = glob.glob("*.png")
-        file_list = sorted(file_list, key=sort_key)
+        file_list = sorted(file_list)
+        print(file_list)
         file_list_mencoder = ["mf://"+x for x in file_list]
         print(file_list)
         output = subprocess.check_output(["mencoder"]+file_list_mencoder+
@@ -28,7 +29,7 @@ def main():
                                 "-ovc", "lavc",
                                 "-lavcopts", "vcodec=msmpeg4:vbitrate=2000:mbd=2:trell",
                                 "-oac", "copy",
-                                "-o", "optics_mencoder.avi"])
+                                "-ofps", "5", "-o", "optics_mencoder.avi"])
         file_list_ffmpeg = []
         for f in file_list:
             file_list_ffmpeg += ["-i", f]

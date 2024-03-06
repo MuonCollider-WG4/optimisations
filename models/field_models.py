@@ -195,6 +195,15 @@ class CurrentSheet(Field):
         # b0 = mu0 I / 2 -> I/l = 2 b0/mu0/l
         return self.b0/mu0 #[A/m]
 
+    def get_off_axis_field(self, z, r):
+        """
+        Return the field off-axis
+        - z position along the current sheet axis
+        - r position radially (perpendicular to the current sheet axis)
+        Returns a two vector bz, br
+        """
+        return sum([coil.get_field(z) for coil in self.coil_list])
+
     def get_name(self):
         return "sheet"
 
@@ -220,6 +229,11 @@ class CurrentBlock(Field):
 
     def get_field(self, z): # not yet
         return sum([coil.get_field(z) for coil in self.coil_list])
+
+    def get_off_axis_field(self, z, r): # not yet
+        raise NotImplementedError()
+        return sum([coil.get_field(z) for coil in self.coil_list])
+
 
     def get_current_density(self):
         # assumes nothing weird like some current sheets longer than others
