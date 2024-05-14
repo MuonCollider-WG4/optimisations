@@ -21,6 +21,9 @@ void FourierFieldModel::GetField(const double& z, const int& derivative, double&
 void DerivativesSolenoid::GetField(const std::vector<double>& position,
                                    const double& /*time*/,
                                    std::vector<double>& bfield) {
+    if(bfield.size() == 3) {
+        throw "Error bfield was of wrong size";
+    }
     double r = std::sqrt(position[0]*position[0]+position[1]*position[1]);
     double phi = atan2(position[1], position[0]);
     double z = position[2];
@@ -33,8 +36,9 @@ void DerivativesSolenoid::GetField(const std::vector<double>& position,
             bfield[2] += coefficient*derivative;
         } else {
             fieldModel->GetField(z, i, derivative);
-            br += coefficient/(i+1)
-
+            br += -coefficient/(i+1)*derivative;
         }
     }
+    bfield[0] = br*cos(phi);
+    bfield[1] = br*sin(phi);
 }
