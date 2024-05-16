@@ -5,7 +5,7 @@ class OnAxisFieldModel {
 public:
     OnAxisFieldModel() {}
     virtual ~OnAxisFieldModel() {}
-    virtual void GetField(const double& z, const int& derivative, double& bzDerivative) = 0;
+    virtual void GetField(const double& z, const int& derivative, double& bzDerivative) const = 0;
 private:
 };
 
@@ -23,7 +23,7 @@ public:
                           const int& derivative,
                           double& bzDerivative) const;
 
-    std::vector<double> harmonicContent;
+    std::vector<double> harmonicList;
     double cellLength;
 private:
 };
@@ -35,7 +35,7 @@ public:
     DerivativesSolenoid() {}
     ~DerivativesSolenoid() {}
 
-    void GetField(const std::vector<double>& position,
+    void GetFieldValue(const std::vector<double>& position,
                   const double& time,
                   std::vector<double>& bfield);
 
