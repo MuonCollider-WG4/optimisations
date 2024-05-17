@@ -39,6 +39,10 @@ public:
                   const double& time,
                   std::vector<double>& bfield);
 
+    void SetCoeff();
     std::unique_ptr<OnAxisFieldModel> fieldModel;
     unsigned int maxDerivative = 1;
+private:
+    std::vector<double> acoeff = std::vector<double>(1, 0.0);
+    std::vector<double> bcoeff = std::vector<double>(1, 1.0);
 };

@@ -20,32 +20,64 @@ void FourierFieldModel::GetField(const double& z, const int& derivative, double&
     }
 }
 
+void PrintVector(std::vector<double> vec) {
+    for (size_t i = 0; i <= vec.size(); ++i) {
+        std::cerr << vec[i] << " ";
+    }
+    std::cerr << std::endl;
+}
+
 void DerivativesSolenoid::GetFieldValue(const std::vector<double>& position,
                                    const double& /*time*/,
                                    std::vector<double>& bfield) {
     if (fieldModel.get() == nullptr) {
         throw std::string("On axis field model was not set");
     }
+    SetCoeff();
     double r = std::sqrt(position[0]*position[0]+position[1]*position[1]);
     double phi = atan2(position[1], position[0]);
     double z = position[2];
-    double coefficient = 1;
     double br = 0.0;
     std::vector<double> rPow(maxDerivative+1, 1.0);
-    std::vector<double> bi(maxDerivative+1, 0.0);
     for (int i = 1; i <= maxDerivative; ++i) {
         rPow[i] = rPow[i-1]*r;
     }
+
+    std::vector<double> bi(maxDerivative+1, 0.0);
+    //std::vector<double> acoeff(maxDerivative+1, 0.0);
+    //std::vector<double> bcoeff(maxDerivative+1, 0.0);
+    //bcoeff[0] = 1.0;
     for (unsigned int i = 0; i <= maxDerivative; i += 1) {
         double derivative = 0;
-        if (i % 2 == 0) {
-            fieldModel->GetField(z, i, derivative);
-            bfield[2] += coefficient*derivative*rPow[i];
-        } else {
-            fieldModel->GetField(z, i, derivative);
-            br += -coefficient/(i+1)*derivative*rPow[i];
-        }
+        fieldModel->GetField(z, i, derivative);
+        bfield[2] += bcoeff[i]*derivative*rPow[i];
+        br += acoeff[i]*derivative*rPow[i];
+        /*
+        std::cerr << "calc br " << i << " " << acoeff[i] << " " << derivative << " " << rPow[i] << " " << br << std::endl;
+        std::cerr << "acoeff ";
+        PrintVector(acoeff);
+        std::cerr << "bcoeff ";
+        PrintVector(bcoeff);*/
     }
     bfield[0] = br*cos(phi);
     bfield[1] = br*sin(phi);
+}
+
+//Core dump almost certainly I screwed up the length of the vector
+void DerivativesSolenoid::SetCoeff() {
+    if (maxDerivative >= acoeff.size()) {
+        acoeff = std::vector<double>(maxDerivative+1, 0.0);
+        bcoeff = std::vector<double>(maxDerivative+1, 0.0);
+        bcoeff[0] = 1.0;
+    } else {
+        return;
+    }
+    for (size_t i = 1; i <= maxDerivative; i++) {
+        if (i % 2 == 0) {
+            bcoeff[i] = -bcoeff[i-2]/i/i;
+        } else {
+            acoeff[i] = -bcoeff[i-1]/(i+1);
+        }
+        //std::cerr << "setting coeff " << i << " " << bcoeff[i-2] << " " << acoeff[i-1] << std::endl;
+    }
 }

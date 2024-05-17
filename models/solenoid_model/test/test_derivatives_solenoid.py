@@ -5,7 +5,7 @@ import derivatives_solenoid
 
 class TestDerivativesSolenoid(unittest.TestCase):
     def setUp(self):
-        self.dx = 0.001
+        self.dx = 1e-6
 
     def test_initialisation(self):
         sol = derivatives_solenoid.DerivativesSolenoid()
@@ -89,25 +89,33 @@ class TestDerivativesSolenoid(unittest.TestCase):
         return curl2**0.5
 
     def test_off_axis_field(self):
+        verbose = 0
         sol = derivatives_solenoid.DerivativesSolenoid()
         sol.set_fourier_field_model(0.5, [2.0]) # T, m
-        for iz in range(0, 2):
+
+        for iz in range(1, 4):
             z = 0.1*iz            
-            for ir in range(3):
+            for ir in range(0, 3):
                 r = ir/10.0
-                for iphi in range(0, 1):
+                for iphi in range(0, 10):
                     phi = math.radians(iphi*36)
                     pos = [r*math.cos(phi), r*math.sin(phi), z]
                     div_b, curl_b = None, None
-                    for order in range(5):
+                    sum_list = []
+                    for order in range(0, 18):
                         sol.set_max_derivative(order)
                         bfield = sol.get_field_value(pos[0], pos[1], pos[2], 0.0)
                         div_b = self.get_div_b(sol, pos)
                         curl_b = self.get_curl_b_mag(sol, pos)
-                        print(f"i: {order} pos: {pos[0]:8.4g} {pos[1]:8.4g} {pos[2]:8.4g}", end=" ")
-                        print(f"bfield: {bfield[0]:10.4g} {bfield[1]:10.4g} {bfield[2]:10.4g}", end=" ")
-                        print(f"div: {div_b:10.4g} curl: {curl_b:10.4g}")
-                    print()
+                        sum_list.append(abs(curl_b)+abs(div_b))
+                        if verbose:
+                            print(f"i: {order} pos: {pos[0]:8.4g} {pos[1]:8.4g} {pos[2]:8.4g}", end=" ")
+                            print(f"bfield: {bfield[0]:10.4g} {bfield[1]:10.4g} {bfield[2]:10.4g}", end=" ")
+                            print(f"div: {div_b:10.4g} curl: {curl_b:10.4g} sum: {sum_list[-1]}")
+                    if verbose:
+                        print()
+                    for i in range(4, len(sum_list), 2):
+                        self.assertTrue(sum_list[i] < sum_list[i-2] or sum_list[i] < 1e-8)
 
 if __name__ == "__main__":
     unittest.main()
