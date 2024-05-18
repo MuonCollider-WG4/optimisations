@@ -44,26 +44,16 @@ void DerivativesSolenoid::GetFieldValue(const std::vector<double>& position,
     }
 
     std::vector<double> bi(maxDerivative+1, 0.0);
-    //std::vector<double> acoeff(maxDerivative+1, 0.0);
-    //std::vector<double> bcoeff(maxDerivative+1, 0.0);
-    //bcoeff[0] = 1.0;
     for (unsigned int i = 0; i <= maxDerivative; i += 1) {
         double derivative = 0;
         fieldModel->GetField(z, i, derivative);
         bfield[2] += bcoeff[i]*derivative*rPow[i];
         br += acoeff[i]*derivative*rPow[i];
-        /*
-        std::cerr << "calc br " << i << " " << acoeff[i] << " " << derivative << " " << rPow[i] << " " << br << std::endl;
-        std::cerr << "acoeff ";
-        PrintVector(acoeff);
-        std::cerr << "bcoeff ";
-        PrintVector(bcoeff);*/
     }
     bfield[0] = br*cos(phi);
     bfield[1] = br*sin(phi);
 }
 
-//Core dump almost certainly I screwed up the length of the vector
 void DerivativesSolenoid::SetCoeff() {
     if (maxDerivative >= acoeff.size()) {
         acoeff = std::vector<double>(maxDerivative+1, 0.0);
@@ -78,6 +68,5 @@ void DerivativesSolenoid::SetCoeff() {
         } else {
             acoeff[i] = -bcoeff[i-1]/(i+1);
         }
-        //std::cerr << "setting coeff " << i << " " << bcoeff[i-2] << " " << acoeff[i-1] << std::endl;
     }
 }

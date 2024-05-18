@@ -74,7 +74,6 @@ class TestDerivativesSolenoid(unittest.TestCase):
         position[xdim] += self.dx
         return derivative
 
-
     def get_div_b(self, field, position):
         div = 0.0
         for i in range(3):
