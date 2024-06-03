@@ -12,7 +12,8 @@ class Chicane:
     def __init__(self):
         # chicane parameters
         self.bend_angle = 12.5 # degrees
-        self.radius_of_curvature = 20000.0 # mm
+        self.radius_of_curvature_1 = 20000.0 # mm
+        self.radius_of_curvature_2 = 20000.0 # mm
         self.b_field = 2 # T
         self.middle_straight = 0.0
         self.pre_length = 1000.0 # mm, length before the beam is injected
@@ -101,11 +102,11 @@ class Chicane:
         rot_start = math.radians(last_coil["y_rotation"])
         x_start = last_coil["x_position"]+math.sin(rot_start)*self.stroke_length
         z_start = last_coil["z_position"]+math.cos(rot_start)*self.stroke_length
-        dtheta = self.stroke_length/self.radius_of_curvature
+        dtheta = self.stroke_length/self.radius_of_curvature_1
         n_coils = int(math.radians(self.bend_angle)/dtheta)
         theta_list = [dtheta*i for i in range(1, n_coils+1)]
-        x_list = [self.radius_of_curvature*math.cos(theta)*bend_scale for theta in theta_list]
-        z_list = [self.radius_of_curvature*math.sin(theta) for theta in theta_list]
+        x_list = [self.radius_of_curvature_1*math.cos(theta)*bend_scale for theta in theta_list]
+        z_list = [self.radius_of_curvature_1*math.sin(theta) for theta in theta_list]
         for i in range(n_coils):
             x_tmp = x_list[i]*math.cos(rot_start)+z_list[i]*math.sin(rot_start)
             z_tmp = -x_list[i]*math.sin(rot_start)+z_list[i]*math.cos(rot_start)
@@ -211,7 +212,31 @@ def build_chicane(root_dir, b_field, bend_angle, r_curv, cleanup = True):
     my_linac.max_step = 10.0
     chicane = Chicane()
     chicane.bend_angle = bend_angle # degrees
-    chicane.radius_of_curvature = r_curv # mm
+    chicane.radius_of_curvature_1 = r_curv # mm
+    chicane.radius_of_curvature_2 = r_curv # mm
+    chicane.b_field = b_field # T
+    chicane.middle_straight = 0.0
+    # get bend 2
+    chicane.bend_1_modifier = coil_mod
+    chicane.bend_2_modifier = coil_mod
+    # build_linac
+    my_linac.elements = chicane.build()
+    get_beam(my_linac)
+    my_linac.do_stochastics = 0 # e.g. decays
+    my_linac.max_z = max([sol["z_position"] for sol in my_linac.elements])-chicane.post_length_2
+    return my_linac, chicane
+
+def build_charge_separation(root_dir, b_field, bend_angle, r_curv_1, r_curv_2, cleanup = True):
+    global chicane
+    lattice_filename = root_dir+"/chicane.g4bl"
+    g4bl_interface.g4bl_interface.Solenoid.clear()
+    my_linac = g4bl_interface.g4bl_interface.G4BLLinac(lattice_filename)
+    my_linac.cleanup_dir = cleanup
+    my_linac.max_step = 10.0
+    chicane = Chicane()
+    chicane.bend_angle = bend_angle # degrees
+    chicane.radius_of_curvature_1 = r_curv_1 # mm
+    chicane.radius_of_curvature_2 = r_curv_2 # mm
     chicane.b_field = b_field # T
     chicane.middle_straight = 0.0
     # get bend 2
@@ -293,7 +318,7 @@ class Analysis():
             del self.track_dict[0]
 
     def run_label(self, chicane, linac):
-        return f"b$_z$ {chicane.b_field:.3g} T; r$_{{curv}}$ {chicane.radius_of_curvature*1e-3:.3g} m; $\\theta$ {chicane.bend_angle}$^\\circ$"
+        return f"b$_z$ {chicane.b_field:.3g} T; r$_{{curv}}$ {chicane.radius_of_curvature_1*1e-3:.3g}, {chicane.radius_of_curvature_2*1e-3:.3g} m; $\\theta$ {chicane.bend_angle}$^\\circ$"
 
     def plot_amp_max(self):
         energy_list = [track[0]["kinetic_energy"] for ev, track in sorted(self.track_dict.items())]
@@ -419,7 +444,7 @@ class Analysis():
             if figure.number > 10:
                 matplotlib.pyplot.close(figure)
 
-def main():
+def proton_extraction():
     do_execute = True
     b_field = 1.5
     bend_angle = 15
@@ -438,6 +463,27 @@ def main():
         my_analysis.load_data(my_linac, my_chicane, os.path.split(my_linac.lattice_filename)[0]+"/plots")
         my_analysis.do_plots()
         print()
+
+def main():
+    do_execute = True
+    b_field = 1.5
+    bend_angle = 15
+    r_curv = 20 # metres
+    middle_straight = 0.0
+    base_dir = f"output/charge_sep_v1/"
+    my_analysis = Analysis(base_dir)
+    scale = 1.8
+    for r_curv, bend_angle, b_field, in [(41, 8.33, 1.5)]:
+        run_dir = os.path.join(base_dir, f"bz={b_field:.3g}_angle={bend_angle:.3g}_rcurv={r_curv:.3g}")
+        my_linac, my_chicane = build_charge_separation(run_dir, b_field, bend_angle, r_curv*1e3, r_curv*1e3, do_execute)
+        my_linac.build_linac()
+        if do_execute: # alternatively we just redo the analysis
+            my_execution = g4bl_interface.g4bl_interface.G4BLExecution(my_linac)
+            my_execution.execute()
+        my_analysis.load_data(my_linac, my_chicane, os.path.split(my_linac.lattice_filename)[0]+"/plots")
+        my_analysis.do_plots()
+        print()
+
 
 if __name__ == "__main__":
     main()

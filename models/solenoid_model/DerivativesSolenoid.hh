@@ -42,6 +42,9 @@ public:
     void SetCoeff();
     std::unique_ptr<OnAxisFieldModel> fieldModel;
     unsigned int maxDerivative = 1;
+    double maxR = -1.0;
+    double minZ = 0.0;
+    double maxZ = 0.0;
 private:
     std::vector<double> acoeff = std::vector<double>(1, 0.0);
     std::vector<double> bcoeff = std::vector<double>(1, 1.0);

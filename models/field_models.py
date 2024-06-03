@@ -52,6 +52,9 @@ class FieldSum(Field):
     def get_period(self):
         return self.period
 
+    def get_name(self):
+        return "field sum"
+
 
 class FlatGaussField(Field):
     def __init__(self, period, width, peak, tail):
@@ -195,37 +198,44 @@ class CurrentSheet(Field):
         # b0 = mu0 I / 2 -> I/l = 2 b0/mu0/l
         return self.b0/mu0 #[A/m]
 
-    def get_off_axis_field(self, z, r):
+    def get_one_off_axis_field(self, z, r):
         """
         Return the field off-axis
         - z position along the current sheet axis
         - r position radially (perpendicular to the current sheet axis)
         Returns a two vector bz, br
         """
-        return sum([coil.get_field(z) for coil in self.coil_list])
+        pass
 
     def get_name(self):
         return "sheet"
 
 class CurrentBlock(Field):
-    def __init__(self, b0, zcentre, length, rmin, rmax, period, nrepeats, nsheets):
+    """
+    Places a single current block
+
+    Note that this requires a FieldSum to make a field that shows odd periodicity
+    (like many of the rectilinear cooling lattices require).
+    """
+    def __init__(self, current_density, zcentre, length, rmin, rmax, period, nrepeats, nsheets):
         self.zcentre = zcentre
         self.length = length
         self.rmin = rmin
         self.rmax = rmax
         self.period = period
         self.nrepeats = nrepeats
-        self.b0 = b0
         self.nsheets = nsheets
+        self.current_density = current_density
         self.coil_list = []
         self.reset()
 
     def reset(self):
         rstep = (self.rmax-self.rmin)/self.nsheets
         self.coil_list = [
-            CurrentSheet(self.b0/self.nsheets, self.zcentre, self.length, self.rmin+rstep*(i+0.5), self.period, self.nrepeats)
+            CurrentSheet(1/self.nsheets, self.zcentre, self.length, self.rmin+rstep*(i+0.5), self.period, self.nrepeats)
             for i in range(self.nsheets)
         ]
+        self.set_current_density(self.current_density)
 
     def get_field(self, z): # not yet
         return sum([coil.get_field(z) for coil in self.coil_list])
@@ -234,7 +244,6 @@ class CurrentBlock(Field):
         raise NotImplementedError()
         return sum([coil.get_field(z) for coil in self.coil_list])
 
-
     def get_current_density(self):
         # assumes nothing weird like some current sheets longer than others
         current_per_length = 0.0
@@ -242,6 +251,19 @@ class CurrentBlock(Field):
             current_per_length += coil.get_current_per_length()
         current_density = current_per_length / (self.rmax-self.rmin)
         return current_density # A m^-2
+
+    def set_current_density(self, current_density):
+        self.current_density = current_density
+        for coil in self.coil_list:
+            coil.b0 = 1
+        old_current_density = self.get_current_density()
+        for coil in self.coil_list:
+            coil.b0 = current_density/old_current_density
+        assert(abs(self.get_current_density() - current_density) < 1e-9, f"current densities did not match {self.get_current_density()} {current_density}")
+
+    def get_b0(self):
+        return self.coil_list[0].b0
+
 
     def get_period(self):
         return self.coil_list[0].get_period()

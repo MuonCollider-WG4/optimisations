@@ -23,10 +23,9 @@ class CoilFitter(object):
         self.cell_extent = 10 # n in each direction beyond the first
         self.n_fit_points = 100
         self.period = -1
-        self.fit_params = ["b0"]#, "zcentre", "length"] # value:seed
-        self.limits = []
+        self.fit_params = []#, "zcentre", "length"] # value:seed
         self.force_symmetry = -1 # -1, 0 or 1 for antisymmetric, no symmetry, symmetric
-        #(b0, zcentre, length, rmin, rmax, period, nrepeats, nsheets)
+        #(current_density, zcentre, length, rmin, rmax, period, nrepeats, nsheets)
         self.suffix = "_ri="+str(ri)
         self.coil_list = []
         self.minuit = None
@@ -66,7 +65,7 @@ class CoilFitter(object):
         - dz: length of the coil [m]
         - suffix: string
         """
-        # b0, zcentre, length, rmin, rmax, period, nrepeats, nsheets
+        # current_density, zcentre, length, rmin, rmax, period, nrepeats, nsheets
         fitter = CoilFitter()
         fitter.coil_list = []
         fitter.coil_list.append(
@@ -103,6 +102,8 @@ class CoilFitter(object):
         if var['n_steps'] == 1:
             value_list = [(var['maximum']+var['minimum'])/2.0]
             bin_list = [var['minimum'], var['maximum']]
+            if abs(var['maximum'] - var['minimum']) < 1e-12:
+                bin_list = var['maximum']-abs(var['maximum'])*0.1, var['maximum']+abs(var['maximum'])*0.1
             return value_list, bin_list
 
         delta = (var['maximum']-var['minimum'])/(var['n_steps']-1)
@@ -181,15 +182,13 @@ class CoilFitter(object):
         self.iteration = 0
         self.period = self.field_to_match.period
         self.minuit = ROOT.TMinuit()
-        param_index = 0
         for coil in self.coil_list:
-            for i, key in enumerate(self.fit_params):
-                value = coil.__dict__[key]
-                print("Setting limits", self.limits[i])
-                pmin = min(self.limits[i])
-                pmax = max(self.limits[i])
-                self.minuit.DefineParameter(param_index, key, value, max(abs(value)/10.0, 0.1), pmin, pmax)
-                param_index += 1
+            for i, param in enumerate(self.fit_params):
+                pmin = min(param["limits"])
+                pmax = max(param["limits"])
+                self.minuit.DefineParameter(i, param["name"], param["seed"], max(abs(param["seed"])/10.0, 0.1), pmin, pmax)
+                if param["is_fixed"]:
+                    self.minuit.FixParameter(i)
         self.minuit.SetPrintLevel(-1)
         global my_self
         my_self = self
@@ -216,8 +215,8 @@ class CoilFitter(object):
     def print_coil_params(self):
         for i, coil in enumerate(self.coil_list):
             print("Coil parameters for coil "+str(i))
-            print("  nominal field [T]:       ", format(coil.b0, "9.4g"))
-            print("  current density [A/mm^2]:", format(coil.get_current_density()*1e-6, "9.4g"))
+            print("  nominal field [T]:       ", format(coil.get_b0(), "9.4g"))
+            print("  current density [A/mm^2]:", format(coil.current_density, "9.4g"))
             print("  centre position [m]:    ", format(coil.zcentre, "9.4g"))
             print("  length [m]:             ", format(coil.length, "9.4g"))
             print("  inner radius [m]:       ", format(coil.rmin, "9.4g"))
@@ -266,14 +265,14 @@ class CoilFitter(object):
         param_index = 0
         for i, coil in enumerate(self.coil_list):
             print("Coil"+str(i), end=" ")
-            for key in self.fit_params:
+            for param in self.fit_params:
                 value = ctypes.c_double()
                 err = ctypes.c_double()
                 self.minuit.GetParameter(param_index, value, err)
                 py_value = float(value.value)
-                coil.__dict__[key] = py_value
+                coil.__dict__[param["name"]] = py_value
                 param_index += 1
-                print(key, format(py_value, "6.4g"), end="; ")
+                print(param["name"], format(py_value, "6.4g"), end="; ")
             coil.reset()
             print()
 
@@ -286,7 +285,6 @@ class CoilFitter(object):
             if self.force_symmetry == None:
                 pass
             else:
-                #z1 = self.period-z-cell*self.period
                 test_field += self.force_symmetry*sum([coil.get_field(ztest1) for coil in self.coil_list])
         return test_field
 
@@ -333,10 +331,17 @@ class CoilFitter(object):
         z_list = [i*self.period/100 for i in range(101)]
         bref_list = [self.field_to_match.get_field(z) for z in z_list]
         bopt_list = [self.get_test_field(z) for z in z_list]
+        deltab_list = [bopt_list[i]-bref_list[i] for i, z in enumerate(z_list)]
+        multiplier = 1
+        while max(deltab_list)*multiplier*10 < max(bref_list) and multiplier < 1.1e6:
+           multiplier *= 10
+        deltab_list = [db*multiplier for db in deltab_list]
+
         figure = matplotlib.pyplot.figure()
         axes = figure.add_subplot(1, 1, 1)
         axes.plot(z_list, bref_list, label="Reference Field")
         axes.plot(z_list, bopt_list, label="Generated Field")
+        axes.plot(z_list, deltab_list, label=f"Delta Field x {multiplier}")
         axes.legend()
         axes.set_xlabel("z [m]")
         axes.set_ylabel("B$_{z}$ [T]")
@@ -353,76 +358,34 @@ def clear_dir(a_dir):
         pass
     os.makedirs(a_dir)
 
-def pixel_fit():
-    output_dir = "output/demo_field_v1"
+def scan(output_dir):
     clear_dir(output_dir)
-    for scale in [1.0]: #0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0]:
-        b1 = 7.0
-        b2 = 1.0
-        l = 1.0
-        ri, dr, nr = 0.5, 0.1, 1
-        #zcentre = zi+dz*(zindex+0.5)
-        dz = l/10.0
-        zi, dz, nz = l/4-dz/2, l/10.0, 6
-        fitter = CoilFitter.new_from_pixels(ri, dr, nr, zi, dz, nz, "_b1={0:.4g}_b2={1:.4g}_l={2:.4g}".format(b1, b2, l))
-        fitter.output_dir = output_dir
-        fitter.fit_params = ["b0"] #, "length"] # value:seed
-        fitter.limits = [[0, 0]]
-        fitter.field_to_match = SineField(0.0, b1, b2, 0.0, 0.0, 0.0, l)
-        fitter.fit_coil(1e-8)
-        fitter.plot_fit()
-    matplotlib.pyplot.show(block=False)
-
-def get_demo_old():
-    field_to_match = CurrentBlock(1.0, 0.1, 0.1, 0.4, 0.5, 1.0, 20, 10)
-    #bnom = 3003.451065/(field_to_match.get_current_density()*1e-6)
-    #field_to_match.b0 = bnom
-    #field_to_match.reset()
-    #print("Current density", field_to_match.get_current_density()*1e-6, "[A/mm^2]")
-    #print("n repeats", field_to_match.nrepeats)
-    #print("period", field_to_match.period)
-    return field_to_match
-
-def scan():
-    output_dir = "output/demo_field_v5"
-    clear_dir(output_dir)
+    cell_length = 1.0
     fitter = CoilFitter.new_from_coil(0.2, 0.1, 0.1, 0.1, "test")
-    fitter.field_to_match = SineField(0.0, 7.0, 1.0, 0.0, 0.0, 0.0, 1.0)
-    #fitter.field_to_match = get_demo_old()
+    fitter.field_to_match = SineField(0.0, 7.0/cell_length, 1.0/cell_length, 0.0, 0.0, 0.0, cell_length)
     fitter.output_dir = output_dir
     var_x = {
         'coil': 0,
-        'parameter':'length',
-        'minimum':0.05,
-        'maximum':0.4,
-        'n_steps':25,
-    }
-    var_y = {
-        'coil': 0,
-        'parameter':'rmin',
-        'minimum':0.05,
-        'maximum':0.5,
-        'n_steps':25,
-    }
-    var_x = {
-        'coil': 0,
-        'parameter':'length',
-        'minimum':0.10,
-        'maximum':0.20,
+        'parameter':'rmax',
+        'minimum':0.31,
+        'maximum':0.31,
         'n_steps':1,
     }
     var_y = {
         'coil': 0,
         'parameter':'rmin',
-        'minimum':0.25,
-        'maximum':0.35,
+        'minimum':0.29,
+        'maximum':0.29,
         'n_steps':1,
     }
-    fitter.fit_params = ["b0", "zcentre", "rmax"] #, "length"] # value:seed
-    fitter.limits = [[0, 0], [0.05, 0.45], [0.0, 0.8]]
+    fitter.fit_params = [
+        {"name":"current_density", "limits":[100e6, 100000e6], "seed":100e6, "is_fixed":False},
+        {"name":"length", "limits":[0, 0.2], "seed":0.140, "is_fixed":False},
+        {"name":"zcentre", "limits":[0.07, 0.43], "seed":0.25, "is_fixed":False},
+    ]
     plot_variables = [
         {"parameter":"sigma"},
-        {"parameter":"current_density", "coil":0, "minimum":-1000e6, "maximum":1000e6},
+        {"parameter":"current_density", "coil":0, "minimum":0, "maximum":1000e6},
         {"parameter":"zcentre", "coil":0},
         {"parameter":"rmax", "coil":0},
         {"parameter":"zmax", "coil":0},
@@ -432,8 +395,36 @@ def scan():
     fitter.plot_scan_2d(var_x, var_y, plot_variables)
     fitter.plot_fit()
 
+def load_scan(file_name, value_dict, norm_dict=None):
+    fin = open(file_name)
+    data_json = [json.loads(line) for line in fin.readlines()]
+    if norm_dict is None:
+        norm_dict = dict([(key, 1) for key in value_dict.keys()])
+    distance_list = []
+    for item in data_json:
+        distance = 0
+        for key in value_dict.keys():
+            distance += (value_dict[key]-item[key])**2/norm_dict[key]**2
+        distance_list.append((distance, item) )
+    distance_list = sorted(distance_list, key=lambda x: x[0])
+    for d in reversed(distance_list):
+        d = d[1]
+        converted_dict = {
+            "__current__": d["__solenoid_current_1__"],
+            "__sz_pos__": d["__solenoid_z_pos_1__"]/d["__cell_length__"]/2000,
+            "__coil_length__": d["__solenoid_z_length_1__"],
+            "__coil_radius__": d["__solenoid_inner_radius_1__"],
+            "__coil_thickness__": d["__solenoid_outer_radius_1__"] - d["__solenoid_inner_radius_1__"],
+            "__solenoid_symmetry__": -1,
+            "__cell_length__": d["__cell_length__"]*2000,
+            "__optimisation_score__":d["__optimisation_score__"]
+        }
+        print(json.dumps(converted_dict, indent=4))
+
 def main():
-    scan()
+    output_dir = "output/demo_field_v13/"
+    scan(output_dir)
+    load_scan(f"{output_dir}/coil_parameter", {"__optimisation_score__":0.0, "__solenoid_inner_radius_1__":1e-12}, norm_dict={"__optimisation_score__":1.0, "__solenoid_inner_radius_1__":1e-12})
 
 if __name__ == "__main__":
     main()

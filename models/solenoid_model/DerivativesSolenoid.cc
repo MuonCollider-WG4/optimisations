@@ -33,10 +33,19 @@ void DerivativesSolenoid::GetFieldValue(const std::vector<double>& position,
     if (fieldModel.get() == nullptr) {
         throw std::string("On axis field model was not set");
     }
+    if (minZ >= maxZ) {
+        throw std::string("Z bounding box was not set (minZ must be less than maxZ)");
+    }
     SetCoeff();
     double r = std::sqrt(position[0]*position[0]+position[1]*position[1]);
     double phi = atan2(position[1], position[0]);
     double z = position[2];
+    if (maxR > 0 && r > maxR) {
+        return;
+    }
+    if (z < minZ || z > maxZ) {
+        return;
+    }
     double br = 0.0;
     std::vector<double> rPow(maxDerivative+1, 1.0);
     for (int i = 1; i <= maxDerivative; ++i) {

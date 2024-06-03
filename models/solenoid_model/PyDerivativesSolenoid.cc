@@ -2,6 +2,7 @@
 
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
+#include <string>
 
 struct PyDerivativesSolenoid {
     PyObject_HEAD
@@ -62,6 +63,71 @@ static PyObject* SetMaxDerivative(PyObject* self, PyObject* args) {
     Py_RETURN_NONE;    
 }
 
+static PyObject* GetMaxDerivative(PyObject* self, PyObject* args) {
+    PyDerivativesSolenoid* pysol = (PyDerivativesSolenoid*)self;
+    unsigned int maxDerivative = pysol->solenoid.maxDerivative;
+    PyObject* pyDeriv = PyLong_FromSize_t(maxDerivative);
+    Py_INCREF(pyDeriv);
+    return pyDeriv;
+}
+
+static PyObject* SetMaxZ(PyObject* self, PyObject* args) {
+    double maxZ = 0;
+    if (!PyArg_ParseTuple(args, "d", &maxZ)) {
+        PyErr_SetString(PyExc_ValueError, "Failed to parse arguments");
+        return NULL;
+    }
+    PyDerivativesSolenoid* pysol = (PyDerivativesSolenoid*)self;
+    pysol->solenoid.maxZ = maxZ;
+    Py_RETURN_NONE;
+}
+
+static PyObject* GetMaxZ(PyObject* self, PyObject* args) {
+    PyDerivativesSolenoid* pysol = (PyDerivativesSolenoid*)self;
+    unsigned int maxZ = pysol->solenoid.maxZ;
+    PyObject* pyMaxZ = PyFloat_FromDouble(maxZ);
+    Py_INCREF(pyMaxZ);
+    return pyMaxZ;
+}
+
+static PyObject* SetMinZ(PyObject* self, PyObject* args) {
+    double minZ = 0;
+    if (!PyArg_ParseTuple(args, "d", &minZ)) {
+        PyErr_SetString(PyExc_ValueError, "Failed to parse arguments");
+        return NULL;
+    }
+    PyDerivativesSolenoid* pysol = (PyDerivativesSolenoid*)self;
+    pysol->solenoid.minZ = minZ;
+    Py_RETURN_NONE;
+}
+
+static PyObject* GetMinZ(PyObject* self, PyObject* args) {
+    PyDerivativesSolenoid* pysol = (PyDerivativesSolenoid*)self;
+    unsigned int minZ = pysol->solenoid.minZ;
+    PyObject* pyMinZ = PyFloat_FromDouble(minZ);
+    Py_INCREF(pyMinZ);
+    return pyMinZ;
+}
+
+static PyObject* SetMaxR(PyObject* self, PyObject* args) {
+    double maxR = 0;
+    if (!PyArg_ParseTuple(args, "d", &maxR)) {
+        PyErr_SetString(PyExc_ValueError, "Failed to parse arguments");
+        return NULL;
+    }
+    PyDerivativesSolenoid* pysol = (PyDerivativesSolenoid*)self;
+    pysol->solenoid.maxR = maxR;
+    Py_RETURN_NONE;
+}
+
+static PyObject* GetMaxR(PyObject* self, PyObject* args) {
+    PyDerivativesSolenoid* pysol = (PyDerivativesSolenoid*)self;
+    unsigned int maxR = pysol->solenoid.maxR;
+    PyObject* pyMaxR = PyFloat_FromDouble(maxR);
+    Py_INCREF(pyMaxR);
+    return pyMaxR;
+}
+
 static PyObject* GetFieldValue(PyObject* self, PyObject* args) {
     double x=0, y=0, z=0, time=0;
     if (!PyArg_ParseTuple(args, "dddd", &x, &y, &z, &time)) {
@@ -120,6 +186,13 @@ static PyMethodDef derivatives_solenoid_methods[] = {
      "Get the field value on the axis, or its derivative."},
     {"set_fourier_field_model", SetFourierFieldModel, METH_VARARGS, "Set the field model"},
     {"set_max_derivative", SetMaxDerivative, METH_VARARGS, "Set the maximum derivative in the expansion"},
+    {"get_max_derivative", GetMaxDerivative, METH_VARARGS, "Get the maximum derivative in the expansion"},
+    {"set_max_z", SetMaxZ, METH_VARARGS, "Set the maximum z of the bounding box"},
+    {"get_max_z", GetMaxZ, METH_VARARGS, "Get the maximum z of the bounding box"},
+    {"set_min_z", SetMinZ, METH_VARARGS, "Set the minimum z of the bounding box"},
+    {"get_min_z", GetMinZ, METH_VARARGS, "Get the minimum z of the bounding box"},
+    {"set_max_r", SetMaxR, METH_VARARGS, "Set the maximum radius of the bounding box"},
+    {"get_max_r", GetMaxR, METH_VARARGS, "Get the maximum radius of the bounding box"},
     {NULL, NULL, 0, NULL}        /* Sentinel */
 };
 

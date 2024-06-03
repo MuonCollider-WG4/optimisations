@@ -18,6 +18,7 @@ from models.field_models import LinearInterpolation
 from models.field_models import SineField
 from models.field_models import UniformField
 from models.field_models import CurrentSheet
+from models.field_models import CurrentBlock
 
 
 """
@@ -259,9 +260,12 @@ def round_delta_sf(a_float_1, a_float_2, n_sf):
     return [a_float_1, a_float_2]
 
 
-def make_kinetic_energy_axis(p_axes):
+def make_energy_axis(p_axes, is_kinetic):
     mass = 0.105865
-    ke_calc = lambda p: (p**2+mass**2)**0.5-mass
+    if is_kinetic:
+        ke_calc = lambda p: (p**2+mass**2)**0.5-mass
+    else:
+        ke_calc = lambda p: (p**2+mass**2)**0.5
     p_calc = lambda ke: ((ke+mass)**2-mass**2)**0.5
     ke_axes = p_axes.twiny()
     p_lim = p_axes.get_xlim()
@@ -287,20 +291,26 @@ def make_kinetic_energy_axis(p_axes):
 
 
 fignum = 1
-def do_plots(field, pz_plot_list, pz_list, plot_dir, fig1, fig2, fig3):
+def do_plots(field, pz_plot_list, pz_list, plot_dir, beta_max, nominal_emittance = -1, fig1=None):
     """
     Plot the beta function for a given field model
     - field: the field model. Should be of type field_model.Field
     - pz0: a reference momentum for plotting vs z
     - pz_list: a set of pz values for finding the periodic solution and plotting
                vs pz
+    - plot_dir: directory for dumping plots
+    - beta_max: beta y axis height
+    - fig1, fig2, fig3: overlay onto theses figures
     """
     global fignum
     #matplotlib.rcParams['text.usetex'] = True
     bsquared = None
     period = field.get_period()
     name = "optics_L_"+str(period)+"_"+field.get_name()
-    out_data = {"pz_items":[], "field_name":field.get_name(), "field_bi":field.bz_list, "field_b0":field.bz0, "period":field.get_period()}
+    try:
+        out_data = {"pz_items":[], "field_name":field.get_name(), "field_bi":field.bz_list, "field_b0":field.bz0, "period":field.get_period()}
+    except:
+        out_data = {"pz_items":[], "field_name":field.get_name()}
     beta_list = []
     antibeta_list = []
     phi_list = []
@@ -326,6 +336,7 @@ def do_plots(field, pz_plot_list, pz_list, plot_dir, fig1, fig2, fig3):
         axes = [figure.add_subplot(2, 2, 1), figure.add_subplot(2, 2, 2),
                 figure.add_subplot(2, 2, 3), figure.add_subplot(2, 2, 4)]
         axes.append(axes[2].twinx())
+        axes.append(axes[3].twinx())
     else:
         axes = figure.get_axes()
 
@@ -349,11 +360,12 @@ def do_plots(field, pz_plot_list, pz_list, plot_dir, fig1, fig2, fig3):
     out_data["pz_list"] = pz_list
     out_data["beta_list"] = beta_list
     out_data["antibeta_list"] = antibeta_list
+    axes[2].plot([0.0, pz_list[-1]], [0.0, (beta_list[-1]+antibeta_list[-1])/2.0], c="xkcd:light grey", linestyle="dotted")
     axes[2].plot(pz_list, beta_list, label="$\\beta(L)$")
     axes[2].plot(pz_list, antibeta_list, 'g--', label="$\\beta(L/2)$")
     axes[2].set_xlabel("p$_{z}$ [GeV/c]")
     axes[2].set_ylabel("$\\beta$ [m]")
-    axes[2].set_ylim([0.0, 0.5])
+    axes[2].set_ylim([0.0, beta_max])
 
     for y in [math.pi/2.0, 0.0, -math.pi/2.0]:
         pass #axes[4].plot([pz_list[0], pz_list[-1]], [y, y], linestyle='dotted', color='pink')
@@ -361,7 +373,8 @@ def do_plots(field, pz_plot_list, pz_list, plot_dir, fig1, fig2, fig3):
     axes[4].tick_params(axis='y', labelcolor='r')
     axes[4].tick_params(axis='y', labelcolor='r')
     axes[4].set_ylim(-math.pi, math.pi)
-    axes.append(make_kinetic_energy_axis(axes[2]))
+    axes[2].set_xlim([min(pz_list), max(pz_list)])
+    axes.append(make_energy_axis(axes[2], True))
     this_pz_list, this_phi_list = [], []
     phi_old = None
     plotting = False
@@ -395,30 +408,29 @@ def do_plots(field, pz_plot_list, pz_list, plot_dir, fig1, fig2, fig3):
         beta_finder.verbose = 0
         z_list, beta_list, dbetadz_list, phi_list = \
                                         beta_finder.propagate_beta(beta, 0.)
-        axes[3].plot(z_list, beta_list, label="p$_z$ "+format(pz, "6.4g")+" GeV/c")
+        axes[3].plot(z_list, beta_list, label="$\\beta_\\perp$ "+format(pz, "6.4g")+" GeV/c")
         out_data["pz_items"].append({"z":z_list, "beta_list":beta_list, "pz":pz})
         print(f"beta(z=0, pz={pz}): {beta_list[0]}")
     axes[3].set_xlabel("z [m]")
     axes[3].set_ylabel("$\\beta$ [m]")
-    axes[3].set_ylim([0.0, 0.5])
+    axes[3].set_ylim([0.0, beta_max])
+    mass = 0.105658
+    if nominal_emittance > 0:
+        for pz in pz_plot_list:
+            sigma_x_list = [(beta*nominal_emittance*mass/pz)**0.5 for beta in beta_list]
+            axes[5].plot(z_list, sigma_x_list, linestyle="dashed", label=f"$\\sigma_x$ {pz} GeV/c")
+    axes[5].set_ylabel("$\\sigma_x$ [m]")
+    axes[5].set_ylim([0.0, (beta_max*nominal_emittance*mass/min(pz_plot_list))**0.5])
     try:
-        axes[3].legend()
+        axes[3].legend(loc="upper left")
+        axes[5].legend(loc="upper right")
     except:
         pass
-    print("Finished plotting lattice")
-    emittance = 0.0003 # metres
-    mass = 0.105658 # GeV/c^2
-    #for emittance in [0.0003]:
-        #sigma_x_list = [(beta*emittance*mass/beta_finder.momentum)**0.5 for beta in beta_list]
-        #axes[3].plot(z_list, sigma_x_list)
-    #axes[3].grid(1)
-    #axes[3].set_xlabel("z [m]")
-    #axes[3].set_ylabel("$\\sigma_x$ [m]")
-    #name = "optics_L_"+str(period)+"_"+field.get_name()+"_pz_"+str(pz)+".png"
     fout = open(os.path.join(plot_dir, name+".json"), "w")
     fout.write(json.dumps(out_data))
     figure.savefig(os.path.join(plot_dir, name+".png"))
-    return figure, None, None
+    print("Finished plotting lattice")
+    return figure
 
 def make_solenoid_field():
     #b0, zcentre, length, radius, period, nrepeats
@@ -434,17 +446,54 @@ def make_solenoid_field():
     bz_norm = max([field_sum.get_field(i*period/100.0) for i in range(101)])
     return field_sum
 
+def demo_2024_03_04():
+    solenoid_field = FieldSum(
+        [CurrentBlock(108.1, 0.16549477466396467, 0.1, 0.25, 0.5751153614232237, 1.0, 10, 10),
+        CurrentBlock(-108.1, 1.0-0.16549477466396467, 0.1, 0.25, 0.5751153614232237, 1.0, 10, 10)]
+    )
+
+"""
+def ruihu_s2_150_240():
+    current_density = 0.1
+    inner_radius =
+    outer_radius =
+    z_length = 338.11396672078416
+    centre_z
+    z_max
+    period
+
+    field = CurrentBlock(1, 0.16549477466396467, 0.1, 0.25, 0.5751153614232237, 1.0, 10, 10)
+    j0 = field.get_current_density()*1e-6
+    b0 = current_density/j0
+    solenoid_field = FieldSum(
+        [CurrentBlock(b0, 0.16549477466396467, 0.1, 0.25, 0.5751153614232237, 1.0, 10, 10),
+        CurrentBlock(b0, 1.0-0.16549477466396467, 0.1, 0.25, 0.5751153614232237, 1.0, 10, 10)]
+    )
+"""
+
+
 def main():
     global fignum
-    plot_dir = "output/demonstrator_optics_v1"
-    pz_plot_list = [0.19, 0.2, 0.21]
-    pz_scan_list = [pz_i/1000. for pz_i in range(10, 501, 5)]
+    plot_dir = "output/demonstrator_optics_v2"
+    c_x = 0.8
+    c_b = 1/0.8
+    c_p = 1.0
+    pz_plot_list = [c_p*0.19, c_p*0.20, c_p*0.21]
+    pz_scan_list = [c_p*pz_i/1000. for pz_i in range(140, 241, 2)]
     n_points = 2
     norm = 100
     #clear_dir(plot_dir)
-    solenoid_field = SineField(0.0, b1, b2, b3, b4, 0.0, 1.2)
-    solenoid_field.normalise_bz_squared(norm)
-    fig1, fig2, fig3 = do_plots(solenoid_field, pz_plot_list, pz_scan_list, plot_dir, None, None, None)
+    b0 = c_b*0.0
+    b1 = c_b*7.0
+    b2 = c_b*1.0
+    b3 = c_b*0.0
+    b4 = c_b*0.0
+    length = c_x*1.0
+    solenoid_field = SineField(b0, b1, b2, b3, b4, 0.0, length)
+    #solenoid_field.normalise_bz_squared(norm)
+    #solenoid_field = CurrentSheet(108.02, 0.1655, 0.1, 0.25, 1.0, 1)
+    #def __init__(self, b0, zcentre, length, rmin, rmax, period, nrepeats, nsheets):
+    fig1 = do_plots(solenoid_field, pz_plot_list, pz_scan_list, plot_dir, nominal_emittance = 0.0025, beta_max=0.8)
     matplotlib.pyplot.show(block=False)
 
 if __name__ == "__main__":

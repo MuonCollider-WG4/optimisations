@@ -36,8 +36,34 @@ class TestDerivativesSolenoid(unittest.TestCase):
         except ValueError:
             pass
 
+    def test_bounding_box(self):
+        sol = derivatives_solenoid.DerivativesSolenoid()
+        sol.set_fourier_field_model(1.0, [1.0])
+        try:
+            sol.get_field_value(0.0, 0.0, 1.0, 0.0)
+            self.assertTrue(False, "Should have thrown")
+        except RuntimeError:
+            pass
+        sol.set_min_z(-0.5)
+        sol.set_max_z(1.0)
+        sol.set_max_r(1.5)
+        for point, inside_bb in [
+                ((0.0, 0.0, 0.5, 0.0), True),
+                ((0.0, 0.0, -0.499, 0.0), True),
+                ((0.0, 0.0, -0.501, 0.0), False),
+                ((0.0, 0.0, 0.999, 0.0), True),
+                ((0.0, 0.0, 1.001, 0.0), False),
+                ((1.499, 0.0, 0.5, 0.0), True),
+                ((1.501, 0.0, 0.5, 0.0), False ),
+            ]:
+            field = sol.get_field_value(*point)
+            self.assertEqual(bool(field[2]), inside_bb,
+                msg=f"Got bz {field[2]} for point {point} in bb {inside_bb}")
+
     def test_on_axis_field(self):
         sol = derivatives_solenoid.DerivativesSolenoid()
+        sol.set_min_z(-100)
+        sol.set_max_z(100)
         try:
             sol.get_field_value(0, 0, 0, 0)
             self.assertTrue(False, "Should have thrown")
@@ -90,6 +116,8 @@ class TestDerivativesSolenoid(unittest.TestCase):
     def test_off_axis_field(self):
         verbose = 0
         sol = derivatives_solenoid.DerivativesSolenoid()
+        sol.set_min_z(-100)
+        sol.set_max_z(100)
         sol.set_fourier_field_model(0.5, [2.0]) # T, m
 
         for iz in range(1, 4):

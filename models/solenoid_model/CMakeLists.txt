@@ -1,3 +1,6 @@
+cmake_minimum_required(VERSION 3.10) # probably
+project(ProjectName)
+
 SET(MODULE_NAME derivatives_solenoid)
 SET(PYTHON_SRCS DerivativesSolenoid.cc PyDerivativesSolenoid.cc)
 
