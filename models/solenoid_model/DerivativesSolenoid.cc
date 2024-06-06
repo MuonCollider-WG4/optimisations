@@ -18,13 +18,43 @@ void FourierFieldModel::GetField(const double& z, const int& derivative, double&
             bzDerivative += harmonicList[i]*kPow*k*cos(k*z);
         }
     }
+} 
+
+FourierFieldModel::~FourierFieldModel() {}
+
+OnAxisFieldModel* FourierFieldModel::Clone() const {
+    FourierFieldModel* rhs = new FourierFieldModel();
+    rhs->harmonicList = harmonicList;
+    rhs->cellLength = cellLength;
+    return rhs;
 }
 
-void PrintVector(std::vector<double> vec) {
-    for (size_t i = 0; i <= vec.size(); ++i) {
-        std::cerr << vec[i] << " ";
+void FourierFieldModel::Initialise() {
+    if (cellLength == 0.0) {
+        throw std::string("cellLength must be non-zero");
     }
-    std::cerr << std::endl;
+    for (int i = harmonicList.size(); i > 0; --i) {
+        if (harmonicList[i-1] != 0.0) {
+            harmonicList = std::vector<double>(harmonicList.begin(), harmonicList.begin()+i);
+            break;
+        }
+    }    
+}
+
+
+DerivativesSolenoid::DerivativesSolenoid(const DerivativesSolenoid& rhs) {
+    if (&rhs == nullptr) {
+        throw std::string("Attempt to copy a null pointer");
+    }
+    fieldModel.reset(rhs.fieldModel->Clone());
+    maxDerivative = rhs.maxDerivative;
+    maxR = rhs.maxR;
+    length = rhs.length;
+    SetCoeff();
+}
+
+DerivativesSolenoid* DerivativesSolenoid::Clone() const {
+    return new DerivativesSolenoid(*this);
 }
 
 void DerivativesSolenoid::GetFieldValue(const std::vector<double>& position,
@@ -33,9 +63,6 @@ void DerivativesSolenoid::GetFieldValue(const std::vector<double>& position,
     if (fieldModel.get() == nullptr) {
         throw std::string("On axis field model was not set");
     }
-    if (minZ >= maxZ) {
-        throw std::string("Z bounding box was not set (minZ must be less than maxZ)");
-    }
     SetCoeff();
     double r = std::sqrt(position[0]*position[0]+position[1]*position[1]);
     double phi = atan2(position[1], position[0]);
@@ -43,7 +70,7 @@ void DerivativesSolenoid::GetFieldValue(const std::vector<double>& position,
     if (maxR > 0 && r > maxR) {
         return;
     }
-    if (z < minZ || z > maxZ) {
+    if (length > 0 && (z > length/2.0 || z < -length/2.0) ) {
         return;
     }
     double br = 0.0;
@@ -53,7 +80,7 @@ void DerivativesSolenoid::GetFieldValue(const std::vector<double>& position,
     }
 
     std::vector<double> bi(maxDerivative+1, 0.0);
-    for (unsigned int i = 0; i <= maxDerivative; i += 1) {
+    for (int i = 0; i <= maxDerivative; i += 1) {
         double derivative = 0;
         fieldModel->GetField(z, i, derivative);
         bfield[2] += bcoeff[i]*derivative*rPow[i];
@@ -71,7 +98,7 @@ void DerivativesSolenoid::SetCoeff() {
     } else {
         return;
     }
-    for (size_t i = 1; i <= maxDerivative; i++) {
+    for (int i = 1; i <= maxDerivative; i++) {
         if (i % 2 == 0) {
             bcoeff[i] = -bcoeff[i-2]/i/i;
         } else {
@@ -79,3 +106,4 @@ void DerivativesSolenoid::SetCoeff() {
         }
     }
 }
+
