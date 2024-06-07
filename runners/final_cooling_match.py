@@ -76,17 +76,15 @@ class FitCoils(object):
 
     def set_fields_minuit(self):
         """Extract fields from minuit and set them using self.make_fields(...)"""
-        print("Bugged here ... need to update to PyROOT v6 *********************")
-        match_field_1, match_field_2, match_field_3 = ctypes.double(), ROOT.Double(), ROOT.Double()
-        err = ROOT.Double()
+        match_field_1, match_field_2, match_field_3 = ctypes.c_double(), ctypes.c_double(), ctypes.c_double()
+        err = ctypes.c_double()
         self.minuit.GetParameter(0, match_field_1, err)
         self.minuit.GetParameter(1, match_field_2, err)
         self.minuit.GetParameter(2, match_field_3, err)
-        self.m1 = float(match_field_1)
-        self.m2 = float(match_field_2)
-        self.m3 = float(match_field_3)
+        self.m1 = float(match_field_1.value)
+        self.m2 = float(match_field_2.value)
+        self.m3 = float(match_field_3.value)
         self.make_fields()
-        print("Bugged here done")
         return match_field_1, match_field_2, match_field_3
 
     def uniform_field_beta(self, z_pos):
@@ -96,7 +94,6 @@ class FitCoils(object):
         """
         beta0 = abs(self.beta_finder.momentum/self.lattice.get_field(z_pos)/0.15)
         return beta0
-
 
     def fit_2(self):
         """
@@ -118,9 +115,9 @@ class FitCoils(object):
         #self.minuit.FixParameter(1)
         #self.minuit.FixParameter(2)
         global_self = self
-        self.minuit.SetFCN(self.score_function_2)
+        self.minuit.SetFCN(global_score_function_2)
         self.minuit.Command("SIMPLEX "+str(self.n_iterations_per_fit)+" "+str(1e-16))
-        beta1 = self.score_function_2(0, 0, [0], 0, 0)
+        beta1 = self.score_function_2(0, 0, ctypes.c_double(), 0, 0)
         return beta1
         
     def score_function_2(self, nvar, parameters, score, jacobian, err):
@@ -133,10 +130,10 @@ class FitCoils(object):
         beta0 = self.uniform_field_beta(self.z0)
         beta1_tgt = self.uniform_field_beta(self.z1)
         beta1, dbeta1dz, phi = self.beta_finder.evolve(float(beta0), 0., self.z0, self.z1)
-        score[0] = (beta1-beta1_tgt)**2+(10*dbeta1dz)**2
-        print("Match1: ", match_field_1, "Match2: ", match_field_2, "Match3: ", match_field_3,
+        score.value = (beta1-beta1_tgt)**2+(10*dbeta1dz)**2
+        print("Match1: ", match_field_1.value, "Match2: ", match_field_2.value, "Match3: ", match_field_3.value,
               "beta0", beta0, "beta1", beta1,
-              "beta1_tgt", beta1_tgt, "dbeta1dz", dbeta1dz, "score", score[0])
+              "beta1_tgt", beta1_tgt, "dbeta1dz", dbeta1dz, "score", score.value)
         return beta1, dbeta1dz
 
     def fit_1(self):
@@ -152,13 +149,13 @@ class FitCoils(object):
         self.minuit.DefineParameter(0, "match_field_1", self.m1_seed,  0.01, -10, 10)
         self.minuit.DefineParameter(1, "match_field_2", self.m2_seed, 0.01, -10, 10)
         self.minuit.DefineParameter(2, "match_field_3", self.m3_seed,  0.01, -10, 10)
-        #self.minuit.FixParameter(0)
-        self.minuit.FixParameter(1)
-        self.minuit.FixParameter(2)
+        self.minuit.FixParameter(0)
+        #self.minuit.FixParameter(1)
+        #self.minuit.FixParameter(2)
         FitCoils.my_fit_coils = self
-        self.minuit.SetFCN(score_function)
+        self.minuit.SetFCN(global_score_function_1)
         self.minuit.Command("SIMPLEX "+str(self.n_iterations_per_fit)+" "+str(1e-16))
-        beta1 = self.score_function_1(0, 0, [0], 0, 0)
+        beta1 = self.score_function_1(0, 0, ctypes.c_double(0.0), 0, 0)
         return beta1
         
     def score_function_1(self, nvar, parameters, score, jacobian, err):
@@ -170,10 +167,10 @@ class FitCoils(object):
         match_field_1, match_field_2, match_field_3 = self.set_fields_minuit()
         beta0 = self.uniform_field_beta(self.z0)
         beta1, dbeta1dz, phi = self.beta_finder.evolve(float(beta0), 0., self.z0, self.z1)
-        score[0] = dbeta1dz**2
-        print("Match1: ", match_field_1, "Match2: ", match_field_2, "Match3: ", match_field_3,
+        score.value = dbeta1dz**2
+        print("Match1: ", match_field_1.value, "Match2: ", match_field_2.value, "Match3: ", match_field_3.value,
               "beta0", beta0, "beta1", beta1,
-              "dbeta1dz", dbeta1dz, "score", score[0])
+              "dbeta1dz", dbeta1dz, "score", score.value)
         return beta1, dbeta1dz
 
     def plot_beta(self, beta0, dbetadz0):
@@ -192,7 +189,7 @@ class FitCoils(object):
         axes.plot(z_list, [self.beta_finder.field(z) for z in z_list], color='green', linestyle="--")
         axes.set_xlabel("z [m]")
         axes.set_ylabel("B [T]")
-        title = f"M1={m1:.3g} [T]; M2={m2:.3g} [T]; M3={m3:.3g} [T]\n"
+        title = f"M1={m1.value:.3g} [T]; M2={m2.value:.3g} [T]; M3={m3.value:.3g} [T]\n"
         title += f"B$_{{const}}$={self.long_field:.3g} [T]; B$_{{peak}}$={self.peak_field:.3g} [T]"
         title += f"$\\beta_0$={beta_list[0]:.5g} [m]; $\\beta_1$={beta_list[-1]:.5g} [m] p$_z$={self.pz:.5g}"
         figure1.suptitle(title)
@@ -210,8 +207,12 @@ class FitCoils(object):
 
     my_fit_coils = None
 
-def score_function(nvar, parameters, score, jacobian, err):
+def global_score_function_1(nvar, parameters, score, jacobian, err):
     return FitCoils.my_fit_coils.score_function_1(nvar, parameters, score, jacobian, err)
+
+def global_score_function_2(nvar, parameters, score, jacobian, err):
+    return FitCoils.my_fit_coils.score_function_2(nvar, parameters, score, jacobian, err)
+
 
 def clear_dir(a_dir):
     try:
