@@ -109,47 +109,16 @@ class FitCoils(object):
         beta0 = abs(self.beta_finder.momentum/self.lattice.get_field(z_pos)/0.15)
         return beta0
 
-    def fit_2(self):
+    def setup_minuit(self):
         """
-        Second we match from the constant field region to the high field region
-        to find match_field_2 and match_field_3
+        Setup a new minuit instance with default values
         """
-        global global_self
-        # set the z position of the start (z0) and end (z1) of the integration
-        self.z0 = self.lattice.period*2.0/8.0 # peak field
-        self.z1 = self.lattice.period*3.0/8.0 # long solenoid field
-        if self.minuit:
-            m1, m2, m3, m4 = self.set_fields_minuit()
-        self.minuit.DefineParameter(0, "match_field_1", m1, 0.01, -10, 10)
-        self.minuit.DefineParameter(1, "match_field_2", m2, 0.01, -10, 10)
-        self.minuit.DefineParameter(2, "match_field_3", m3, 0.01, -10, 10)
-        self.minuit.DefineParameter(3, "match_field_4", m4, 0.01, -10, 10)
-        self.minuit.FixParameter(0)
-        self.minuit.FixParameter(1)
-        #self.minuit.FixParameter(1)
-        #self.minuit.FixParameter(2)
-        global_self = self
-        self.minuit.SetFCN(global_score_function_2)
-        self.minuit.Command("SIMPLEX "+str(self.n_iterations_per_fit)+" "+str(1e-16))
-        beta1 = self.score_function_2(0, 0, ctypes.c_double(), 0, 0)
-        return beta1
-        
-    def score_function_2(self, nvar, parameters, score, jacobian, err):
-        """
-        Score function for second fit - we evolve beta from long solenoid to the
-        high field region and require uniform beta function at the centre of the
-        high field region (should be set to z1) 
-        """
-        match_field_1, match_field_2, match_field_3, match_field_4 = self.set_fields_minuit()
-        beta0 = self.uniform_field_beta(self.z0)
-        beta1_tgt = self.uniform_field_beta(self.z1)
-        beta1, dbeta1dz, phi = self.beta_finder.evolve(float(beta0), 0., self.z0, self.z1)
-        score.value = (beta1-beta1_tgt)**2+(10*dbeta1dz)**2
-        print("Match1: ", match_field_1.value, "Match2: ", match_field_2.value,
-              "Match3: ", match_field_3.value, "Match4: ", match_field_4.value, "  **  "
-              "beta0", beta0, "beta1", beta1,
-              "beta1_tgt", beta1_tgt, "dbeta1dz", dbeta1dz, "score", score.value)
-        return beta1, dbeta1dz
+        self.minuit = ROOT.TMinuit()
+        self.minuit.SetPrintLevel(-1)
+        self.minuit.DefineParameter(0, "match_field_1", self.m1, 0.01, -4, 4)
+        self.minuit.DefineParameter(1, "match_field_2", self.m2, 0.01, -1, 1)
+        self.minuit.DefineParameter(2, "match_field_3", self.m3, 0.01, -10, 10)
+        self.minuit.DefineParameter(3, "match_field_4", self.m4, 0.01, -10, 10)
 
     def fit_1(self):
         """
@@ -159,22 +128,22 @@ class FitCoils(object):
         # set the z position of the start (z0) and end (z1) of the integration
         self.z0 = self.lattice.period*7.0/8.0 # half way between 0.0 and peak field
         self.z1 = self.lattice.period*8.0/8.0 # first peak field
-        self.minuit = ROOT.TMinuit()
-        self.minuit.SetPrintLevel(-1)
-        self.minuit.DefineParameter(0, "match_field_1", self.m1, 0.01, -4, 4)
-        self.minuit.DefineParameter(1, "match_field_2", self.m2, 0.01, -1, 1)
-        self.minuit.DefineParameter(2, "match_field_3", self.m3, 0.01, -10, 10)
-        self.minuit.DefineParameter(3, "match_field_4", self.m4, 0.01, -10, 10)
-        #self.minuit.FixParameter(0)
+        self.setup_minuit()
+
         self.minuit.FixParameter(1)
         self.minuit.FixParameter(2)
         self.minuit.FixParameter(3)
+
+        # ROOT can't take member function as argument to minuit so we need to
+        # define a module function
         FitCoils.my_fit_coils = self
         self.minuit.SetFCN(global_score_function_1)
+        # Run the minimiser
         self.minuit.Command("SIMPLEX "+str(self.n_iterations_per_fit)+" "+str(1e-16))
+        # finally, get the score one more time
         beta1, dbeta1dz = self.score_function_1(0, 0, ctypes.c_double(0.0), 0, 0)
         return beta1
-        
+
     def score_function_1(self, nvar, parameters, score, jacobian, err):
         """
         Score function for first fit - we evolve beta from long solenoid to the
@@ -191,11 +160,49 @@ class FitCoils(object):
               "dbeta1dz", dbeta1dz, "score", score.value)
         return beta1, dbeta1dz
 
+    def fit_2(self):
+        """
+        Second we match from the constant field region to the high field region
+        to find match_field_2 and match_field_3
+        """
+        global global_self
+        # set the z position of the start (z0) and end (z1) of the integration
+        self.z0 = self.lattice.period*2.0/8.0 # peak field
+        self.z1 = self.lattice.period*3.0/8.0 # long solenoid field
+        self.setup_minuit()
+        self.minuit.FixParameter(0)
+        self.minuit.FixParameter(1)
+
+        # ROOT can't take member function as argument to minuit so we need to
+        # define a module function
+        FitCoils.my_fit_coils = self
+        self.minuit.SetFCN(global_score_function_2)
+        self.minuit.Command("SIMPLEX "+str(self.n_iterations_per_fit)+" "+str(1e-16))
+        beta1 = self.score_function_2(0, 0, ctypes.c_double(), 0, 0)
+        return beta1
+
+    def score_function_2(self, nvar, parameters, score, jacobian, err):
+        """
+        Score function for second fit - we evolve beta from long solenoid to the
+        high field region and require uniform beta function at the centre of the
+        high field region (should be set to z1)
+        """
+        match_field_1, match_field_2, match_field_3, match_field_4 = self.set_fields_minuit()
+        beta0 = self.uniform_field_beta(self.z0)
+        beta1_tgt = self.uniform_field_beta(self.z1)
+        beta1, dbeta1dz, phi = self.beta_finder.evolve(float(beta0), 0., self.z0, self.z1)
+        score.value = (beta1-beta1_tgt)**2+(10*dbeta1dz)**2
+        print("Match1: ", match_field_1.value, "Match2: ", match_field_2.value,
+              "Match3: ", match_field_3.value, "Match4: ", match_field_4.value, "  **  "
+              "beta0", beta0, "beta1", beta1,
+              "beta1_tgt", beta1_tgt, "dbeta1dz", dbeta1dz, "score", score.value)
+        return beta1, dbeta1dz
+
     def plot_beta(self, beta0, dbetadz0, z0, z1):
         """
         Plot beta as a function of z
         """
-        z_list, beta_list, dbetadz_list, phi_list = self.beta_finder.propagate_beta(beta0, dbetadz0, z0, z1, 101)
+        z_list, beta_list, dbetadz_list, phi_list = self.beta_finder.propagate_beta(beta0, dbetadz0, z0, z1, 1001) # 1001 data points
         figure1 = matplotlib.pyplot.figure()
         axes = figure1.add_subplot(1, 1, 1)
         axes.plot(z_list, beta_list)
@@ -206,7 +213,7 @@ class FitCoils(object):
         axes.plot(z_list, [self.beta_finder.field(z) for z in z_list], color='green', linestyle="--")
         axes.set_xlabel("z [m]")
         axes.set_ylabel("B [T]")
-        title = f"M1={self.m1:.3g} [T]; M2={self.m2:.3g} [T]; M3={self.m3:.3g} [T]; M4={self.m4:.3g} [T]\n"
+        title = f"M1={self.m1:.5g} [T]; M2={self.m2:.5g} [T]; M3={self.m3:.5g} [T]; M4={self.m4:.5g} [T]\n"
         title += f"B$_{{const}}$={self.long_field:.3g} [T]; B$_{{peak}}$={self.peak_field:.3g} [T]"
         title += f"$\\beta_0$={beta_list[0]:.5g} [m]; $\\beta_1$={beta_list[-1]:.5g} [m] p$_z$={self.pz:.5g}"
         figure1.suptitle(title)
@@ -229,27 +236,20 @@ def clear_dir(a_dir):
         pass
     os.makedirs(a_dir)
 
-def get_pz(pz, delta_ek):
-    mass = 0.105658
-    etot = (pz**2+mass**2)**0.5
-    pz_new = ((etot+delta_ek)**2-mass**2)**0.5
-    return pz_new
-
-
 def main():
     plot_dir = "output/final_cooling_matching_test"
     clear_dir(plot_dir)
     pz = 0.07 # GeV/c
-    long_field = 4.0
-    peak_field = 30.0
+    long_field = 4.0 # T
+    peak_field = 30.0 # T
     # set up the fitter
     fitter = FitCoils(pz, long_field, peak_field)
     fitter.n_iterations_per_fit = 100
     # WARNING there is a minimum at +2.8 T which does not provide a match - MINUIT will land here if we start m1 = 0.0
-    fitter.m1 = -3.0
-    fitter.m2 = 0.0
-    fitter.m3 = 0.0
-    fitter.m4 = 0.0
+    fitter.m1 = -3.0 # T
+    fitter.m2 = 0.0 # T
+    fitter.m3 = 0.0 # T
+    fitter.m4 = 0.0 # T
     # first do the match from the low field region across the field flip
     print("Doing first fit - through the field flip")
     beta1 = fitter.fit_1()
@@ -258,6 +258,7 @@ def main():
     beta2 = fitter.fit_2()
     # finally plot
     print("Plotting")
+    # fitter.plot_beta(initial_beta, initial_dbetadz, z0, z1)
     figure1 = fitter.plot_beta(beta1, 0.0, 0.0, 40.0)
     fname = os.path.join(plot_dir, f"matched_lattice.png")
     figure1.savefig(fname)
