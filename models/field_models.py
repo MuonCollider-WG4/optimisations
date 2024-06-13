@@ -126,13 +126,15 @@ class SineField(Field):
         return self.period
 
     def normalise_bz_squared(self, intbz2dz):
+        print("Normalising bz squared")
+        print("    Old bz list", self.bz_list)
         intbz2 = self.get_bz2_int()
-        print("Integral", intbz2)
         self.bz0 *= (intbz2dz/intbz2)**0.5
         for i, bz in enumerate(self.bz_list):
             self.bz_list[i] *= (intbz2dz/intbz2)**0.5
         intbz2_new = scipy.integrate.odeint(self.bz2_int, [0.], [self.period])[0]
-        print(intbz2, intbz2_new, intbz2dz)
+        print("  Old integral", intbz2, "New integral", intbz2_new, "Target integral", intbz2dz)
+        print("  New bz list", self.bz_list)
 
     def get_name(self):
         name = "sine_"+str(self.bz0)
@@ -230,6 +232,11 @@ class CurrentBlock(Field):
         self.reset()
 
     def reset(self):
+        """
+        Recalculates the sheets
+
+        Should be called after making changes to member data, before doing a field lookup
+        """
         rstep = (self.rmax-self.rmin)/self.nsheets
         self.coil_list = [
             CurrentSheet(1/self.nsheets, self.zcentre, self.length, self.rmin+rstep*(i+0.5), self.period, self.nrepeats)
@@ -241,8 +248,7 @@ class CurrentBlock(Field):
         return sum([coil.get_field(z) for coil in self.coil_list])
 
     def get_off_axis_field(self, z, r): # not yet
-        raise NotImplementedError()
-        return sum([coil.get_field(z) for coil in self.coil_list])
+        raise NotImplementedError("Not implemented - but look at derivatives solenoid")
 
     def get_current_density(self):
         # assumes nothing weird like some current sheets longer than others
@@ -259,7 +265,13 @@ class CurrentBlock(Field):
         old_current_density = self.get_current_density()
         for coil in self.coil_list:
             coil.b0 = current_density/old_current_density
-        assert(abs(self.get_current_density() - current_density) < 1e-9, f"current densities did not match {self.get_current_density()} {current_density}")
+        #assert(abs(self.get_current_density() - current_density) < 1e-9, f"current densities did not match {self.get_current_density()} {current_density}")
+
+    def set_peak_b0(self, b0):
+        """Sets b0 at the centre of the magnet"""
+        j_scale = b0/self.get_field(self.zcentre)
+        self.current_density *= j_scale
+        self.reset()
 
     def get_b0(self):
         return self.coil_list[0].b0

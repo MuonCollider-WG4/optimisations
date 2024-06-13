@@ -47,6 +47,7 @@ class BetaFinder(object):
         self.verbose = 0
         self.q = 1
         self.use_analytic = use_analytic
+        self.z_start = 0.0
         self.reset_field(field)
 
     def field(self, z):
@@ -96,7 +97,7 @@ class BetaFinder(object):
         beta should be periodic, so beta at the start of one period is the same 
         as beta at the end of one period. If there is no solution, returns (0,0,0)
         """
-        zout = [0.0, self.period/4, self.period]
+        zout = [self.z_start, self.z_start+self.period/4, self.z_start+self.period]
         matrix_list = scipy.integrate.odeint(self.matrix_derivatives,
                                         [1, 0.0, 0.0, 1.0, 0.0], # m_00 m_01 m_10 m_11 larmor
                                         zout, hmax=self.hmax,
@@ -112,7 +113,7 @@ class BetaFinder(object):
         n2d = m2d - numpy.array([[cosmu, 0.0],[0.0,cosmu]])
         #print("N2D\n", n2d)
         # absolute value of sin(mu) from square root; we use beta is pos definite to force the sign of sinmu
-        sinmu = numpy.linalg.det(n2d)**0.5*numpy.sign(n2d[0,1]) 
+        sinmu = numpy.linalg.det(n2d)**0.5*numpy.sign(n2d[0,1])
         n2d /= sinmu
         #print("N2D over sinmu with sinmu=", sinmu, "\n", n2d)
         v2d = numpy.array([[n2d[0,1], -n2d[0,0]], [-n2d[0,0], -n2d[1, 0]]])
@@ -214,7 +215,7 @@ class BetaFinder(object):
             return 0.0, 0.0, 0.0
         return beta1, dbetadz, phi, 0.0
 
-    def propagate_beta(self, beta0, dbetadz0, n_points=101):
+    def propagate_beta(self, beta0, dbetadz0, z0=0, z1=None, n_points=101):
         """
         Propagate beta and return a tuple of lists with beta as a function of z
         - beta0: initial beta
@@ -226,7 +227,9 @@ class BetaFinder(object):
         - dbetadz_list: list of first derivatives of beta
         - phi_list: list of phase advance
         """
-        z_list = [self.period*i/float(n_points-1) for i in range(n_points)]
+        if z1 is None:
+            z1 = self.period
+        z_list = [z0+(z1-z0)*i/float(n_points-1) for i in range(n_points)]
         output_list = []
         out, infodict = scipy.integrate.odeint(self.beta_derivatives,
                                      [beta0, dbetadz0, 0.],
@@ -474,7 +477,7 @@ def ruihu_s2_150_240():
 
 def main():
     global fignum
-    plot_dir = "output/demonstrator_optics_v2"
+    plot_dir = "output/demonstrator_optics_v3"
     c_x = 0.8
     c_b = 1/0.8
     c_p = 1.0
@@ -489,11 +492,14 @@ def main():
     b3 = c_b*0.0
     b4 = c_b*0.0
     length = c_x*1.0
-    solenoid_field = SineField(b0, b1, b2, b3, b4, 0.0, length)
-    #solenoid_field.normalise_bz_squared(norm)
-    #solenoid_field = CurrentSheet(108.02, 0.1655, 0.1, 0.25, 1.0, 1)
-    #def __init__(self, b0, zcentre, length, rmin, rmax, period, nrepeats, nsheets):
-    fig1 = do_plots(solenoid_field, pz_plot_list, pz_scan_list, plot_dir, nominal_emittance = 0.0025, beta_max=0.8)
+    for b2 in [0.0, 0.4, 1.0]:
+        b2 = b2*c_b
+        solenoid_field = SineField(b0, b1, b2, b3, b4, 0.0, length)
+        solenoid_field.normalise_bz_squared(31.25)
+        #solenoid_field.normalise_bz_squared(norm)
+        #solenoid_field = CurrentSheet(108.02, 0.1655, 0.1, 0.25, 1.0, 1)
+        #def __init__(self, b0, zcentre, length, rmin, rmax, period, nrepeats, nsheets):
+        fig1 = do_plots(solenoid_field, pz_plot_list, pz_scan_list, plot_dir, nominal_emittance = 0.0025, beta_max=0.8)
     matplotlib.pyplot.show(block=False)
 
 if __name__ == "__main__":
