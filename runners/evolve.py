@@ -292,188 +292,157 @@ def make_energy_axis(p_axes, is_kinetic):
     return ke_axes
 
 
+class Plotter:
+    def __init__(self, field, pz_plot_list, pz_list, plot_dir, beta_max, nominal_emittance = -1):
+        self.field = field
+        self.pz_plot_list = pz_plot_list
+        self.pz_list = pz_list
+        self.plot_dir = plot_dir
+        self.beta_max = beta_max
+        self.nominal_emittance = nominal_emittance
+        self.bsquared = None
+        self.make_title()
+        self.out_data = {}
+        self.figure = None
 
-fignum = 1
-def do_plots(field, pz_plot_list, pz_list, plot_dir, beta_max, nominal_emittance = -1, fig1=None):
-    """
-    Plot the beta function for a given field model
-    - field: the field model. Should be of type field_model.Field
-    - pz0: a reference momentum for plotting vs z
-    - pz_list: a set of pz values for finding the periodic solution and plotting
-               vs pz
-    - plot_dir: directory for dumping plots
-    - beta_max: beta y axis height
-    - fig1, fig2, fig3: overlay onto theses figures
-    """
-    global fignum
-    #matplotlib.rcParams['text.usetex'] = True
-    bsquared = None
-    period = field.get_period()
-    name = "optics_L_"+str(period)+"_"+field.get_name()
-    try:
-        out_data = {"pz_items":[], "field_name":field.get_name(), "field_bi":field.bz_list, "field_b0":field.bz0, "period":field.get_period()}
-    except:
-        out_data = {"pz_items":[], "field_name":field.get_name()}
-    beta_list = []
-    antibeta_list = []
-    phi_list = []
-    int_bz2 = field.get_bz2_int()
-    inv_kappa_list = [0.15*pz/int_bz2**0.5 for pz in pz_list]
-    beta_finder = BetaFinder(field, 1., use_analytic=True)
-    if bsquared != None:
-        beta_finder.field_model.normalise_bz_squared(bsquared)
-    z_list = [i*period/100 for i in range(101)]
-    bz_list = [beta_finder.field_model.get_field(z) for z in z_list]
-    bz2_list = [bz**2 for bz in bz_list]
-    if fig1 == None:
-        figure = matplotlib.pyplot.figure(fignum, figsize=(12, 10))
-    else:
-        figure = fig1
-    human = field.human_readable()
-    if human:
-        human = "$"+human+"$\n"
-    figure.suptitle(human+\
-           "$\\int B^2(z) dz =$ {0:.4g} T$^2$ m".format(field.get_bz2_int()))
-    fignum += 1
-    if len(figure.get_axes()) == 0:
-        axes = [figure.add_subplot(2, 2, 1), figure.add_subplot(2, 2, 2),
-                figure.add_subplot(2, 2, 3), figure.add_subplot(2, 2, 4)]
-        axes.append(axes[2].twinx())
-        axes.append(axes[3].twinx())
-    else:
-        axes = figure.get_axes()
+    def make_title(self):
+        human = self.field.human_readable()
+        if human:
+            human = "$"+human+"$\n"
+        title = human+\
+               "$\\int B^2(z) dz =$ {0:.4g} T$^2$ m".format(self.field.get_bz2_int())
+        return title
 
-    zero_list = [0. for i in z_list]
-    #axes[0].plot(z_list, zero_list, '--g')
-    axes[0].plot(z_list, bz_list)
-    axes[0].set_xlabel("z [m]")
-    axes[0].set_ylabel("B$_{z}$ [T]")
-    axes[1].plot(z_list, bz2_list)
-    axes[1].set_xlabel("z [m]")
-    axes[1].set_ylabel("B$_{z}^2$ [T$^2$]")
-
-    print("     pz    beta_0     antibeta_0 phi      n_iterations")
-    for pz in pz_list:
-        beta_finder.momentum = pz
-        beta, alpha, phi, beta_half = beta_finder.get_beta_periodic()
-        print (f"    {pz:12.4g} {beta:12.4g} {beta_half:12.4g} {phi:12.4g}")
-        beta_list.append(beta)
-        antibeta_list.append(beta_half)
-        phi_list.append(phi)
-    out_data["pz_list"] = pz_list
-    out_data["beta_list"] = beta_list
-    out_data["antibeta_list"] = antibeta_list
-    axes[2].plot([0.0, pz_list[-1]], [0.0, (beta_list[-1]+antibeta_list[-1])/2.0], c="xkcd:light grey", linestyle="dotted")
-    axes[2].plot(pz_list, beta_list, label="$\\beta(L)$")
-    axes[2].plot(pz_list, antibeta_list, 'g--', label="$\\beta(L/2)$")
-    axes[2].set_xlabel("p$_{z}$ [GeV/c]")
-    axes[2].set_ylabel("$\\beta$ [m]")
-    axes[2].set_ylim([0.0, beta_max])
-
-    for y in [math.pi/2.0, 0.0, -math.pi/2.0]:
-        pass #axes[4].plot([pz_list[0], pz_list[-1]], [y, y], linestyle='dotted', color='pink')
-    axes[4].set_ylim(-math.pi, math.pi)
-    axes[4].tick_params(axis='y', labelcolor='r')
-    axes[4].tick_params(axis='y', labelcolor='r')
-    axes[4].set_ylim(-math.pi, math.pi)
-    axes[2].set_xlim([min(pz_list), max(pz_list)])
-    axes.append(make_energy_axis(axes[2], True))
-    this_pz_list, this_phi_list = [], []
-    phi_old = None
-    plotting = False
-    for i, pz in enumerate(pz_list):
-        phi = phi_list[i]
-        pz = pz_list[i]
-        if phi == 0 and i != len(pz_list)-1:
-            plotting = True
-            continue
-        #if i > 0 and abs(phi-phi_list[i-1]) > math.pi:
-        #    plotting = True
-        if i == len(pz_list)-1:
-            plotting = True
-        if i > 0 and abs(phi_list[i] - phi_list[i-1]) > math.pi:
-            plotting = True
-        if plotting:
-            #axes[4].plot(this_pz_list, this_phi_list, 'r-.')
-            this_pz_list, this_phi_list = [], []
-            plotting = False
-        this_pz_list.append(pz)
-        this_phi_list.append(phi)
+    def get_name(self):
+        return "optics_L_"+str(self.field.period)+"_"+self.field.get_name()
 
 
-    print(f"Max Bz: {max(bz_list)}")
-    for pz in pz_plot_list:
-        beta_finder.momentum = pz
-        beta, alpha, phi, beta_mid = beta_finder.get_beta_periodic()
-        if beta < 1e-9:
-            print(f"Failed to plot {pz}; no closed solution found")
-            continue
-        beta_finder.verbose = 0
-        z_list, beta_list, dbetadz_list, phi_list = \
-                                        beta_finder.propagate_beta(beta, 0.)
-        axes[3].plot(z_list, beta_list, label="$\\beta_\\perp$ "+format(pz, "6.4g")+" GeV/c")
-        out_data["pz_items"].append({"z":z_list, "beta_list":beta_list, "pz":pz})
-        print(f"beta(z=0, pz={pz}): {beta_list[0]}")
-    axes[3].set_xlabel("z [m]")
-    axes[3].set_ylabel("$\\beta$ [m]")
-    axes[3].set_ylim([0.0, beta_max])
-    mass = 0.105658
-    if nominal_emittance > 0:
-        for pz in pz_plot_list:
-            sigma_x_list = [(beta*nominal_emittance*mass/pz)**0.5 for beta in beta_list]
-            axes[5].plot(z_list, sigma_x_list, linestyle="dashed", label=f"$\\sigma_x$ {pz} GeV/c")
-    axes[5].set_ylabel("$\\sigma_x$ [m]")
-    axes[5].set_ylim([0.0, (beta_max*nominal_emittance*mass/min(pz_plot_list))**0.5])
-    try:
-        axes[3].legend(loc="upper left")
-        axes[5].legend(loc="upper right")
-    except:
+    def prepare_plots(self):
+        self.out_data = {"pz_items":[], "field_name":self.field.get_name(),}
+        try:
+            self.out_data.update({"field_bi":self.field.bz_list, "field_b0":self.field.bz0, "period":self.field.get_period()})
+        except:
+            pass
+        if self.figure == None:
+            self.figure = matplotlib.pyplot.figure(figsize=(12, 10))
+            self.axes = [
+                self.figure.add_subplot(2, 2, 1),
+                self.figure.add_subplot(2, 2, 2),
+                self.figure.add_subplot(2, 2, 3),
+                self.figure.add_subplot(2, 2, 4)]
+            self.axes.append(self.axes[2].twinx())
+            self.axes.append(self.axes[3].twinx())
+            self.figure.suptitle(self.make_title())
+        self.beta_finder = BetaFinder(self.field, 1., use_analytic=True)
+        if self.bsquared != None:
+            self.field.normalise_bz_squared(bsquared)
+        self.z_list = [i*self.field.period/100 for i in range(101)]
+
+    def write(self):
+        fout = open(os.path.join(self.plot_dir, self.get_name()+".json"), "w")
+        fout.write(json.dumps(self.out_data))
+        self.figure.savefig(os.path.join(self.plot_dir, self.get_name()+".png"))
+        print("Finished plotting lattice")
+
+
+    def do_plots(self):
+        self.prepare_plots()
+        self.field_plot()
+        self.field_squared_plot()
+        self.plot_beta_vs_pz()
+        self.plot_beta_vs_z()
+        self.write()
+
+    def field_plot(self):
+        bz_list = [self.field.get_field(z) for z in self.z_list]
+        self.axes[0].plot(self.z_list, bz_list)
+        self.axes[0].set_xlabel("z [m]")
+        self.axes[0].set_ylabel("B$_{z}$ [T]")
+
+    def field_squared_plot(self):
+        bz2_list = [self.field.get_field(z)**2 for z in self.z_list]
+        self.axes[1].plot(self.z_list, bz2_list)
+        self.axes[1].set_xlabel("z [m]")
+        self.axes[1].set_ylabel("B$_{z}^2$ [T$^2$]")
+
+    def plot_beta_vs_pz(self):
+        print("     pz    beta_0     antibeta_0 phi      n_iterations")
+        beta_list = []
+        antibeta_list = []
+        for pz in self.pz_list:
+            self.beta_finder.momentum = pz
+            beta, alpha, phi, beta_half = self.beta_finder.get_beta_periodic()
+            print (f"    {pz:12.4g} {beta:12.4g} {beta_half:12.4g} {phi:12.4g}")
+            beta_list.append(beta)
+            antibeta_list.append(beta_half)
+        self.out_data["pz_list"] = self.pz_list
+        self.out_data["beta_list"] = beta_list
+        self.out_data["antibeta_list"] = antibeta_list
+        self.axes[2].plot([0.0, self.pz_list[-1]], [0.0, (beta_list[-1]+antibeta_list[-1])/2.0], c="xkcd:light grey", linestyle="dotted")
+        self.axes[2].plot(self.pz_list, beta_list, label="$\\beta(L)$")
+        self.axes[2].plot(self.pz_list, antibeta_list, 'g--', label="$\\beta(L/2)$")
+        self.axes[2].set_xlabel("p$_{z}$ [GeV/c]")
+        self.axes[2].set_ylabel("$\\beta$ [m]")
+        self.axes[2].set_ylim([0.0, self.beta_max])
+
+    def plot_beta_vs_z(self):
+        for pz in self.pz_plot_list:
+            self.beta_finder.momentum = pz
+            beta, alpha, phi, beta_mid = self.beta_finder.get_beta_periodic()
+            if beta < 1e-9:
+                print(f"Failed to plot {pz}; no closed solution found")
+                continue
+            self.beta_finder.verbose = 0
+            z_list, beta_list, dbetadz_list, phi_list = \
+                                            self.beta_finder.propagate_beta(beta, 0.)
+            self.axes[3].plot(z_list, beta_list, label="$\\beta_\\perp$ "+format(pz, "6.4g")+" GeV/c")
+            self.out_data["pz_items"].append({"z":z_list, "beta_list":beta_list, "pz":pz})
+        self.axes[3].set_xlabel("z [m]")
+        self.axes[3].set_ylabel("$\\beta$ [m]")
+        self.axes[3].set_ylim([0.0, self.beta_max])
+        mass = 0.105658
+        if self.nominal_emittance > 0:
+            for pz in self.pz_plot_list:
+                sigma_x_list = [(beta*self.nominal_emittance*mass/pz)**0.5 for beta in beta_list]
+                self.axes[5].plot(z_list, sigma_x_list, linestyle="dashed", label=f"$\\sigma_x$ {pz} GeV/c")
+        self.axes[5].set_ylabel("$\\sigma_x$ [m]")
+        self.axes[5].set_ylim([0.0, (self.beta_max*self.nominal_emittance*mass/min(self.pz_plot_list))**0.5])
+        try:
+            self.axes[3].legend(loc="upper left")
+            self.axes[5].legend(loc="upper right")
+        except:
+            pass
+
+class EqmPlotter:
+    def __init__(self):
+        self.mass = 0.105658
+
+    def dedx(self):
         pass
-    fout = open(os.path.join(plot_dir, name+".json"), "w")
-    fout.write(json.dumps(out_data))
-    figure.savefig(os.path.join(plot_dir, name+".png"))
-    print("Finished plotting lattice")
-    return figure
 
-def make_solenoid_field():
-    #b0, zcentre, length, radius, period, nrepeats
-    period = 1.0
-    bz0 = 7.206
-    field_list = [(1.0, 0.1, 0.1, 0.4)]
-    solenoid_list = [CurrentSheet(b0, z0, l0, r0, period, 4) for b0, z0, l0, r0 in field_list]
-    solenoid_list += [CurrentSheet(-b0, -z0, l0, r0, period, 4) for b0, z0, l0, r0 in field_list]
-    field_sum = FieldSum(solenoid_list)
-    bz_norm = max([field_sum.get_field(i*period/100.0) for i in range(101)])
-    for field in field_sum.field_list:
-        field.b0 = field.b0*bz0/bz_norm # watch the sign on the field
-    bz_norm = max([field_sum.get_field(i*period/100.0) for i in range(101)])
-    return field_sum
+    def get_energy(self, pz):
+        return (pz**2+self.mass**2)**0.5
 
-def demo_2024_03_04():
-    solenoid_field = FieldSum(
-        [CurrentBlock(108.1, 0.16549477466396467, 0.1, 0.25, 0.5751153614232237, 1.0, 10, 10),
-        CurrentBlock(-108.1, 1.0-0.16549477466396467, 0.1, 0.25, 0.5751153614232237, 1.0, 10, 10)]
-    )
+    def get_g_l(self, g_t, pz):
+        dow = 1-g_t
+        gamma_rel = self.get_energy(pz)/self.mass
+        beta_rel = pz/gamma_rel/self.mass
+        I = 36.5e-9 # GeV
+        m_e_c2 = 0.00051099895069 # GeV
+        K = 2*m_e_c2/I
+        g_l0  = -2/gamma_rel**2 + 2*(1-(beta_rel/gamma_rel)**2)/(log(K*beta_rel**2*gamma_rel**2)-beta_rel**2)
+        g_l = g_l0-dow
+        return g_l
 
-"""
-def ruihu_s2_150_240():
-    current_density = 0.1
-    inner_radius =
-    outer_radius =
-    z_length = 338.11396672078416
-    centre_z
-    z_max
-    period
-
-    field = CurrentBlock(1, 0.16549477466396467, 0.1, 0.25, 0.5751153614232237, 1.0, 10, 10)
-    j0 = field.get_current_density()*1e-6
-    b0 = current_density/j0
-    solenoid_field = FieldSum(
-        [CurrentBlock(b0, 0.16549477466396467, 0.1, 0.25, 0.5751153614232237, 1.0, 10, 10),
-        CurrentBlock(b0, 1.0-0.16549477466396467, 0.1, 0.25, 0.5751153614232237, 1.0, 10, 10)]
-    )
-"""
-
+    def plot_eqm_emittance(self, pz):
+        beta_rel = 0.0
+        figure = matplotlib.pyplot.figure("emittance")
+        gt_list = [0.01*i for i in range(101)]
+        gl_list = [self.get_g_l(gt, pz) for gt in gt_list]
+        E_mu = self.get_energy(pz)
+        beta_t = 0.1
+        eps_t = beta_t*E_mu**2/2/beta/g_t/self.mass/L_r
+        eps_l = beta_l*m_e*gamma**2*(1-0.0)
 
 def main():
     global fignum
@@ -482,7 +451,7 @@ def main():
     c_b = 1/0.8
     c_p = 1.0
     pz_plot_list = [c_p*0.19, c_p*0.20, c_p*0.21]
-    pz_scan_list = [c_p*pz_i/1000. for pz_i in range(140, 241, 2)]
+    pz_scan_list = [c_p*pz_i/1000. for pz_i in range(140, 301, 2)]
     n_points = 2
     norm = 100
     #clear_dir(plot_dir)
@@ -499,7 +468,9 @@ def main():
         #solenoid_field.normalise_bz_squared(norm)
         #solenoid_field = CurrentSheet(108.02, 0.1655, 0.1, 0.25, 1.0, 1)
         #def __init__(self, b0, zcentre, length, rmin, rmax, period, nrepeats, nsheets):
-        fig1 = do_plots(solenoid_field, pz_plot_list, pz_scan_list, plot_dir, nominal_emittance = 0.0025, beta_max=0.8)
+        plotter = Plotter(solenoid_field, pz_plot_list, pz_scan_list, plot_dir, nominal_emittance = 0.0025, beta_max=0.8)
+        plotter.do_plots()
+
     matplotlib.pyplot.show(block=False)
 
 if __name__ == "__main__":

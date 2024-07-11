@@ -64,6 +64,7 @@ class Cavity(Setup):
         self.max_gradient = 0.0
         self.x_position = 0.0
         self.z_position = 0.0
+        self.iris_radius = 100.0
         self.rgb = None
         self.phase = None
         self.time_offset = None
@@ -71,9 +72,9 @@ class Cavity(Setup):
     def build(self):
         my_cavity = """
 pillbox {0} innerLength={1} frequency={2} \\
-    maxGradient={3} irisRadius=100.0 \\
+    maxGradient={3} irisRadius={5} \\
     win1Thick=0.0 win2Thick=0.0 wallThick=0.0 collarThick=0.0 \\
-    kill=1 maxStep=0.1 innerRadius=500.0""".format(self.name, self.inner_length, self.frequency, self.max_gradient, self.time_offset)
+    kill=1 maxStep=0.1 innerRadius=500.0""".format(self.name, self.inner_length, self.frequency, self.max_gradient, self.time_offset, self.iris_radius)
         if self.phase is not None:
             my_cavity += f" phaseAcc={self.phase}"
         if self.time_offset is not None:
@@ -83,6 +84,31 @@ pillbox {0} innerLength={1} frequency={2} \\
             my_cavity += f" color={self.rgb[0]},{self.rgb[1]},{self.rgb[2]}"
         my_cavity += "\n"
         return my_cavity
+
+class UniformField(Setup):
+    def __init__(self):
+        super().__init__()
+        self.name = ""
+        self.radius = 0.0
+        self.bz = 0.0
+        self.z_start = 0.0
+        self.x_position = 0.0
+        self.z_position = 0.0
+        self.length = 0.0
+
+    def build(self):
+        if self.z_start != 0.0:
+            if self.z_centre != 0.0:
+                raise ValueError(f"Can only define either z_centre or z_start, not both in UniformField {self.name}")
+            self.z_position = self.z_start + self.length/2.0
+
+        my_field = \
+            f"fieldexpr {self.name} Bz={self.bz} length={self.length} radius={self.radius}\n"
+        my_field += f"place {self.name} z={self.z_position}\n"
+        return my_field
+
+
+
 
 class Tube(Setup):
     def __init__(self):
@@ -310,6 +336,7 @@ class G4BLLinac:
 
     element_dict = {
         "solenoid":Solenoid,
+        "uniform_field":UniformField,
         "cavity":Cavity,
         "tube":Tube,
     }

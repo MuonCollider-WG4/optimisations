@@ -18,7 +18,7 @@ void FourierFieldModel::GetField(const double& z, const int& derivative, double&
             bzDerivative += harmonicList[i]*kPow*k*cos(k*z);
         }
     }
-} 
+}
 
 FourierFieldModel::~FourierFieldModel() {}
 
