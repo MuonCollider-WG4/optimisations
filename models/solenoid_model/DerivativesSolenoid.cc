@@ -1,6 +1,11 @@
 #include <string>
 #include <math.h>
 #include <iostream>
+#include <cmath>
+
+#include "gsl/gsl_sf_gamma.h"
+#include "gsl/gsl_sf_pow_int.h"
+
 #include "DerivativesSolenoid.hh"
 
 void FourierFieldModel::GetField(const double& z, const int& derivative, double& bzDerivative) const {
@@ -29,7 +34,7 @@ OnAxisFieldModel* FourierFieldModel::Clone() const {
     return rhs;
 }
 
-void FourierFieldModel::Initialise() {
+void FourierFieldModel::Initialise(int /*maxDerivative*/) {
     if (cellLength == 0.0) {
         throw std::string("cellLength must be non-zero");
     }
@@ -107,3 +112,75 @@ void DerivativesSolenoid::SetCoeff() {
     }
 }
 
+std::vector< std::vector< std::vector<int> > > TanhFieldModel::_tdi =
+                            std::vector< std::vector< std::vector<int> > >();
+
+TanhFieldModel::~TanhFieldModel() {;}
+
+void TanhFieldModel::GetField(const double& z,
+                          const int& derivative,
+                          double& bzDerivative) const {
+    bzDerivative = _b0*(getPosTanh(z, derivative)-getNegTanh(z, derivative))/2.;
+}
+
+void TanhFieldModel::Initialise(int maxDerivative) {
+    SetTanhDiffIndices(maxDerivative);
+}
+
+OnAxisFieldModel* TanhFieldModel::Clone() const {
+    TanhFieldModel* tfm = new TanhFieldModel();
+    tfm->_x0 = _x0;
+    tfm->_lambda = _lambda;
+    return tfm;
+}
+
+void TanhFieldModel::SetTanhDiffIndices(size_t n) {
+    if (_tdi.size() >= n+1) {
+        return;
+    }
+    _tdi.reserve(n+1);
+    if (_tdi.size() == 0) {
+        _tdi.push_back(std::vector< std::vector<int> >(1, std::vector<int>(2)));
+        _tdi[0][0][0] = 1;  // 1*tanh(x) - third index is redundant
+        _tdi[0][0][1] = 1;
+    }
+    for (size_t i = _tdi.size(); i < n+1; ++i) {
+        _tdi.push_back(std::vector< std::vector<int> >());
+        for (size_t j = 0; j < _tdi[i-1].size(); ++j) {
+            int value = _tdi[i-1][j][1];
+            if (value != 0) {
+                std::vector<int> new_vec(_tdi[i-1][j]);
+                new_vec[0] *= value;
+                new_vec[1] -= 1;
+                _tdi[i].push_back(new_vec);
+                std::vector<int> new_vec2(_tdi[i-1][j]);
+                new_vec2[0] *= -value;
+                new_vec2[1] += 1;
+                _tdi[i].push_back(new_vec2);
+            }
+        }
+    //_tdi[i] = CompactVector(_tdi[i]);
+    }
+}
+
+double TanhFieldModel::getPosTanh(double x, int n) const {
+  if (n == 0) return tanh((x+_x0)/_lambda);
+  double t = 0;
+  double lam_n = gsl_sf_pow_int(_lambda, n);
+  double tanh_x = tanh((x+_x0)/_lambda);
+  for (size_t i = 0; i < _tdi[n].size(); i++)
+    t += 1./lam_n*static_cast<double>(_tdi[n][i][0])
+            *gsl_sf_pow_int(tanh_x, _tdi[n][i][1]);
+  return t;
+}
+
+double TanhFieldModel::getNegTanh(double x, int n) const {
+  if (n == 0) return tanh((x-_x0)/_lambda);
+  double t = 0;
+  double lam_n = gsl_sf_pow_int(_lambda, n);
+  double tanh_x = tanh((x-_x0)/_lambda);
+  for (size_t i = 0; i < _tdi[n].size(); i++)
+    t += 1./lam_n*static_cast<double>(_tdi[n][i][0])
+            *gsl_sf_pow_int(tanh_x, _tdi[n][i][1]);
+  return t;
+}

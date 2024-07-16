@@ -1,0 +1,3 @@
+/home/cr67/Software/solenoid_optics/models/solenoid_model/CMakeFiles/derivatives_solenoid.dir
+/home/cr67/Software/solenoid_optics/models/solenoid_model/CMakeFiles/edit_cache.dir
+/home/cr67/Software/solenoid_optics/models/solenoid_model/CMakeFiles/rebuild_cache.dir

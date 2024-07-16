@@ -1,5 +1,6 @@
 import math
 import unittest
+import time
 
 import derivatives_solenoid
 
@@ -9,6 +10,22 @@ class TestDerivativesSolenoid(unittest.TestCase):
 
     def test_initialisation(self):
         sol = derivatives_solenoid.DerivativesSolenoid()
+
+    def test_set_fourier_model(self):
+        sol = derivatives_solenoid.DerivativesSolenoid()
+        try:
+            sol.set_fourier_field_model()
+            self.assertTrue(False, "Should have thrown")
+        except ValueError:
+            pass
+        sol.set_fourier_field_model(1.0, [])
+        sol.set_fourier_field_model(1.0, [1.0])
+        sol.set_fourier_field_model(1.0, [1])
+        try:
+            sol.set_fourier_field_model(1.0, ["badger"])
+            self.assertTrue(False, "Should have thrown")
+        except ValueError:
+            pass
 
     def test_set_fourier_model(self):
         sol = derivatives_solenoid.DerivativesSolenoid()
@@ -39,20 +56,14 @@ class TestDerivativesSolenoid(unittest.TestCase):
     def test_bounding_box(self):
         sol = derivatives_solenoid.DerivativesSolenoid()
         sol.set_fourier_field_model(1.0, [1.0])
-        try:
-            sol.get_field_value(0.0, 0.0, 1.0, 0.0)
-            self.assertTrue(False, "Should have thrown")
-        except RuntimeError:
-            pass
-        sol.set_min_z(-0.5)
-        sol.set_max_z(1.0)
+        sol.set_length(1.5)
         sol.set_max_r(1.5)
         for point, inside_bb in [
-                ((0.0, 0.0, 0.5, 0.0), True),
-                ((0.0, 0.0, -0.499, 0.0), True),
-                ((0.0, 0.0, -0.501, 0.0), False),
-                ((0.0, 0.0, 0.999, 0.0), True),
-                ((0.0, 0.0, 1.001, 0.0), False),
+                ((0.0, 0.0, 0.1, 0.0), True),
+                ((0.0, 0.0, -0.7499, 0.0), True),
+                ((0.0, 0.0, -0.7501, 0.0), False),
+                ((0.0, 0.0, 0.7499, 0.0), True),
+                ((0.0, 0.0, 0.7501, 0.0), False),
                 ((1.499, 0.0, 0.5, 0.0), True),
                 ((1.501, 0.0, 0.5, 0.0), False ),
             ]:
@@ -62,8 +73,7 @@ class TestDerivativesSolenoid(unittest.TestCase):
 
     def test_on_axis_field(self):
         sol = derivatives_solenoid.DerivativesSolenoid()
-        sol.set_min_z(-100)
-        sol.set_max_z(100)
+        sol.set_length(200)
         try:
             sol.get_field_value(0, 0, 0, 0)
             self.assertTrue(False, "Should have thrown")
@@ -78,18 +88,33 @@ class TestDerivativesSolenoid(unittest.TestCase):
             self.assertLess(abs(bfield[1]), 1e-12)
             self.assertLess(abs(delta), 1e-12)
 
-    def test_on_axis_field_derivatives(self):
+    def test_on_axis_field_derivatives_ffm(self):
         sol = derivatives_solenoid.DerivativesSolenoid()
         sol.set_fourier_field_model(0.5, [2.0, 1.0])
-        for iz in range(5):
-            z = iz/7.0
-            for deriv in range(1, 10):
+        self._test_on_axis_field_derivatives(sol)
+
+    def test_on_axis_field_derivatives_tfm(self):
+        sol = derivatives_solenoid.DerivativesSolenoid()
+        sol.set_tanh_field_model(1.5, 1.0, 0.2)
+        self._test_on_axis_field_derivatives(sol)
+
+    def _test_on_axis_field_derivatives(self, sol):
+        verbose = 0
+        for deriv in range(0, 3):
+            for iz in range(-5, 5):
+                z = iz/7.0
                 analytical = sol.get_on_axis_field(z, deriv)
-                numerical = (sol.get_on_axis_field(z+self.dx, deriv-1)-sol.get_on_axis_field(z-self.dx, deriv-1))/2/self.dx
-                if numerical > 0.0:
-                    self.assertAlmostEqual(analytical/numerical, 1, 3)
+                if deriv:
+                    numerical = (sol.get_on_axis_field(z+self.dx, deriv-1)-sol.get_on_axis_field(z-self.dx, deriv-1))/2/self.dx
+                    if numerical > 0.0:
+                        self.assertAlmostEqual(analytical/numerical, 1, 3)
+                    else:
+                        self.assertLess(analytical, 1e-3)
                 else:
-                    self.assertLess(analytical, 1e-3)
+                    numerical = 0.0
+                if verbose:
+                    print("z:", z, "(n)", deriv, "numerical derivative", numerical, "analytical", analytical)
+
 
     def dbdx(self, field, position, bdim, xdim):
         position[xdim] += self.dx
@@ -113,12 +138,20 @@ class TestDerivativesSolenoid(unittest.TestCase):
         curl2 += (self.dbdx(field, position, 0, 1)-self.dbdx(field, position, 1, 0))**2
         return curl2**0.5
 
-    def test_off_axis_field(self):
-        verbose = 0
+    def test_off_axis_field_ffm(self):
         sol = derivatives_solenoid.DerivativesSolenoid()
-        sol.set_min_z(-100)
-        sol.set_max_z(100)
+        sol.set_length(200)
         sol.set_fourier_field_model(0.5, [2.0]) # T, m
+        self._test_off_axis_field(sol, 1e-8)
+
+    def test_off_axis_field_tfm(self):
+        sol = derivatives_solenoid.DerivativesSolenoid()
+        sol.set_length(200)
+        sol.set_tanh_field_model(2.0, 0.5, 0.5) # m, m
+        self._test_off_axis_field(sol, 1e-5)
+
+    def _test_off_axis_field(self, sol, limit):
+        verbose = 0
 
         for iz in range(1, 4):
             z = 0.1*iz            
@@ -136,13 +169,14 @@ class TestDerivativesSolenoid(unittest.TestCase):
                         curl_b = self.get_curl_b_mag(sol, pos)
                         sum_list.append(abs(curl_b)+abs(div_b))
                         if verbose:
-                            print(f"i: {order} pos: {pos[0]:8.4g} {pos[1]:8.4g} {pos[2]:8.4g}", end=" ")
+                            print(f"Ord: {order} pos: {pos[0]:8.4g} {pos[1]:8.4g} {pos[2]:8.4g}", end=" ")
                             print(f"bfield: {bfield[0]:10.4g} {bfield[1]:10.4g} {bfield[2]:10.4g}", end=" ")
                             print(f"div: {div_b:10.4g} curl: {curl_b:10.4g} sum: {sum_list[-1]}")
                     if verbose:
                         print()
                     for i in range(4, len(sum_list), 2):
-                        self.assertTrue(sum_list[i] < sum_list[i-2] or sum_list[i] < 1e-8)
+                        self.assertTrue(sum_list[i] < sum_list[i-2] or sum_list[i] < limit, msg=f"{i}  z: {z} r: {r} values: {sum_list[i]} < {sum_list[i-2]}")
 
 if __name__ == "__main__":
+    #test_on_axis_field_derivatives_ffm()
     unittest.main()

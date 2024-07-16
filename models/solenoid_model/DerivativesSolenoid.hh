@@ -10,8 +10,31 @@ public:
     virtual ~OnAxisFieldModel() {}
     virtual OnAxisFieldModel* Clone() const = 0;
     virtual void GetField(const double& z, const int& derivative, double& bzDerivative) const = 0;
-    virtual void Initialise() = 0;
+    virtual void Initialise(int maxDerivative) = 0;
 private:
+};
+
+class TanhFieldModel : public OnAxisFieldModel {
+public:
+    /** On-axis field defined by a tanh model
+     *
+     *  Defines a field like Bz = B0 (tanh((x0/2+x)/L)-tanh((x-x0/2)/L))/2
+     */
+    TanhFieldModel() : OnAxisFieldModel() {}
+    virtual ~TanhFieldModel();
+    virtual void GetField(const double& z,
+                          const int& derivative,
+                          double& bzDerivative) const;
+    virtual void Initialise(int maxDerivative);
+    OnAxisFieldModel* Clone() const;
+    double _x0, _lambda, _b0;
+private:
+    void SetTanhDiffIndices(size_t n);
+    double getPosTanh(double x, int n) const;
+    double getNegTanh(double x, int n) const;
+    TanhFieldModel(const TanhFieldModel& tfm);
+    TanhFieldModel& operator=(const TanhFieldModel& tfm);
+    static std::vector< std::vector< std::vector<int> > > _tdi;
 };
 
 class FourierFieldModel : public OnAxisFieldModel {
@@ -27,12 +50,13 @@ public:
     virtual void GetField(const double& z,
                           const int& derivative,
                           double& bzDerivative) const;
-    virtual void Initialise();
+    virtual void Initialise(int maxDerivative);
     OnAxisFieldModel* Clone() const;
     std::vector<double> harmonicList;
     double cellLength;
 private:
     FourierFieldModel(const FourierFieldModel& ffm);
+    FourierFieldModel& operator=(const FourierFieldModel& tfm);
 };
 
 class DerivativesSolenoid {

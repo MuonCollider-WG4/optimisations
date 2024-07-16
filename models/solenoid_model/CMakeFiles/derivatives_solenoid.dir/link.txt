@@ -1,0 +1,1 @@
+/usr/bin/c++ -fPIC -L/home/cr67/Software/install/lib -L/home/cr67/Software/install/lib64 -L/usr/lib/x86_64-linux-gnu/ -fcommon -shared -Wl,-soname,derivatives_solenoid.so -o derivatives_solenoid.so CMakeFiles/derivatives_solenoid.dir/DerivativesSolenoid.cc.o CMakeFiles/derivatives_solenoid.dir/PyDerivativesSolenoid.cc.o  -lm -lz -rdynamic -std=c++2a 

@@ -48,6 +48,23 @@ static PyObject* SetFourierFieldModel(PyObject* self, PyObject* args) {
     Py_RETURN_NONE;
 }
 
+static PyObject* SetTanhFieldModel(PyObject* self, PyObject* args) {
+    double b0, centreLength, endLength = 0;
+    if (!PyArg_ParseTuple(args, "ddd", &b0, &centreLength, &endLength)) {
+        PyErr_SetString(PyExc_ValueError, "Failed to parse arguments");
+        return NULL;
+    }
+    PyDerivativesSolenoid* pysol = (PyDerivativesSolenoid*)self;
+    DerivativesSolenoid& sol = pysol->solenoid;
+    TanhFieldModel* tfm = new TanhFieldModel();
+    tfm->_b0 = b0;
+    tfm->_x0 = centreLength/2;
+    tfm->_lambda = endLength;
+    sol.fieldModel = std::unique_ptr<OnAxisFieldModel>(tfm);
+    tfm->Initialise(20);
+    Py_RETURN_NONE;
+}
+
 static PyObject* SetMaxDerivative(PyObject* self, PyObject* args) {
     int maxDerivative = 0;
     if (!PyArg_ParseTuple(args, "i", &maxDerivative)) {
@@ -71,42 +88,23 @@ static PyObject* GetMaxDerivative(PyObject* self, PyObject* args) {
     return pyDeriv;
 }
 
-static PyObject* SetMaxZ(PyObject* self, PyObject* args) {
-    double maxZ = 0;
-    if (!PyArg_ParseTuple(args, "d", &maxZ)) {
+static PyObject* SetLength(PyObject* self, PyObject* args) {
+    double length = 0;
+    if (!PyArg_ParseTuple(args, "d", &length)) {
         PyErr_SetString(PyExc_ValueError, "Failed to parse arguments");
         return NULL;
     }
     PyDerivativesSolenoid* pysol = (PyDerivativesSolenoid*)self;
-    pysol->solenoid.maxZ = maxZ;
+    pysol->solenoid.length = length;
     Py_RETURN_NONE;
 }
 
-static PyObject* GetMaxZ(PyObject* self, PyObject* args) {
+static PyObject* GetLength(PyObject* self, PyObject* args) {
     PyDerivativesSolenoid* pysol = (PyDerivativesSolenoid*)self;
-    unsigned int maxZ = pysol->solenoid.maxZ;
-    PyObject* pyMaxZ = PyFloat_FromDouble(maxZ);
-    Py_INCREF(pyMaxZ);
-    return pyMaxZ;
-}
-
-static PyObject* SetMinZ(PyObject* self, PyObject* args) {
-    double minZ = 0;
-    if (!PyArg_ParseTuple(args, "d", &minZ)) {
-        PyErr_SetString(PyExc_ValueError, "Failed to parse arguments");
-        return NULL;
-    }
-    PyDerivativesSolenoid* pysol = (PyDerivativesSolenoid*)self;
-    pysol->solenoid.minZ = minZ;
-    Py_RETURN_NONE;
-}
-
-static PyObject* GetMinZ(PyObject* self, PyObject* args) {
-    PyDerivativesSolenoid* pysol = (PyDerivativesSolenoid*)self;
-    unsigned int minZ = pysol->solenoid.minZ;
-    PyObject* pyMinZ = PyFloat_FromDouble(minZ);
-    Py_INCREF(pyMinZ);
-    return pyMinZ;
+    unsigned int length = pysol->solenoid.length;
+    PyObject* pyLength = PyFloat_FromDouble(length);
+    Py_INCREF(pyLength);
+    return pyLength;
 }
 
 static PyObject* SetMaxR(PyObject* self, PyObject* args) {
@@ -184,13 +182,12 @@ static PyMethodDef derivatives_solenoid_methods[] = {
      "Get the field value."},
     {"get_on_axis_field",  GetOnAxisField, METH_VARARGS,
      "Get the field value on the axis, or its derivative."},
-    {"set_fourier_field_model", SetFourierFieldModel, METH_VARARGS, "Set the field model"},
+    {"set_fourier_field_model", SetFourierFieldModel, METH_VARARGS, "Set the field model - using a fourier model"},
+    {"set_tanh_field_model", SetTanhFieldModel, METH_VARARGS, "Set the field model - using a tanh model"},
     {"set_max_derivative", SetMaxDerivative, METH_VARARGS, "Set the maximum derivative in the expansion"},
     {"get_max_derivative", GetMaxDerivative, METH_VARARGS, "Get the maximum derivative in the expansion"},
-    {"set_max_z", SetMaxZ, METH_VARARGS, "Set the maximum z of the bounding box"},
-    {"get_max_z", GetMaxZ, METH_VARARGS, "Get the maximum z of the bounding box"},
-    {"set_min_z", SetMinZ, METH_VARARGS, "Set the minimum z of the bounding box"},
-    {"get_min_z", GetMinZ, METH_VARARGS, "Get the minimum z of the bounding box"},
+    {"set_length", SetLength, METH_VARARGS, "Set the length of the bounding box"},
+    {"get_length", GetLength, METH_VARARGS, "Get the length of the bounding box"},
     {"set_max_r", SetMaxR, METH_VARARGS, "Set the maximum radius of the bounding box"},
     {"get_max_r", GetMaxR, METH_VARARGS, "Get the maximum radius of the bounding box"},
     {NULL, NULL, 0, NULL}        /* Sentinel */

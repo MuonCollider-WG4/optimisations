@@ -7,9 +7,11 @@ SET(PYTHON_SRCS DerivativesSolenoid.cc PyDerivativesSolenoid.cc)
 add_library(${MODULE_NAME} SHARED ${PYTHON_SRCS})
 set_target_properties (${MODULE_NAME} PROPERTIES PREFIX "")
 include_directories(${Python_INCLUDE_DIR})
+include_directories(${GSL_INCLUDE_DIR})
 target_include_directories(${MODULE_NAME} PUBLIC ${Python_INCLUDE_DIR})
 target_link_libraries( ${MODULE_NAME}
     ${Python_LIBRARY}
+    ${GSL_LIBRARY}
     m
     z
     "-rdynamic"

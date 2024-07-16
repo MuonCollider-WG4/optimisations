@@ -9,11 +9,14 @@ fi
 mkdir ${build_dir}
 cmake CMakeLists.txt \
       -B${build_dir}/ -H./ \
-      -DVERBOSE=1 \
-      -DPython_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython${python_version}.so \
       -DPython_INCLUDE_DIR=/usr/include/python${python_version}/ \
-      -DCMAKE_INSTALL_PREFIX=${OPAL_THIRD_PARTY} \
-      -DPYTHON_INSTALL_DIR=${OPAL_THIRD_PARTY}/lib/python/site-packages/
+      -DPython_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython${python_version}.so \
+      -DGSL_INCLUDE_DIR=${HOME}/Software/install/include/ \
+      -DGSL_LIBRARY=${HOME}/Software/install/lib/libgsl.a \
+      -DCMAKE_INSTALL_PREFIX=${OPAL_THIRD_PARTY}
+#-DPYTHON_INSTALL_DIR=${OPAL_THIRD_PARTY}/lib/python/site-packages/
+#-DVERBOSE=1 \
+
 cd build
 make -j20
 
