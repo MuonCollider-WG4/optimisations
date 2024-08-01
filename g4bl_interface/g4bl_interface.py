@@ -13,8 +13,8 @@ class Setup():
     def setup(self, config):
         for key, value in config.items():
             if key not in self.__dict__:
-                raise KeyError("Did not recognise element configuration", key)
-            if self.__dict__[key] is not None:
+                raise KeyError(f"Did not recognise element configuration {key} for {config['type']} element {config['name']}")
+            if self.__dict__[key] is not None and config[key] is not None:
                 value = type(self.__dict__[key])(value)
             self.__dict__[key] = value
 
@@ -28,6 +28,7 @@ class Solenoid(Setup):
         self.outer_radius = 0.0
         self.length = 0.0
         self.current = 0.0
+        self.nsheets = 10
         self.name = "my_coil"
         self.rgb = [0, 1, 0]
         self.set_coil_name()
@@ -37,7 +38,7 @@ class Solenoid(Setup):
         cls.coil_list = []
 
     def set_coil_name(self):
-        self.coil_name = f"coil_{self.inner_radius:.5g}_{self.outer_radius}_{self.length}"
+        self.coil_name = f"coil_{self.inner_radius:.5g}_{self.outer_radius}_{self.length}_{self.nsheets}"
 
     def build(self):
         my_solenoid = ""
@@ -45,7 +46,7 @@ class Solenoid(Setup):
         if self.coil_name not in self.coil_list:
             self.coil_list.append(self.coil_name)
             my_solenoid = \
-f"coil {self.coil_name} innerRadius={self.inner_radius} outerRadius={self.outer_radius} length={self.length}\n"
+f"coil {self.coil_name} innerRadius={self.inner_radius} outerRadius={self.outer_radius} length={self.length} nSheets={self.nsheets}\n"
         my_solenoid += \
 f"solenoid {self.name} coilName={self.coil_name} current=1 kill=1 color={self.rgb[0]},{self.rgb[1]},{self.rgb[2]}\n"
         my_solenoid += \
@@ -54,6 +55,30 @@ f"place {self.name} x={self.x_position} z={self.z_position} current={self.curren
 
     coil_list = []
 
+class DerivativesSolenoid(Setup):
+    def __init__(self):
+        super().__init__()
+        self.x_position = 0.0
+        self.y_rotation = 0.0 # rotation about the y axis i.e. in x z plane
+        self.z_position = 0.0
+        self.length = None
+        self.max_derivative = 9
+        self.max_r = 500
+        self.nominal_field = 0.0
+        self.end_length = 100.0
+        self.centre_length = 1000.0
+        self.name = ""
+        self.field_model = "tanh"
+
+    def build(self):
+        my_ds = ""
+        my_ds = f"""
+derivativessolenoid {self.name} fieldModel={self.field_model} length={self.length} maxDerivative={self.max_derivative} \
+                maxR={self.max_r} nominalField={self.nominal_field} endLength={self.end_length} centreLength={self.centre_length}
+place {self.name} x={self.x_position} z={self.z_position} rotation=Y{self.y_rotation}
+
+"""
+        return my_ds
 
 class Cavity(Setup):
     def __init__(self):
@@ -64,6 +89,7 @@ class Cavity(Setup):
         self.max_gradient = 0.0
         self.x_position = 0.0
         self.z_position = 0.0
+        self.collarRadialThick = 0.0001
         self.iris_radius = 100.0
         self.rgb = None
         self.phase = None
@@ -73,8 +99,8 @@ class Cavity(Setup):
         my_cavity = """
 pillbox {0} innerLength={1} frequency={2} \\
     maxGradient={3} irisRadius={5} \\
-    win1Thick=0.0 win2Thick=0.0 wallThick=0.0 collarThick=0.0 \\
-    kill=1 maxStep=0.1 innerRadius=500.0""".format(self.name, self.inner_length, self.frequency, self.max_gradient, self.time_offset, self.iris_radius)
+    win1Thick=0.0 win2Thick=0.0 wallThick=1.0 collarThick=1.0 collarRadialThick={6} \\
+    kill=1 maxStep=0.1 innerRadius=500.0""".format(self.name, self.inner_length, self.frequency, self.max_gradient, self.time_offset, self.iris_radius, self.collarRadialThick)
         if self.phase is not None:
             my_cavity += f" phaseAcc={self.phase}"
         if self.time_offset is not None:
@@ -107,24 +133,42 @@ class UniformField(Setup):
         my_field += f"place {self.name} z={self.z_position}\n"
         return my_field
 
-
-
-
 class Tube(Setup):
     def __init__(self):
         super().__init__()
         self.name = ""
         self.length = 0.0
+        self.inner_radius = 0.0
         self.outer_radius = 0.0
         self.material = ""
+        self.x_position = 0.0
+        self.z_position = 0.0 # if None will not place
+
+    def build(self):
+        my_tube = \
+            f"tube {self.name} innerRadius={self.inner_radius} outerRadius={self.outer_radius} length={self.length} material={self.material}\n"
+        if self.z_position != None:
+            my_tube += f"\nplace {self.name} x={self.x_position} z={self.z_position} color=1,0,0\n"
+        else:
+            my_tube += "\n"
+        return my_tube
+
+class Detector(Setup):
+    def __init__(self):
+        super().__init__()
+        self.name = ""
+        self.solid = ""
+        self.format = ""
+        self.filename = ""
+        self.coordinates = "local"
         self.x_position = 0.0
         self.z_position = 0.0
 
     def build(self):
-        my_tube = \
-            f"tube {self.name} outerRadius={self.outer_radius} length={self.length} material={self.material}\n"
-        my_tube += f"\nplace {self.name} x={self.x_position} z={self.z_position} color=1,0,0\n"
-        return my_tube
+        my_detector = \
+            f"detector {self.name} solid={self.solid} format={self.format} filename={self.filename} coordinates={self.coordinates}\n"
+        my_detector += f"place {self.name} x={self.x_position} z={self.z_position} color=1,0,0\n\n"
+        return my_detector
 
 
 class Reference(Setup):
@@ -150,6 +194,7 @@ class Beam(Setup):
         self.pid = -13
         self.x_position = 0.0
         self.z_position = 0.0
+        self.start_event_number = 0
         self.beams = []
         self.particles = []
         self.default_hit = {"pid":self.pid, "mass":xboa.common.pdg_pid_to_mass[abs(self.pid)]}
@@ -168,7 +213,7 @@ beam ascii particle={0} nEvents={1} filename={2} format=BLTrackFile beamZ={3} be
         bunch = xboa.bunch.Bunch.new_from_hits(self.particles)
         file_name = os.path.join(self.out_dir, self.filename)
         bunch.hit_write_builtin("g4beamline_bl_track_file", file_name)
-        print("Wrote file to", file_name)
+        print("Wrote beam file to", file_name)
 
     def build_a_beam(self, a_beam):
         beam_type = a_beam["type"]
@@ -176,6 +221,8 @@ beam ascii particle={0} nEvents={1} filename={2} format=BLTrackFile beamZ={3} be
             "longitudinal_grid":self.longitudinal_grid,
             "longitudinal_ellipse":self.longitudinal_ellipse,
             "longitudinal_g4bl_trackfile":self.longitudinal_g4bl,
+            "full_g4bl_trackfile":self.full_g4bl,
+            "beam_ellipse":self.beam_ellipse,
         }[beam_type]
         beam_builder(a_beam)
 
@@ -192,9 +239,22 @@ beam ascii particle={0} nEvents={1} filename={2} format=BLTrackFile beamZ={3} be
         for t in t_list:
             for e in e_list:
                 hit_dict = copy.deepcopy(a_beam["default_hit"])
-                hit_dict.update({"t":t, "energy":e+mass, "mass":mass, "pid":a_beam["pid"], "event_number":len(self.particles)+1})
+                hit_dict.update({"t":t, "energy":e+mass, "mass":mass, "pid":a_beam["pid"], "event_number":len(self.particles)+self.start_event_number+1})
                 self.particles.append(xboa.hit.Hit.new_from_dict(hit_dict, "pz"))
 
+    def beam_ellipse(self, a_beam):
+        var_list = a_beam["variables"]
+        ellipse = a_beam["ellipse"]
+        mean = a_beam["mean"]
+        n_particles = a_beam["n_particles"]
+        mass_shell = a_beam["mass_shell_condition"]
+        psv_list = numpy.random.multivariate_normal(mean, ellipse, n_particles)
+        for psv in psv_list:
+            hit_dict = copy.deepcopy(a_beam["default_hit"])
+            for i, var in enumerate(var_list):
+                hit_dict[var] = psv[i]
+            hit_dict["event_number"] = len(self.particles)+self.start_event_number+1
+            self.particles.append(xboa.hit.Hit.new_from_dict(hit_dict, mass_shell))
 
     def longitudinal_g4bl(self, a_beam):
         bunch = xboa.bunch.Bunch.new_from_read_builtin("g4beamline_bl_track_file", a_beam["file_name"])
@@ -211,7 +271,28 @@ beam ascii particle={0} nEvents={1} filename={2} format=BLTrackFile beamZ={3} be
                 print(i, "pz", hit["pz"])
             self.particles.append(hit)
         if a_beam["n_particles"]:
-            ev_numbers = numpy.linspace(0, len(self.particles)-1, a_beam["n_particles"])
+            ev_numbers = numpy.linspace(self.start_event_number, self.start_event_number+len(self.particles)-1, a_beam["n_particles"])
+            self.particles = [self.particles[int(ev)] for ev in ev_numbers]
+
+    def full_g4bl(self, a_beam):
+        bunch = xboa.bunch.Bunch.new_from_read_builtin("g4beamline_bl_track_file", a_beam["file_in"])
+        if "time_distribution" in a_beam:
+            if a_beam["time_distribution"] == "uniform":
+                t_list = numpy.random.uniform(a_beam["t_min"], a_beam["t_max"], len(bunch))
+            elif a_beam["time_distribution"] == "gaussian":
+                t_list = numpy.random.norm(a_beam["mean"], a_beam["scale"], len(bunch))
+            if a_beam["mode"] == "add":
+                for i, hit in enumerate(bunch):
+                    hit["t"] += t_list[i]
+            elif a_beam["mode"] == "replace":
+                for i, hit in enumerate(bunch):
+                    hit["t"] = t_list[i]
+            else:
+                raise KeyError("Did not recognise bunch time distribuction mode")
+        for i, hit in enumerate(bunch):
+            self.particles.append(hit)
+        if a_beam["n_particles"]:
+            ev_numbers = numpy.linspace(self.start_event_number, self.start_event_number+len(self.particles)-1, a_beam["n_particles"])
             self.particles = [self.particles[int(ev)] for ev in ev_numbers]
 
     def longitudinal_ellipse(self, a_beam):
@@ -229,7 +310,7 @@ beam ascii particle={0} nEvents={1} filename={2} format=BLTrackFile beamZ={3} be
             hit_dict = {}#copy.deepcopy(a_beam["default_hit"])
             t = item[0, 0]
             e = item[0, 1]
-            hit_dict.update({"t":t, "energy":e+mass, "mass":mass, "pid":pid, "event_number":len(self.particles)+1})
+            hit_dict.update({"t":t, "energy":e+mass, "mass":mass, "pid":pid, "event_number":len(self.particles)+1+self.start_event_number})
             self.particles.append(xboa.hit.Hit.new_from_dict(hit_dict, "pz"))
 
 
@@ -259,6 +340,57 @@ class G4BLExecution:
         if proc.returncode:
             raise RuntimeError("G4BL did not execute successfully")
 
+class TrackCuts(Setup):
+    def __init__(self):
+        self.keep = []
+        self.kill = []
+
+    def build(self):
+        track_cuts = "trackcuts my_track_cuts "
+        if len(self.keep):
+            track_cuts += "keep="
+            for item in self.keep:
+                name = self.string_lookup(item)
+                track_cuts += f"{name},"
+            track_cuts = track_cuts[:-1]
+        if len(self.kill):
+            track_cuts += "kill="
+            for item in self.kill:
+                track_cuts += f"{item},"
+            track_cuts = track_cuts[:-1]
+        track_cuts += "\n"
+        return track_cuts
+
+    @classmethod
+    def string_lookup(cls, pid):
+        return {
+            2212:"proton",
+            211:"pi+",
+            -211:"pi-",
+            13:"mu-",
+            -13:"mu+",
+            11:"e-",
+            -11:"e+",
+        }[pid]
+
+class Physics(Setup):
+    def __init__(self):
+        self.physics_list = "default"
+        self.do_stochastics = None
+        self.disable = None
+
+    def build(self):
+        physics = "physics"
+        if not self.physics_list is None:
+            physics += f" {self.physics_list}"
+        if not self.do_stochastics is None:
+            physics += f" doStochastics={self.do_stochastics}"
+        if not self.disable is None:
+            physics += f" disable={self.disable}"
+        physics += "\n"
+        return physics
+
+
 class G4BLLinac:
     def __init__(self, lattice_filename):
         self.lattice_file = None
@@ -275,17 +407,25 @@ class G4BLLinac:
         self.output_file = "output_data" # g4bl puts this in the run directory and adds ".txt" as suffix
         self.cleanup_dir = True
         self.linac_name = ""
+        self.track_cuts = TrackCuts()
+        self.fieldntuple_step = 10 # 0/negative to disable field nturple
+        self.physics = Physics()
 
     def out_dir(self):
         return os.path.split(self.lattice_filename)[0]
 
     def build_topmatter(self):
         topmatter = ""
-        topmatter += f"physics default doStochastics={self.do_stochastics}\n"
+        topmatter += self.physics.build()
         topmatter += f"zntuple cooling_monitor zloop={self.min_z}:{self.max_z}:{self.z_spacing} format=for009 file=output_data coordinates=c\n"
         topmatter += f"param epsMax={self.eps_max}\n" # g4bl bug
         topmatter += f"param maxStep={self.max_step}\n" # g4bl bug
+        if self.fieldntuple_step > 0:
+            topmatter += f"fieldntuple field_out format=ascii filename=fieldmap.dat x=0,1,100 z=0,{self.max_z},{self.fieldntuple_step}\n"
         topmatter += f'#g4ui "/run/beamOn 100" when=4 # visualisation tracking\n'
+        if self.track_cuts:
+            track_cuts = self.track_cuts.build()
+            topmatter += track_cuts
         self.lattice_file.write(topmatter)
 
     def build_reference(self):
@@ -335,10 +475,12 @@ class G4BLLinac:
                 item["z_position"] += z_offset
 
     element_dict = {
+        "derivatives_solenoid":DerivativesSolenoid,
         "solenoid":Solenoid,
         "uniform_field":UniformField,
         "cavity":Cavity,
         "tube":Tube,
+        "detector":Detector,
     }
 
 

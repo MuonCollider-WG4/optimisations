@@ -275,7 +275,7 @@ class CurrentBlock(Field):
 
     def get_b0(self):
         return self.coil_list[0].b0
-
-
+    
     def get_period(self):
         return self.coil_list[0].get_period()
+

@@ -9,6 +9,7 @@ import ROOT
 
 import runners.evolve
 import models.field_models
+import g4bl_interface.g4bl_field_model_wrapper
 
 class FitCoils(object):
     """
@@ -130,6 +131,7 @@ class FitCoils(object):
         self.z1 = self.lattice.period*8.0/8.0 # first peak field
         self.setup_minuit()
 
+        self.minuit.FixParameter(0)
         self.minuit.FixParameter(1)
         self.minuit.FixParameter(2)
         self.minuit.FixParameter(3)
@@ -172,6 +174,8 @@ class FitCoils(object):
         self.setup_minuit()
         self.minuit.FixParameter(0)
         self.minuit.FixParameter(1)
+        self.minuit.FixParameter(2)
+        self.minuit.FixParameter(3)
 
         # ROOT can't take member function as argument to minuit so we need to
         # define a module function
@@ -208,7 +212,8 @@ class FitCoils(object):
         axes.plot(z_list, beta_list)
         axes.set_xlabel("z [m]")
         axes.set_ylabel("$\\beta$ [m]")
-        axes.set_ylim([0.0, axes.get_ylim()[1]])
+        axes.set_xlim([0.0, 40.0])
+        axes.set_ylim([0.0, 0.5])
         axes = axes.twinx()
         axes.plot(z_list, [self.beta_finder.field(z) for z in z_list], color='green', linestyle="--")
         axes.set_xlabel("z [m]")
@@ -219,6 +224,13 @@ class FitCoils(object):
         figure1.suptitle(title)
 
         return figure1
+
+    def make_g4bl_lattice(self, file_name):
+        g4bl_lattice = g4bl_interface.G4BLLinac(filename)
+        for current_block in self.lattice:
+            g4bl_field_list = g4bl_field_model_wrapper.CurrentBlockG4BL(current_block)
+            g4bl_lattice.elements_list += g4bl_field_list
+        
 
     my_fit_coils = None
 
@@ -246,10 +258,10 @@ def main():
     fitter = FitCoils(pz, long_field, peak_field)
     fitter.n_iterations_per_fit = 100
     # WARNING there is a minimum at +2.8 T which does not provide a match - MINUIT will land here if we start m1 = 0.0
-    fitter.m1 = -3.0 # T
+    fitter.m1 = -3.708232350 # T
     fitter.m2 = 0.0 # T
-    fitter.m3 = 0.0 # T
-    fitter.m4 = 0.0 # T
+    fitter.m3 = 0.04453909 # T
+    fitter.m4 = -0.069320357 # T
     # first do the match from the low field region across the field flip
     print("Doing first fit - through the field flip")
     beta1 = fitter.fit_1()

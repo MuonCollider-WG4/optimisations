@@ -124,6 +124,7 @@ void TanhFieldModel::GetField(const double& z,
 }
 
 void TanhFieldModel::Initialise(int maxDerivative) {
+    std::cerr << "Initialised field model with x0 " << _x0 << " lambda " << _lambda << std::endl;
     SetTanhDiffIndices(maxDerivative);
 }
 
