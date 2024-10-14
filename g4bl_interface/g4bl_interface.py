@@ -18,6 +18,33 @@ class Setup():
                 value = type(self.__dict__[key])(value)
             self.__dict__[key] = value
 
+class GenericElement(Setup):
+    def __init__(self):
+        super().__init__()
+        self.element_type = ""
+        self.name = ""
+        self.x_position = 0.0
+        self.y_position = 0.0
+        self.z_position = 0.0
+        self.rgb = [1, 0, 0]
+        self.element_parameters = {}
+        self.place_parameters = {}
+
+    def build(self):
+        raise NotImplementedError("Not sure this is the right way")
+        my_element = f"{self.element_type} {self.name}"
+        for key, value in self.element_parameters:
+            my_element += f" {key}={value}"
+        my_element += "\n"
+        if self.place_parameters != None:
+            for key, value in self.place_parameters:
+                my_element += f" {key}={value}"
+
+    def setup(self, config):
+        """Setup overloading base class; this type does not throw an exception"""
+        for key, value in config.items():
+            self.__dict__[key] = value
+
 class Solenoid(Setup):
     def __init__(self):
         super().__init__()
@@ -45,12 +72,10 @@ class Solenoid(Setup):
         self.set_coil_name()
         if self.coil_name not in self.coil_list:
             self.coil_list.append(self.coil_name)
-            my_solenoid = \
-f"coil {self.coil_name} innerRadius={self.inner_radius} outerRadius={self.outer_radius} length={self.length} nSheets={self.nsheets}\n"
-        my_solenoid += \
-f"solenoid {self.name} coilName={self.coil_name} current=1 kill=1 color={self.rgb[0]},{self.rgb[1]},{self.rgb[2]}\n"
-        my_solenoid += \
-f"place {self.name} x={self.x_position} z={self.z_position} current={self.current} rotation=Y{self.y_rotation}\n\n"
+            my_solenoid = f"coil {self.coil_name} innerRadius={self.inner_radius} outerRadius={self.outer_radius} length={self.length} nSheets={self.nsheets}\n"
+        colour = " ".join(self.rgb)
+        my_solenoid += f"solenoid {self.name} coilName={self.coil_name} current=1 kill=1 color={colour}\n"
+        my_solenoid +=  f"place {self.name} x={self.x_position} z={self.z_position} current={self.current} rotation=Y{self.y_rotation}\n\n"
         return my_solenoid
 
     coil_list = []
@@ -69,15 +94,19 @@ class DerivativesSolenoid(Setup):
         self.centre_length = 1000.0
         self.name = ""
         self.field_model = "tanh"
+        self.harmonics = [] # field model = "fourier"
 
     def build(self):
         my_ds = ""
-        my_ds = f"""
-derivativessolenoid {self.name} fieldModel={self.field_model} length={self.length} maxDerivative={self.max_derivative} \
-                maxR={self.max_r} nominalField={self.nominal_field} endLength={self.end_length} centreLength={self.centre_length}
-place {self.name} x={self.x_position} z={self.z_position} rotation=Y{self.y_rotation}
-
-"""
+            my_ds = f"""
+derivativessolenoid {self.name} fieldModel={self.field_model} length={self.length} maxDerivative={self.max_derivative} maxR={self.max_r} \
+                    """
+        if self.field_model == "tanh":
+            my_ds += f"nominalField={self.nominal_field} endLength={self.end_length} centreLength={self.centre_length}"
+        elif self.field_model == "fourier":
+            for i, value in enumerate(self.harmonics):
+                my_ds += f" harmonic{i}={value}"
+        my_ds += "\nplace {self.name} x={self.x_position} z={self.z_position} rotation=Y{self.y_rotation}\n\n"
         return my_ds
 
 class Cavity(Setup):
@@ -152,6 +181,9 @@ class Tube(Setup):
         else:
             my_tube += "\n"
         return my_tube
+
+
+
 
 class Detector(Setup):
     def __init__(self):
@@ -319,6 +351,7 @@ class G4BLExecution:
         self.g4bl_path = os.path.expandvars("${HOME}/Software/install/bin/g4bl")
         self.lattice_filename = linac.lattice_filename
         self.linac = linac
+        self.np = 1
         self.guess_logfile()
         self.command_line = []
 
@@ -328,6 +361,8 @@ class G4BLExecution:
 
     def execute(self):
         command = [self.g4bl_path, os.path.split(self.lattice_filename)[1]]
+        if self.np != 1:
+            command += ["-np", "4"]
         cwd = os.getcwd()
         os.chdir(self.linac.out_dir())
         print("Running", command, "in", os.getcwd())

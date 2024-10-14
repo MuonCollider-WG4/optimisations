@@ -347,8 +347,6 @@ def strip_file(run_dir, for009_file_list, g4bl_file_list):
         my_file = f"{run_dir}/{my_file}"
         g4bl_stripper.strip(my_file)
 
-
-
 def dir_name(config, strip_glob):
     name = ""
     for key, value in config.items():

@@ -174,7 +174,7 @@ class FitCoils(object):
         self.setup_minuit()
         self.minuit.FixParameter(0)
         self.minuit.FixParameter(1)
-        self.minuit.FixParameter(2)
+        #self.minuit.FixParameter(2)
         self.minuit.FixParameter(3)
 
         # ROOT can't take member function as argument to minuit so we need to
@@ -264,7 +264,7 @@ def main():
     fitter.m4 = -0.069320357 # T
     # first do the match from the low field region across the field flip
     print("Doing first fit - through the field flip")
-    beta1 = fitter.fit_1()
+    #beta1 = fitter.fit_1()
     # second do the match from the high field region to the low field region
     print("Doing second fit - peak field to low field")
     beta2 = fitter.fit_2()
