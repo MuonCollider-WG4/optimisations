@@ -367,7 +367,7 @@ def main():
     do_analysis = True
     clear_dirs = False # recalculates field maps
     base_dir = "output/isis_target_model_v9/"
-    for energy in [1200, 500]:#[i for i in range(1, 11)]+[i for i in range(20, 301, 10)]:
+    for energy in [i*100 for i in range(3, 21)]:
         for target_radius in [10, 20]:
             n_versions = 10
             n_events = 1000000

@@ -383,6 +383,7 @@ class Plotter:
         self.axes[2].plot(self.pz_list, antibeta_list, 'g--', label="$\\beta(L/2)$")
         self.axes[2].set_xlabel("p$_{z}$ [GeV/c]")
         self.axes[2].set_ylabel("$\\beta$ [m]")
+        self.axes[2].set_xlim([self.pz_list[0], self.pz_list[-1]])
         self.axes[2].set_ylim([0.0, self.beta_max])
 
     def plot_beta_vs_z(self):
@@ -446,9 +447,9 @@ class EqmPlotter:
 
 def main():
     global fignum
-    plot_dir = "output/demonstrator_optics_v3"
-    c_x = 0.8
-    c_b = 1/0.8
+    plot_dir = "output/demonstrator_optics_v4"
+    c_x = 1.0
+    c_b = 1/c_x
     c_p = 1.0
     pz_plot_list = [c_p*0.19, c_p*0.20, c_p*0.21]
     pz_scan_list = [c_p*pz_i/1000. for pz_i in range(140, 301, 2)]
@@ -461,7 +462,7 @@ def main():
     b3 = c_b*0.0
     b4 = c_b*0.0
     length = c_x*1.0
-    for b2 in [0.0, 0.4, 1.0]:
+    for b2 in [0.0, 0.5, 1.0, 2.0, 3.0, 4.0]:
         b2 = b2*c_b
         solenoid_field = SineField(b0, b1, b2, b3, b4, 0.0, length)
         solenoid_field.normalise_bz_squared(31.25)

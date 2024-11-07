@@ -97,8 +97,7 @@ class DerivativesSolenoid(Setup):
         self.harmonics = [] # field model = "fourier"
 
     def build(self):
-        my_ds = ""
-            my_ds = f"""
+        my_ds = f"""
 derivativessolenoid {self.name} fieldModel={self.field_model} length={self.length} maxDerivative={self.max_derivative} maxR={self.max_r} \
                     """
         if self.field_model == "tanh":
