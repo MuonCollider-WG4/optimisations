@@ -119,9 +119,9 @@ static PyObject* GetFieldValue(PyObject* self, PyObject* args) {
         PyErr_SetString(PyExc_RuntimeError, str.c_str());
         return nullptr;
     }
-    PyObject* pyrf = Py_BuildValue("(ddd)", bfield[0], bfield[1], bfield[2]);
-    Py_INCREF(pyrf);
-    return pyrf;
+    PyObject* pyfield = Py_BuildValue("(ddd)", bfield[0], bfield[1], bfield[2]);
+    Py_INCREF(pyfield);
+    return pyfield;
 }
 
 static PyObject* GetOnAxisField(PyObject* self, PyObject* args) {
@@ -144,9 +144,9 @@ static PyObject* GetOnAxisField(PyObject* self, PyObject* args) {
         PyErr_SetString(PyExc_RuntimeError, str.c_str());
         return nullptr;
     }
-    PyObject* pyrf = Py_BuildValue("d", bfield);
-    Py_INCREF(pyrf);
-    return pyrf;
+    PyObject* pyfield = Py_BuildValue("d", bfield);
+    Py_INCREF(pyfield);
+    return pyfield;
 
 }
 
@@ -159,7 +159,6 @@ static PyMethodDef pulsed_rf_methods[] = {
      "Get the field value."},
     {"get_on_axis_field",  GetOnAxisField, METH_VARARGS,
      "Get the field value on the axis, or its derivative."},
-    {"set_fourier_field_model", SetFourierFieldModel, METH_VARARGS, "Set the field model - using a fourier model"},
     {"set_tanh_field_model", SetTanhFieldModel, METH_VARARGS, "Set the field model - using a tanh model"},
     {"set_max_derivative", SetMaxDerivative, METH_VARARGS, "Set the maximum derivative in the expansion"},
     {"get_max_derivative", GetMaxDerivative, METH_VARARGS, "Get the maximum derivative in the expansion"},

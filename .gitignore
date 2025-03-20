@@ -1,3 +1,4 @@
 output
 __pycache__
 models/solenoid_model/build/
+models/rf_model/build/

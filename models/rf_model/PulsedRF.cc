@@ -53,3 +53,10 @@ PulsedRF* PulsedRF::Clone() const {
     return structure;
 }
 
+PulsedRF::PulsedRF() {
+
+}
+
+PulsedRF::~PulsedRF() {
+    
+}

@@ -33,7 +33,4 @@ private:
 
 };
 
-PulsedRF::PulsedRF() {}
-PulsedRF::~PulsedRF() {}
-
 #endif // PulsedRF_hh
