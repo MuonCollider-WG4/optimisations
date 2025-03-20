@@ -17,6 +17,9 @@ my_path="${my_pwd}/${BASH_SOURCE[0]}"
 my_path=$(dirname "$my_path")
 echo "Adding ${my_path} to PYTHONPATH"
 export PYTHONPATH=$my_path:$PYTHONPATH
+# they might be different if we do an "install" step:
+export SOLENOID_OPTICS_INCLUDE_DIR=$my_path
+export SOLENOID_OPTICS_SRC_DIR=$my_path
 my_python_env="${HOME}/Software/env.sh"
 
 # source software environment

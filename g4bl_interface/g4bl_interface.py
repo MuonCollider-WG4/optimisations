@@ -105,7 +105,7 @@ derivativessolenoid {self.name} fieldModel={self.field_model} length={self.lengt
         elif self.field_model == "fourier":
             for i, value in enumerate(self.harmonics):
                 my_ds += f" harmonic{i}={value}"
-        my_ds += "\nplace {self.name} x={self.x_position} z={self.z_position} rotation=Y{self.y_rotation}\n\n"
+        my_ds += f"\nplace {self.name} x={self.x_position} z={self.z_position} rotation=Y{self.y_rotation}\n\n"
         return my_ds
 
 class Cavity(Setup):
@@ -171,12 +171,15 @@ class Tube(Setup):
         self.material = ""
         self.x_position = 0.0
         self.z_position = 0.0 # if None will not place
+        self.y_rotation = 0.0 # if None will not place
+        self.rgb = [0.8, 0.8, 0.8]
+        self.will_kill = False
 
     def build(self):
         my_tube = \
-            f"tube {self.name} innerRadius={self.inner_radius} outerRadius={self.outer_radius} length={self.length} material={self.material}\n"
+            f"tube {self.name} innerRadius={self.inner_radius} outerRadius={self.outer_radius} length={self.length} material={self.material} kill={int(self.will_kill)}\n"
         if self.z_position != None:
-            my_tube += f"\nplace {self.name} x={self.x_position} z={self.z_position} color=1,0,0\n"
+            my_tube += f"\nplace {self.name} x={self.x_position} z={self.z_position} rotation=X0,Y{self.y_rotation},Z0 color={self.rgb[0]},{self.rgb[1]},{self.rgb[2]}\n"
         else:
             my_tube += "\n"
         return my_tube
@@ -194,10 +197,11 @@ class Detector(Setup):
         self.coordinates = "local"
         self.x_position = 0.0
         self.z_position = 0.0
+        self.material = "Vacuum"
 
     def build(self):
         my_detector = \
-            f"detector {self.name} solid={self.solid} format={self.format} filename={self.filename} coordinates={self.coordinates}\n"
+            f"detector {self.name} solid={self.solid} format={self.format} filename={self.filename} coordinates={self.coordinates} material={self.material}\n"
         my_detector += f"place {self.name} x={self.x_position} z={self.z_position} color=1,0,0\n\n"
         return my_detector
 
@@ -225,6 +229,7 @@ class Beam(Setup):
         self.pid = -13
         self.x_position = 0.0
         self.z_position = 0.0
+        self.y_rotation = 0.0
         self.start_event_number = 0
         self.beams = []
         self.particles = []
@@ -232,9 +237,8 @@ class Beam(Setup):
 
     def build(self):
         self.build_beam_file()
-        my_beam = """
-beam ascii particle={0} nEvents={1} filename={2} format=BLTrackFile beamZ={3} beamX={4}
-""".format(self.pid, len(self.particles), self.filename, self.z_position, self.x_position)
+        my_beam = f"beam ascii particle={self.pid} nEvents={len(self.particles)} filename={self.filename} format=BLTrackFile "+ \
+                  f"beamZ={self.z_position} beamX={self.x_position} rotation=X0,Y{self.y_rotation},Z0 \n"
         return my_beam
 
     def build_beam_file(self):
