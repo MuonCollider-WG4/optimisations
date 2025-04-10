@@ -1,6 +1,13 @@
 cmake_minimum_required(VERSION 3.10) # probably
 project(ProjectName)
 
+IF (DEFINED ENV{SOLENOID_OPTICS_SRC_DIR})
+	MESSAGE(STATUS "USING $ENV{SOLENOID_OPTICS_DIR}")
+ELSE()
+	MESSAGE(FATAL_ERROR "SOLENOID_OPTICS_SRC_DIR was not set - check 'source env.sh'")
+	RETURN()
+ENDIF()
+
 SET(MODULE_NAME pulsed_rf)
 SET(PYTHON_SRCS PulsedRF.cc $ENV{SOLENOID_OPTICS_SRC_DIR}/models/solenoid_model/DerivativesSolenoid.cc PyPulsedRF.cc)
 

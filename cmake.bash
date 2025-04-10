@@ -3,8 +3,8 @@ set -e
 python_version=3.10
 build_dir=build
 
-declare -a dir=("rf_model" "solenoid_model")
-for a_dir in "${dir[@]}"
+dir_list=("rf_model" "solenoid_model")
+for a_dir in "${dir_list[@]}"
 do
     echo "In directory $a_dir !!!!!!!!!!!!!!!!!!!!"
     cd "models/$a_dir"
@@ -24,6 +24,7 @@ do
 
     cd build
     make -j20
+    cp *.so ../
     cd ../../../
 
 done

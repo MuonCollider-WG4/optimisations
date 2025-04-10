@@ -8,6 +8,7 @@
 
 class OnAxisFieldModel;
 
+/** Simple class to generate a travelling RF pulse */
 class PulsedRF {
 public:
     PulsedRF();
@@ -16,6 +17,14 @@ public:
     PulsedRF& operator=(const PulsedRF&) = delete;
 
     PulsedRF* Clone() const;
+    /** Calculate the field
+     *
+     * position - three vector x, y, z
+     * time - time
+     * bfield - 6 vector containing the field values
+     *
+     * Return the field as a 6-vector Bx By Bz Ex Ey Ez
+     * */
     void GetFieldValue(const std::vector<double>& position,
                        const double& time,
                        std::vector<double>& bfield);
@@ -28,7 +37,7 @@ public:
     double length = 0.0; // length of structure
     double zOffset = 0.0; // z position of pulse at t = 0.0, relative to centre
     double v_0 = 0.0;
-    const double c_light = 299.792458; // mm/ns
+    static constexpr double c_light = 299.792458; // mm/ns
 private:
 
 };
